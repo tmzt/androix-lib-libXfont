@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.42 2003/12/31 05:10:03 dawes Exp $ */
+/* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.43 2004/02/07 04:37:18 dawes Exp $ */
 
 #include "fontmisc.h"
 
@@ -1504,9 +1504,17 @@ FreeTypeAddProperties(FTFontPtr font, FontScalablePtr vals, FontInfoPtr info,
         i++;
     }
 
-    j = FTGetEnglishName(face->face, TT_NAME_ID_PS_NAME,
+    vp = (char *)FT_Get_Postscript_Name(face->face);
+    if (vp) {
+	j = strlen(vp);
+    } else {
+	j = -1;
+    }
+    if (j < 0) {
+	j = FTGetEnglishName(face->face, TT_NAME_ID_PS_NAME,
                          val, MAXFONTNAMELEN);
-    vp = val;
+	vp = val;
+    }
     if (j < 0) {
         if(t1info && t1info->full_name) {
             vp = t1info->full_name;
