@@ -21,7 +21,7 @@
   THE SOFTWARE.
 */
 
-/* $XFree86: xc/lib/font/FreeType/fttools.c,v 1.7 2003/11/20 22:36:37 dawes Exp $ */
+/* $XFree86: xc/lib/font/FreeType/fttools.c,v 1.6 2003/06/08 15:41:13 herrb Exp $ */
 
 #include "fontmisc.h"
 #ifndef FONTMODULE

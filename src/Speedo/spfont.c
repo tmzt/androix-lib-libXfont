@@ -21,7 +21,7 @@
  *
  * Author: Dave Lemke, Network Computing Devices Inc
  */
-/* $XFree86: xc/lib/font/Speedo/spfont.c,v 3.13 2003/05/27 22:26:44 tsi Exp $ */
+/* $XFree86: xc/lib/font/Speedo/spfont.c,v 3.12tsi Exp $ */
 
 /*
 

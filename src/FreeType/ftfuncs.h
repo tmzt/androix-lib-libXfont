@@ -174,8 +174,7 @@ static void FreeTypeFreeXFont(FontPtr pFont, int freeProps);
 static void FreeTypeUnloadXFont(FontPtr pFont);
 static int
 FreeTypeAddProperties(FTFontPtr font, FontScalablePtr vals, FontInfoPtr info, 
-                      char *fontname, 
-                      int rawAverageWidth);
+                      char *fontname, int rawAverageWidth, Bool font_properties);
 static int FreeTypeFontGetGlyph(unsigned code, int flags, CharInfoPtr *g, FTFontPtr font);
 static int
 FreeTypeLoadFont(FTFontPtr font, FontInfoPtr info, FTFacePtr face,
