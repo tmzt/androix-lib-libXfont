@@ -36,7 +36,6 @@
 #include "xf86_ansic.h"
 #else 
 #include <stdio.h>
-#include "os.h"
 #endif
 #include "objects.h"	/* get #define for Abort() */
 

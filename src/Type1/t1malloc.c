@@ -43,8 +43,6 @@ routines (malloc/free).
 #include "Xmd.h"	/* INT32 declaration */
 #include "os.h"
 #include "xf86_ansic.h"
-#else
-#include "os.h"
 #endif
 #include "objects.h"	/* get #define for Abort() */
 

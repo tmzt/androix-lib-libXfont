@@ -41,7 +41,9 @@ This module is responsible for creating and manipulating regions.
 The included files are:
 */
  
-#include  "os.h"
+#ifdef FONTMODULE
+# include  "os.h"
+#endif
 #include  "objects.h"
 #include  "spaces.h"
 #include  "paths.h"

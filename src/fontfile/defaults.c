@@ -33,7 +33,6 @@ in this Software without prior written authorization from The Open Group.
 
 #include    <X11/X.h>
 #include    <X11/Xproto.h>
-#include    <servermd.h>
 
 #ifndef DEFAULT_BIT_ORDER
 #ifdef BITMAP_BIT_ORDER

@@ -58,7 +58,6 @@ you do do not need to include these header files.
 #include  <string.h>
 #include  <ctype.h>
 #include  <stdarg.h>
-#include  "os.h"
 #else
 #include "Xdefs.h"	/* Bool declaration */
 #include "Xmd.h"	/* INT32 declaration */

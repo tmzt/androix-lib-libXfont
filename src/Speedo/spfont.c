@@ -57,7 +57,6 @@ from The Open Group.
 
 #include	"FSproto.h"
 #include	"spint.h"
-#include	"servermd.h"
 #include	"fontutil.h"
 #ifndef FONTMODULE
 #ifdef _XOPEN_SOURCE
@@ -68,6 +67,7 @@ from The Open Group.
 #undef _XOPEN_SOURCE
 #endif
 #else
+#include "servermd.h"
 #include "xf86_ansic.h"
 #endif
 

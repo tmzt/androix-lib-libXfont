@@ -125,9 +125,8 @@ from The Open Group.
 #include "Xdefs.h"
 #endif
 
-#include "os.h"
-
 #ifdef FONTMODULE
+#include "os.h"
 #include "xf86_ansic.h"
 #endif
 

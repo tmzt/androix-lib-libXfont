@@ -44,7 +44,9 @@ The included files are:
 */
  
                              /*   after the system includes  (dsr)           */
-#include  "os.h"
+#ifdef FONTMODULE
+# include  "os.h"
+#endif
 #include  "objects.h"
 #include  "spaces.h"
 #include  "paths.h"

@@ -49,8 +49,10 @@ assembly language, unlike C, will have 64-bit multiply products and
  
 The included files are:
 */
- 
-#include "os.h"
+
+#ifdef FONTMODULE
+# include "os.h"
+#endif
 #include "objects.h"
 #include "spaces.h"
 #include "arith.h"
