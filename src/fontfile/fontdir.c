@@ -1,4 +1,4 @@
-/* $XdotOrg: fontdir.c,v 1.4 2001/02/09 02:04:03 xorgcvs Exp $ */
+/* $XdotOrg: xc/lib/font/fontfile/fontdir.c,v 1.2 2004/04/23 18:44:21 eich Exp $ */
 /* $Xorg: fontdir.c,v 1.4 2001/02/09 02:04:03 xorgcvs Exp $ */
 
 /*
@@ -110,7 +110,7 @@ FontFileMakeDir(char *dirName, int size)
 #endif
 
 #ifdef FONTDIRATTRIB
-#ifndef __UNIXOS2__
+#if !defined(__UNIXOS2__) && !defined(WIN32)
     attrib = strchr(dirName, ':');
 #else
     /* OS/2 uses the colon in the drive letter descriptor, skip this */

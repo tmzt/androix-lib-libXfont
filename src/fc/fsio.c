@@ -30,6 +30,7 @@
 
 #ifdef WIN32
 #define _WILLWINSOCK_
+#include	"X11/Xwindows.h"
 #endif
 
 #include 	"X11/Xtrans.h"

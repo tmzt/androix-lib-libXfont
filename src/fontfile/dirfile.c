@@ -73,11 +73,11 @@ FontFileReadDirectory (char *directory, FontDirectoryPtr *pdir)
 
 #ifdef FONTDIRATTRIB
     /* Check for font directory attributes */
-#ifndef __UNIXOS2__
+#if !defined(__UNIXOS2__) && !defined(WIN32)
     if ((ptr = strchr(directory, ':'))) {
 #else
-    /* OS/2 path might start with a drive letter, don't clip this */
-    if (ptr = strchr(directory+2, ':')) {
+    /* OS/2 and WIN32 path might start with a drive letter, don't clip this */
+    if ((ptr = strchr(directory+2, ':'))) {
 #endif
 	strncpy(dir_path, directory, ptr - directory);
 	dir_path[ptr - directory] = '\0';
@@ -91,12 +91,19 @@ FontFileReadDirectory (char *directory, FontDirectoryPtr *pdir)
     if (dir_file[strlen(dir_file) - 1] != '/')
 	strcat(dir_file, "/");
     strcat(dir_file, FontDirFile);
-    file = fopen(dir_file, "r");
+    file = fopen(dir_file, "rt");
     if (file) {
 	Bool found_font = FALSE;
-	
+
+#ifndef WIN32        
 	if (fstat (fileno(file), &statb) == -1)
+#else
+	if (stat (dir_file, &statb) == -1)
+#endif
+        {
+            fclose(file);
 	    return BadFontPath;
+        }
 	count = fscanf(file, "%d\n", &i);
 	if ((count == EOF) || (count != 1)) {
 	    fclose(file);
@@ -113,7 +120,7 @@ FontFileReadDirectory (char *directory, FontDirectoryPtr *pdir)
 		MAXFONTFILENAMELEN-1, MAXFONTNAMELEN-1);
 
 	while ((count = fscanf(file, format, file_name, font_name)) != EOF) {
-#ifdef __UNIXOS2__
+#if defined(__UNIXOS2__) || defined(WIN32)
 	    /* strip any existing trailing CR */
 	    for (i=0; i<strlen(font_name); i++) {
 		if (font_name[i]=='\r') font_name[i] = '\0';
@@ -275,7 +282,7 @@ ReadFontAlias(char *directory, Bool isFile, FontDirectoryPtr *pdir)
 	    strcat(alias_file, "/");
 	strcat(alias_file, FontAliasFile);
     }
-    file = fopen(alias_file, "r");
+    file = fopen(alias_file, "rt");
     if (!file)
 	return ((errno == ENOENT) ? Successful : BadFontPath);
     if (!dir)
@@ -285,7 +292,11 @@ ReadFontAlias(char *directory, Bool isFile, FontDirectoryPtr *pdir)
 	fclose (file);
 	return AllocError;
     }
+#ifndef WIN32
     if (fstat (fileno (file), &statb) == -1)
+#else
+    if (stat (alias_file, &statb) == -1)
+#endif
     {
 	fclose (file);
 	return BadFontPath;
