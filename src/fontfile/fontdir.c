@@ -25,7 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
-/* $XFree86: xc/lib/font/fontfile/fontdir.c,v 3.19 2002/05/31 18:45:50 dawes Exp $ */
+/* $XFree86: xc/lib/font/fontfile/fontdir.c,v 3.22 2003/07/07 16:40:11 eich Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -678,11 +678,10 @@ FontFileAddFontFile (FontDirectoryPtr dir, char *fontName, char *fileName)
 #endif
     if (!isscale || (vals.values_supplied & SIZE_SPECIFY_MASK))
     {
-      /* If the fontname says it is nonScalable, make sure that the
-       * renderer supports OpenBitmap and GetInfoBitmap.
+      /*
+       * If the renderer doesn't support OpenBitmap, FontFileOpenFont
+       * will still do the right thing.
        */
-      if (renderer->OpenBitmap && renderer->GetInfoBitmap)
-      {
 	entry.type = FONT_ENTRY_BITMAP;
 	entry.u.bitmap.renderer = renderer;
 	entry.u.bitmap.pFont = NullFont;
@@ -693,7 +692,6 @@ FontFileAddFontFile (FontDirectoryPtr dir, char *fontName, char *fileName)
 	    xfree (entry.u.bitmap.fileName);
 	    return FALSE;
 	}
-      }
     }
     /*
      * Parse out scalable fields from XLFD names - a scalable name
@@ -701,11 +699,6 @@ FontFileAddFontFile (FontDirectoryPtr dir, char *fontName, char *fileName)
      */
     if (isscale)
     {
-      /* If the fontname says it is scalable, make sure that the
-       * renderer supports OpenScalable and GetInfoScalable.
-       */
-      if (renderer->OpenScalable && renderer->GetInfoScalable)
-      {
 	if (vals.values_supplied & SIZE_SPECIFY_MASK)
 	{
 	    bzero((char *)&zeroVals, sizeof(zeroVals));
@@ -728,10 +721,13 @@ FontFileAddFontFile (FontDirectoryPtr dir, char *fontName, char *fileName)
 		    if (!(existing->u.scalable.fileName = FontFileSaveString (fileName)))
 			return FALSE;
 		}
-		FontFileCompleteXLFD(&vals, &vals);
-		FontFileAddScaledInstance (existing, &vals, NullFont,
-					   bitmap->name.name);
-		return TRUE;
+                if(bitmap)
+                {
+                    FontFileCompleteXLFD(&vals, &vals);
+                    FontFileAddScaledInstance (existing, &vals, NullFont,
+                                               bitmap->name.name);
+                    return TRUE;
+                }
 	    }
 	}
 	if (!(entry.u.scalable.fileName = FontFileSaveString (fileName)))
@@ -795,11 +791,13 @@ FontFileAddFontFile (FontDirectoryPtr dir, char *fontName, char *fileName)
 	}
 	if (vals.values_supplied & SIZE_SPECIFY_MASK)
 	{
-	    FontFileCompleteXLFD(&vals, &vals);
-	    FontFileAddScaledInstance (scalable, &vals, NullFont,
-				       bitmap->name.name);
+            if(bitmap)
+            {
+                FontFileCompleteXLFD(&vals, &vals);
+                FontFileAddScaledInstance (scalable, &vals, NullFont,
+                                           bitmap->name.name);
+            }
 	}
-      }
     }
     return TRUE;
 }

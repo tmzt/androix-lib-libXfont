@@ -45,7 +45,7 @@
  * The Original Software is CID font code that was developed by Silicon
  * Graphics, Inc.
  */
-/* $XFree86: xc/lib/font/Type1/scanfont.c,v 1.15 2001/07/25 15:04:55 dawes Exp $ */
+/* $XFree86: xc/lib/font/Type1/scanfont.c,v 1.16 2003/05/27 22:26:46 tsi Exp $ */
 
 #ifndef FONTMODULE
 #include <string.h>
@@ -74,7 +74,6 @@ static cidrange *notdefrangeP;
 static cidrange *cidrangeP;
 extern int FDArrayIndex;
 static boolean CIDWantFontInfo;
-static boolean InFDArray;
 static psobj inputFile1;
 #endif
  
@@ -1621,13 +1620,10 @@ scan_cidfont(cidfont *CIDFontP, cmapres *CMapP)
   FILE   *fileP;
   FILE   *fileP1;
   char   *nameP;
-  char   *p;
   int    namelen;
   int    i, j;
   int    cread, rangecnt;
   unsigned int char_row, char_col;
-
-    InFDArray = FALSE;
 
     filetype[0] = 'r';
     filetype[1] = 'b';
@@ -1657,7 +1653,7 @@ scan_cidfont(cidfont *CIDFontP, cmapres *CMapP)
         fclose(fileP);
         if (cread > 17) {
             if (strncmp(buf, "%!", 2) ||
-                (p = strstr(buf, "Resource-CIDFont")) == NULL)
+                strstr(buf, "Resource-CIDFont") == NULL)
                 return(SCAN_FILE_OPEN_ERROR);
         } else
             return(SCAN_FILE_OPEN_ERROR);
@@ -1687,7 +1683,7 @@ scan_cidfont(cidfont *CIDFontP, cmapres *CMapP)
         fclose(fileP1);
         if (cread > 17) {
             if (strncmp(buf, "%!", 2) ||
-                (p = strstr(buf, "Resource-CMap")) == NULL)
+                strstr(buf, "Resource-CMap") == NULL)
                 return(SCAN_FILE_OPEN_ERROR);
         } else
             return(SCAN_FILE_OPEN_ERROR);
@@ -1984,8 +1980,6 @@ scan_cidfont(cidfont *CIDFontP, cmapres *CMapP)
       case TOKEN_LITERAL_NAME:
         /* Look up the name */
         tokenStartP[tokenLength] = '\0';
-        if (0 == strncmp(tokenStartP,"FDArray",7))
-            InFDArray = TRUE;
 
          if (CIDWantFontInfo) {
              rc = FindDictValue(CIDFontP->CIDfontInfoP);
