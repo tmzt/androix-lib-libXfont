@@ -25,7 +25,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-/* $XdotOrg: xc/lib/font/FreeType/ftfuncs.c,v 1.6 2004/08/03 16:12:53 eich Exp $ */
+/* $XdotOrg: xc/lib/font/FreeType/ftfuncs.c,v 1.7 2004/08/04 12:21:48 eich Exp $ */
 
 /* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.43 2004/02/07 04:37:18 dawes Exp $ */
 
@@ -54,7 +54,9 @@ THE SOFTWARE.
 #include FT_INTERNAL_TRUETYPE_TYPES_H
 #include FT_TRUETYPE_TAGS_H
 #include FT_INTERNAL_SFNT_H
+#if 0
 #include FT_INTERNAL_STREAM_H
+#endif
 /*
  *  If you want to use FT_Outline_Get_CBox instead of 
  *  FT_Outline_Get_BBox, define here.
