@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.38 2003/11/29 01:37:36 dawes Exp $ */
+/* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.39 2003/12/17 18:14:40 dawes Exp $ */
 
 #include "fontmisc.h"
 
@@ -87,10 +87,10 @@ THE SOFTWARE.
 #define DEFAULT_VERY_LAZY 2     	/* Multi-byte only */
 /* #define DEFAULT_VERY_LAZY 256 */   	/* Unicode only */
 
-/* Does the XAA accept noSuchChar? */
-/* #define XAA_ACCEPTS_NO_SUCH_CHAR */
+/* Does the X accept noSuchChar? */
+#define X_ACCEPTS_NO_SUCH_CHAR
 
-#ifdef XAA_ACCEPTS_NO_SUCH_CHAR
+#ifdef X_ACCEPTS_NO_SUCH_CHAR
 static CharInfoRec noSuchChar = { /* metrics */{0,0,0,0,0,0},
 				  /* bits */   NULL };
 #endif
@@ -1649,17 +1649,23 @@ ft_get_index(unsigned code, FTFontPtr font, unsigned *idx)
 static int
 FreeTypeFontGetGlyph(unsigned code, int flags, CharInfoPtr *g, FTFontPtr font)
 {
-    unsigned idx;
+    unsigned idx = 0;
     int xrc;
     
-    if( ft_get_index(code,font,&idx) ) {
+#ifdef X_ACCEPTS_NO_SUCH_CHAR
+    if( ft_get_index(code,font,&idx) || idx == 0 || idx == font->zero_idx ) {
 	*g = NULL;
 	flags &= ~FT_FORCE_CONSTANT_SPACING;
-#ifdef XAA_ACCEPTS_NO_SUCH_CHAR
 	/* if( font->instance->spacing != FT_CHARCELL ) */
 	return Successful;
-#endif
     }
+#else
+    if( ft_get_index(code,font,&idx) ) {
+	/* The code has not been parsed! */
+	*g = NULL;
+	flags &= ~FT_FORCE_CONSTANT_SPACING;
+    }
+#endif
 
     xrc = FreeTypeInstanceGetGlyph(idx, flags, g, font->instance);
     if( xrc == Successful && *g != NULL )
@@ -1675,22 +1681,23 @@ FreeTypeFontGetGlyph(unsigned code, int flags, CharInfoPtr *g, FTFontPtr font)
 static int
 FreeTypeFontGetGlyphMetrics(unsigned code, int flags, xCharInfo **metrics, FTFontPtr font)
 {
-    unsigned idx;
+    unsigned idx = 0;
     int xrc;
 
-    if( flags & FT_FORCE_CONSTANT_SPACING )
-	idx = 0;	/* This is ignored in FreeTypeInstanceGetGlyphMetrics */
-    else {
-	if ( ft_get_index(code,font,&idx) ) {
-	    /* The code has not been parsed! */
-	    *metrics = NULL;
-	    flags &= ~FT_FORCE_CONSTANT_SPACING;
-#ifdef XAA_ACCEPTS_NO_SUCH_CHAR
-	    /* if( font->instance->spacing != FT_CHARCELL ) */
-	    return Successful;
-#endif
-	}
+#ifdef X_ACCEPTS_NO_SUCH_CHAR
+    if ( ft_get_index(code,font,&idx) || idx == 0 || idx == font->zero_idx ) {
+	*metrics = NULL;
+	flags &= ~FT_FORCE_CONSTANT_SPACING;
+	/* if( font->instance->spacing != FT_CHARCELL ) */
+	return Successful;
     }
+#else
+    if ( ft_get_index(code,font,&idx) || idx == 0 || idx == font->zero_idx ) {
+	/* The code has not been parsed! */
+	*metrics = NULL;
+	flags &= ~FT_FORCE_CONSTANT_SPACING;
+    }
+#endif
 
     xrc = FreeTypeInstanceGetGlyphMetrics(idx, flags, metrics, font->instance);
     if( xrc == Successful && *metrics != NULL )
@@ -2734,7 +2741,7 @@ ft_compute_bounds(FTFontPtr font, FontInfoPtr pinfo, FontScalablePtr vals )
       }
     }
 
-#ifndef XAA_ACCEPTS_NO_SUCH_CHAR
+#ifndef X_ACCEPTS_NO_SUCH_CHAR
     /* Check code 0 */
     if( FreeTypeInstanceGetGlyphMetrics(font->zero_idx, 0, &tmpchar, font->instance) != Successful || tmpchar == NULL)
 	if( FreeTypeInstanceGetGlyphMetrics(font->zero_idx, FT_GET_DUMMY, &tmpchar, font->instance) != Successful )
@@ -3394,7 +3401,7 @@ FreeTypeGetMetrics(FontPtr pFont, unsigned long count, unsigned char *chars,
         if(FreeTypeFontGetGlyphMetrics(code, flags, &m, tf) == Successful && m!=NULL) {
             *mp++ = m;
         }
-#ifdef XAA_ACCEPTS_NO_SUCH_CHAR
+#ifdef X_ACCEPTS_NO_SUCH_CHAR
 	else *mp++ = &noSuchChar.metrics;
 #endif
     }
@@ -3446,7 +3453,7 @@ FreeTypeGetGlyphs(FontPtr pFont, unsigned long count, unsigned char *chars,
         if(FreeTypeFontGetGlyph(code, flags, &g, tf) == Successful && g!=NULL) {
             *gp++ = g;
         }
-#ifdef XAA_ACCEPTS_NO_SUCH_CHAR
+#ifdef X_ACCEPTS_NO_SUCH_CHAR
 	else *gp++ = &noSuchChar;
 #endif
     }
