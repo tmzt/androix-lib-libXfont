@@ -24,7 +24,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
-/* $XFree86: xc/lib/font/fc/fserve.c,v 3.25 2003/11/20 18:16:34 dawes Exp $ */
+/* $XFree86: xc/lib/font/fc/fserve.c,v 3.26 2003/11/22 02:12:37 dawes Exp $ */
 
 /*
  * Copyright 1990 Network Computing Devices
@@ -1052,44 +1052,27 @@ fs_read_extent_info(FontPathElementPtr fpe, FSBlockDataPtr blockrec)
 		ci->metrics.descent = FONT_MAX_DESCENT(fi);
 		ci->metrics.characterWidth = FONT_MAX_WIDTH(fi);
 		ci->metrics.attributes = ii->metrics.attributes;
-		/* Bounds check. */
-		if (ci->metrics.ascent > fi->maxbounds.ascent)
-		{
-		    ErrorF("fserve: warning: %s %s ascent (%d) "
-			   "> maxascent (%d)\n",
-			   fpe->name, fsd->name,
-			   ci->metrics.ascent, fi->maxbounds.ascent);
-		    ci->metrics.ascent = fi->maxbounds.ascent;
-		}
-		if (ci->metrics.descent > fi->maxbounds.descent)
-		{
-		    ErrorF("fserve: warning: %s %s descent (%d) "
-			   "> maxdescent (%d)\n",
-			   fpe->name, fsd->name,
-			   ci->metrics.descent, fi->maxbounds.descent);
-		    ci->metrics.descent = fi->maxbounds.descent;
-		}
 	    }
 	    else
 	    {
 		ci->metrics = ii->metrics;
-		/* Bounds check. */
-		if (ci->metrics.ascent > fi->maxbounds.ascent)
-		{
-		    ErrorF("fserve: warning: %s %s ascent (%d) "
-			   "> maxascent (%d)\n",
-			   fpe->name, fsd->name,
-			   ci->metrics.ascent, fi->maxbounds.ascent);
-		    ci->metrics.ascent = fi->maxbounds.ascent;
-		}
-		if (ci->metrics.descent > fi->maxbounds.descent)
-		{
-		    ErrorF("fserve: warning: %s %s descent (%d) "
-			   "> maxdescent (%d)\n",
-			   fpe->name, fsd->name,
-			   ci->metrics.descent, fi->maxbounds.descent);
-		    ci->metrics.descent = fi->maxbounds.descent;
-		}
+	    }
+	    /* Bounds check. */
+	    if (ci->metrics.ascent > fi->maxbounds.ascent)
+	    {
+		ErrorF("fserve: warning: %s %s ascent (%d) "
+		       "> maxascent (%d)\n",
+		       fpe->name, fsd->name,
+		       ci->metrics.ascent, fi->maxbounds.ascent);
+		ci->metrics.ascent = fi->maxbounds.ascent;
+	    }
+	    if (ci->metrics.descent > fi->maxbounds.descent)
+	    {
+		ErrorF("fserve: warning: %s %s descent (%d) "
+		       "> maxdescent (%d)\n",
+		       fpe->name, fsd->name,
+		       ci->metrics.descent, fi->maxbounds.descent);
+		ci->metrics.descent = fi->maxbounds.descent;
 	    }
 	}
     }

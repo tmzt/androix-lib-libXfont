@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.37 2003/11/20 22:36:35 dawes Exp $ */
+/* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.38 2003/11/29 01:37:36 dawes Exp $ */
 
 #include "fontmisc.h"
 
@@ -3043,7 +3043,7 @@ FreeTypeLoadXFont(char *fileName,
 		    int ai_lsb,ai_rsb,ai_total;
 		    if( 0 < ins_ttcap->autoItalic ) ai=ins_ttcap->autoItalic;
 		    else ai = -ins_ttcap->autoItalic;
-		    ai_total = (int)( b_width_diagonal * ai + 0.5);
+		    ai_total = (int)( (ascent+descent) * ai + 0.5);
 		    ai_rsb = (int)((double)ai_total * ascent / ( ascent + descent ) + 0.5 );
 		    ai_lsb = -(ai_total - ai_rsb);
 		    if( 0 < ins_ttcap->autoItalic ) {
@@ -3121,7 +3121,7 @@ FreeTypeLoadXFont(char *fileName,
 		int ai_lsb,ai_rsb,ai_total;
 		if( 0 < ins_ttcap->autoItalic ) ai=ins_ttcap->autoItalic;
 		else ai = -ins_ttcap->autoItalic;
-		ai_total = (int)( ai * smetrics->max_advance / 64.0 + 0.5);
+		ai_total = (int)( (ascent+descent) * ai + 0.5);
 		ai_rsb = (int)((double)ai_total * ascent / ( ascent + descent ) + 0.5 );
 		ai_lsb = -(ai_total - ai_rsb);
 		if( 0 < ins_ttcap->autoItalic ) {

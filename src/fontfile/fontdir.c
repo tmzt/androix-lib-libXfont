@@ -25,7 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
-/* $XFree86: xc/lib/font/fontfile/fontdir.c,v 3.22 2003/07/07 16:40:11 eich Exp $ */
+/* $XFree86: xc/lib/font/fontfile/fontdir.c,v 3.23 2003/12/02 19:50:40 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -629,6 +629,9 @@ FontFileAddFontFile (FontDirectoryPtr dir, char *fontName, char *fileName)
     FontScalableExtraPtr    extra;
     FontEntryPtr	    bitmap = 0, scalable;
     Bool		    isscale;
+#ifdef FONTDIRATTRIB
+    Bool		    scalable_xlfd;
+#endif
 
     renderer = FontFileMatchRenderer (fileName);
     if (!renderer)
@@ -656,8 +659,15 @@ FontFileAddFontFile (FontDirectoryPtr dir, char *fontName, char *fileName)
 	      !(vals.values_supplied & ENHANCEMENT_SPECIFY_MASK);
 #ifdef FONTDIRATTRIB
 #define UNSCALED_ATTRIB "unscaled"
-    /* For scalable fonts, check if the "unscaled" attribute is present */
-    if (isscale && dir->attributes && dir->attributes[0] == ':') {
+    scalable_xlfd = (isscale &&
+		(((vals.values_supplied & PIXELSIZE_MASK) == 0) ||
+		 ((vals.values_supplied & POINTSIZE_MASK) == 0)));
+    /*
+     * For scalable fonts without a scalable XFLD, check if the "unscaled"
+     * attribute is present.
+     */
+    if (isscale && !scalable_xlfd &&
+	    dir->attributes && dir->attributes[0] == ':') {
 	char *ptr1 = dir->attributes + 1;
 	char *ptr2;
 	int length;

@@ -25,7 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
-/* $XFree86: xc/lib/font/fontfile/fontfile.c,v 3.19 2003/11/08 02:02:03 dawes Exp $ */
+/* $XFree86: xc/lib/font/fontfile/fontfile.c,v 3.21 2003/12/02 19:50:40 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -531,6 +531,8 @@ FontFileGetInfoBitmap (FontPathElementPtr fpe, FontInfoPtr pFontInfo,
 
     dir = (FontDirectoryPtr) fpe->private;
     bitmap = &entry->u.bitmap;
+    if (!bitmap || !bitmap->renderer->GetInfoBitmap)
+	return BadFontName;
     strcpy (fileName, dir->directory);
     strcat (fileName, bitmap->fileName);
     ret = (*bitmap->renderer->GetInfoBitmap) (fpe, pFontInfo, entry, fileName);
