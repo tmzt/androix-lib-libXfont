@@ -25,7 +25,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-/* $XdotOrg: xc/lib/font/FreeType/ftfuncs.c,v 1.5 2004/08/03 09:02:17 eich Exp $ */
+/* $XdotOrg: xc/lib/font/FreeType/ftfuncs.c,v 1.6 2004/08/03 16:12:53 eich Exp $ */
 
 /* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.43 2004/02/07 04:37:18 dawes Exp $ */
 
@@ -69,8 +69,6 @@ THE SOFTWARE.
 #include "ftfuncs.h"
 #include "xttcap.h"
 
-#define FREETYPE_VERSION (FREETYPE_MAJOR * 1000000 + FREETYPE_MINOR * 1000 + FREETYPE_PATCH)
-
 /* Work around FreeType bug */
 #define WORK_AROUND_UPM 2048
 
@@ -91,12 +89,6 @@ THE SOFTWARE.
 /* #define DEFAULT_VERY_LAZY 1 */     	/* Always */
 #define DEFAULT_VERY_LAZY 2     	/* Multi-byte only */
 /* #define DEFAULT_VERY_LAZY 256 */   	/* Unicode only */
-
-#if (FREETYPE_VERSION < 2001008)
-#ifdef DEFAULT_VERY_LAZY
-#undef DEFAULT_VERY_LAZY
-#endif
-#endif
 
 /* Does the X accept noSuchChar? */
 #define X_ACCEPTS_NO_SUCH_CHAR
@@ -912,7 +904,8 @@ ft_get_very_lazy_bbox( FT_UInt index,
 
 static FT_Error
 FT_Do_SBit_Metrics( FT_Face ft_face, FT_Size ft_size, FT_ULong strike_index,
-		    FT_UShort glyph_index, FT_Glyph_Metrics *metrics_return )
+		    FT_UShort glyph_index, FT_Glyph_Metrics *metrics_return,
+		    int *sbitchk_incomplete_but_exist )
 {
 #if (FREETYPE_VERSION >= 2001008)
     SFNT_Service       sfnt;
@@ -979,7 +972,15 @@ FT_Do_SBit_Metrics( FT_Face ft_face, FT_Size ft_size, FT_ULong strike_index,
   Exit:
       return error;
 #else	/* if (FREETYPE_VERSION < 2001008) */
-      return -1;
+    TT_Face            face;
+    SFNT_Service       sfnt;
+    if ( ! FT_IS_SFNT( ft_face ) ) return -1;
+    face = (TT_Face)ft_face;
+    sfnt = (SFNT_Service)face->sfnt;
+    if ( strike_index != 0xFFFFU && sfnt->load_sbits ) {
+        if ( sbitchk_incomplete_but_exist ) *sbitchk_incomplete_but_exist=1;
+    }
+    return -1;
 #endif
 }
 
@@ -999,6 +1000,7 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
     int dx, dy;
     int leftSideBearing, rightSideBearing, characterWidth, rawCharacterWidth,
         ascent, descent;
+    int sbitchk_incomplete_but_exist;
     double bbox_center_raw;
 
     face = instance->face;
@@ -1027,14 +1029,15 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 	    int new_width;
 	    double ratio;
 
+	    sbitchk_incomplete_but_exist=0;
 	    if( ! (instance->load_flags & FT_LOAD_NO_BITMAP) ) {
 		if( FT_Do_SBit_Metrics(face->face,instance->size,instance->strike_index,
-				       idx,&sbit_metrics)==0 ) {
+				       idx,&sbit_metrics,&sbitchk_incomplete_but_exist)==0 ) {
 		    bitmap_metrics = &sbit_metrics;
 		}
 	    }
 	    if( bitmap_metrics == NULL ) {
-		if ( instance->ttcap.flags & TTCAP_IS_VERY_LAZY ) {
+		if ( sbitchk_incomplete_but_exist==0 && (instance->ttcap.flags & TTCAP_IS_VERY_LAZY) ) {
 		    if( ft_get_very_lazy_bbox( idx, face->face, instance->size, 
 					       instance->ttcap.vl_slant,
 					       &instance->transformation.matrix,
@@ -1053,7 +1056,7 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 	    }
 
 	    if( bitmap_metrics ) {
-		int factor;
+		FT_Pos factor;
 		
 		leftSideBearing = bitmap_metrics->horiBearingX / 64;
 		rightSideBearing = (bitmap_metrics->width + bitmap_metrics->horiBearingX) / 64;
@@ -1170,14 +1173,16 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
     else if( flags & FT_FORCE_CONSTANT_SPACING ) correct=1;
     else{
 	int sbit_available=0;
+	sbitchk_incomplete_but_exist=0;
 	if( !(instance->load_flags & FT_LOAD_NO_BITMAP) ) {
 	    if( FT_Do_SBit_Metrics(face->face,instance->size,
-				   instance->strike_index,idx,NULL)==0 ) {
+				   instance->strike_index,idx,NULL,
+				   &sbitchk_incomplete_but_exist)==0 ) {
 		sbit_available=1;
 	    }
 	}
 	if( sbit_available == 0 ) {
-	    if ( instance->ttcap.flags & TTCAP_IS_VERY_LAZY ) {
+	    if ( sbitchk_incomplete_but_exist==0 && (instance->ttcap.flags & TTCAP_IS_VERY_LAZY) ) {
 		if( FT_IS_SFNT(face->face) ) correct=1;
 	    }
 	}
