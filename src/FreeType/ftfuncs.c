@@ -92,6 +92,12 @@ THE SOFTWARE.
 #define DEFAULT_VERY_LAZY 2     	/* Multi-byte only */
 /* #define DEFAULT_VERY_LAZY 256 */   	/* Unicode only */
 
+#if (FREETYPE_VERSION < 2001008)
+#ifdef DEFAULT_VERY_LAZY
+#undef DEFAULT_VERY_LAZY
+#endif
+#endif
+
 /* Does the X accept noSuchChar? */
 #define X_ACCEPTS_NO_SUCH_CHAR
 /* Does the XAA accept NULL noSuchChar.bits?(dangerous) */
@@ -460,7 +466,6 @@ FreeTypeOpenInstance(FTInstancePtr *instance_return, FTFacePtr face,
         return FTtoXReturnCode(ftrc);
     }
 
-#if (FREETYPE_VERSION >= 2001008)
     if( FT_IS_SFNT( face->face ) ) {
 	/* See Set_Char_Sizes() in ttdriver.c */
 	FT_Error err;
@@ -487,8 +492,7 @@ FreeTypeOpenInstance(FTInstancePtr *instance_return, FTFacePtr face,
 	err = sfnt->set_sbit_strike(tt_face,tt_x_ppem,tt_y_ppem,&instance->strike_index);
 	if ( err ) instance->strike_index=0xFFFFU;
     }
-#endif
-    
+
     /* maintain a linked list of instances */
     instance->next = instance->face->instances;
     instance->face->instances = instance;
@@ -906,11 +910,11 @@ ft_get_very_lazy_bbox( FT_UInt index,
     return -1;
 }
 
-#if (FREETYPE_VERSION >= 2001008)
 static FT_Error
 FT_Do_SBit_Metrics( FT_Face ft_face, FT_Size ft_size, FT_ULong strike_index,
 		    FT_UShort glyph_index, FT_Glyph_Metrics *metrics_return )
 {
+#if (FREETYPE_VERSION >= 2001008)
     SFNT_Service       sfnt;
     TT_Face            face;
     FT_Error           error;
@@ -974,8 +978,10 @@ FT_Do_SBit_Metrics( FT_Face ft_face, FT_Size ft_size, FT_ULong strike_index,
 
   Exit:
       return error;
-}
+#else	/* if (FREETYPE_VERSION < 2001008) */
+      return -1;
 #endif
+}
 
 int
 FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
@@ -984,16 +990,12 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
     FTFacePtr face;
     FT_BBox bbox;
     FT_Long outline_hori_advance, outline_vert_advance;
-    FT_Bitmap *bitmap;
-#if (FREETYPE_VERSION >= 2001008)
     FT_Glyph_Metrics sbit_metrics;
-    FT_Glyph_Metrics *bitmap_metrics=NULL;
-#endif
-    FT_Glyph_Metrics *metrics = NULL;
-    char *raster = NULL;
+    FT_Glyph_Metrics *bitmap_metrics=NULL, *metrics = NULL;
+    char *raster;
     int wd, ht, bpr;            /* width, height, bytes per row */
     int wd_actual, ht_actual;
-    int ftrc, is_outline, correct = 0, b_shift=0;
+    int ftrc, is_outline, correct, b_shift=0;
     int dx, dy;
     int leftSideBearing, rightSideBearing, characterWidth, rawCharacterWidth,
         ascent, descent;
@@ -1005,31 +1007,6 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 
     if(!tgp) return AllocError;
 
-#if (FREETYPE_VERSION < 2001008)
-    bitmap = &face->face->glyph->bitmap;
-
-    if( instance->spacing == FT_CHARCELL ) correct=1;
-    else if( flags & FT_FORCE_CONSTANT_SPACING ) correct=1;
-    else if( instance->ttcap.flags & TTCAP_IS_VERY_LAZY ){
-	if( hasMetrics || (!hasMetrics && (flags & FT_GET_GLYPH_METRICS_ONLY)) )
-	{
-
-	    /* If sbit is available, we don't use very lazy method. */
-	    /* See TT_Load_Glyph */
-	    if( FT_IS_SFNT( face->face ) ) {
-# ifdef USE_INTERNAL_FREETYPE
-		TT_Size tt_size = (TT_Size)instance->size;
-		if( !( !(instance->load_flags & FT_LOAD_NO_BITMAP)
-		       && tt_size->strike_index != 0xFFFFU ) )
-# else
-		if((instance->load_flags & FT_LOAD_NO_BITMAP)
-		   || (face->face->face_flags & FT_FACE_FLAG_FIXED_SIZES) == 0)
-# endif
-		    correct=1;
-	     }
-	}
-    }
-#endif
     /*
      * PREPARE METRICS
      */
@@ -1049,35 +1026,7 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 	else{
 	    int new_width;
 	    double ratio;
-#if (FREETYPE_VERSION < 2001008)
-	    int try_very_lazy=correct;
-	    if( try_very_lazy ) {
-		if( ft_get_very_lazy_bbox( idx, face->face, instance->size,
-					   instance->ttcap.vl_slant,
-					   &instance->transformation.matrix,
-					   &bbox, &outline_hori_advance,
-					   &outline_vert_advance ) == 0 ) {
 
-		    goto bbox_ok;
-		    /* skip exact calculation */
-		}
-	    }
-	    ftrc = FT_Load_Glyph(instance->face->face, idx,
-				 - instance->load_flags);
-	    metrics = &face->face->glyph->metrics;
-
-	    if(ftrc != 0) return FTtoXReturnCode(ftrc);
-
-	    if( face->face->glyph->format == FT_GLYPH_FORMAT_BITMAP ) {
-		/* bitmap, embedded bitmap */
-		leftSideBearing = metrics->horiBearingX / 64;
-		rightSideBearing = (metrics->width + metrics->horiBearingX) / 64;
-		bbox_center_raw = (2.0 * metrics->horiBearingX + metrics->width)/2.0/64.0;
-		characterWidth = (int)floor(metrics->horiAdvance
-					    * instance->ttcap.scaleBBoxWidth / 64.0 + .5);
-		ascent = metrics->horiBearingY / 64;
-		descent = (metrics->height - metrics->horiBearingY) / 64 ;
-#else
 	    if( ! (instance->load_flags & FT_LOAD_NO_BITMAP) ) {
 		if( FT_Do_SBit_Metrics(face->face,instance->size,instance->strike_index,
 				       idx,&sbit_metrics)==0 ) {
@@ -1102,7 +1051,10 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 		    bitmap_metrics = metrics;
 		}
 	    }
+
 	    if( bitmap_metrics ) {
+		int factor;
+		
 		leftSideBearing = bitmap_metrics->horiBearingX / 64;
 		rightSideBearing = (bitmap_metrics->width + bitmap_metrics->horiBearingX) / 64;
 		bbox_center_raw = (2.0 * bitmap_metrics->horiBearingX + bitmap_metrics->width)/2.0/64.0;
@@ -1110,8 +1062,7 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 					    * instance->ttcap.scaleBBoxWidth / 64.0 + .5);
 		ascent = bitmap_metrics->horiBearingY / 64;
 		descent = (bitmap_metrics->height - bitmap_metrics->horiBearingY) / 64 ;
-#endif
-                /* */
+		/* */
 		new_width = characterWidth;
 		if( instance->ttcap.flags & TTCAP_DOUBLE_STRIKE_CORRECT_B_BOX_WIDTH )
 		    new_width += instance->ttcap.doubleStrikeShift;
@@ -1126,13 +1077,9 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 		rightSideBearing += instance->ttcap.rsbShiftOfBitmapAutoItalic;
 		leftSideBearing  += instance->ttcap.lsbShiftOfBitmapAutoItalic;
 		/* */
-		rawCharacterWidth =
-		    (unsigned short)(short)(floor(1000
-#if (FREETYPE_VERSION < 2001008)
-						  * metrics->horiAdvance 
-#else
-						  * bitmap_metrics->horiAdvance 
-#endif
+		factor = instance->ttcap.scaleBBoxWidth;
+		rawCharacterWidth = bitmap_metrics->horiAdvance;
+		    (unsigned short)(short)(floor(1000 * factor
 						  * instance->ttcap.scaleBBoxWidth * ratio / 64.
 						  / instance->pixel_size));
 	    }
@@ -1215,7 +1162,6 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 
     if( flags & FT_GET_GLYPH_METRICS_ONLY ) return Successful;
 
-#if (FREETYPE_VERSION >= 2001008)
     /*
      * CHECK THE NECESSITY OF BITMAP POSITION'S CORRECTION
      */
@@ -1237,8 +1183,7 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 	    }
 	}
     }
-#endif
-    
+
     /*
      * RENDER AND ALLOCATE BUFFER
      */
@@ -1381,15 +1326,13 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
      */
 
     {
+	FT_Bitmap *bitmap;
 	int i, j;
 	unsigned char *current_raster;
 	unsigned char *current_buffer;
 	int mod_dx0,mod_dx1;
 	int div_dx;
-#if (FREETYPE_VERSION >= 2001008)
-	bitmap  = &face->face->glyph->bitmap;
-#endif
-
+	bitmap = &face->face->glyph->bitmap;
 	if( 0 <= dx ){
 	    div_dx = dx / 8;
 	    mod_dx0 = dx % 8;
