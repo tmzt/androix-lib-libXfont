@@ -24,7 +24,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
-/* $XFree86: xc/lib/font/fc/fserve.c,v 3.26 2003/11/22 02:12:37 dawes Exp $ */
+/* $XFree86: xc/lib/font/fc/fserve.c,v 3.27 2004/01/12 17:19:30 tsi Exp $ */
 
 /*
  * Copyright 1990 Network Computing Devices
@@ -2214,7 +2214,7 @@ _fs_load_glyphs(pointer client, FontPtr pfont, Bool range_flag,
 	xfree(ranges);
 
 	/* Now try to reopen the font. */
-	return fs_send_open_font(client, (FontPathElementPtr)0,
+	return fs_send_open_font(client, pfont->fpe,
 				 (Mask)FontReopen, (char *)0, 0,
 				 (fsBitmapFormat)0, (fsBitmapFormatMask)0,
 				 (XID)0, &pfont);
