@@ -1,4 +1,4 @@
-/* $XFree86: xc/lib/font/stubs/initfshdl.c,v 1.2 2003/09/13 21:33:02 dawes Exp $ */
+/* $XFree86$ */
 
 #include "stubs.h"
 

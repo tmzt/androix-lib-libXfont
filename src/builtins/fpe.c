@@ -22,7 +22,7 @@
  *
  * Author:  Keith Packard, SuSE, Inc.
  */
-/* $XFree86: xc/lib/font/builtins/fpe.c,v 1.4 2000/02/23 20:29:36 dawes Exp $ */
+/* $XFree86$ */
 
 #include    "fntfilst.h"
 

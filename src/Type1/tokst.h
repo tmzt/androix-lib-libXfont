@@ -27,7 +27,7 @@
  * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  * SOFTWARE.
  */
-/* $XFree86: xc/lib/font/Type1/tokst.h,v 1.4 2001/01/17 19:43:24 dawes Exp $ */
+/* $XFree86$ */
 
 /* -------------------------------------- */
 /* --- MACHINE GENERATED, DO NOT EDIT --- */

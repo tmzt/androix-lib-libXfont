@@ -25,7 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
-/* $XFree86: xc/lib/font/fontfile/register.c,v 1.15 2001/12/14 19:56:52 dawes Exp $ */
+/* $XFree86$ */
 
 /*
  * This is in a separate source file so that small programs
