@@ -25,8 +25,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+/* $XdotOrg: xc/lib/font/FreeType/ftfuncs.c,v 1.1.4.4.2.2.6.3 2004/04/13 03:16:31 gisburn Exp $ */
 
-/* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.44 2004/02/24 01:13:04 dawes Exp $ */
+/* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.43 2004/02/07 04:37:18 dawes Exp $ */
 
 #include "fontmisc.h"
 
@@ -51,7 +52,10 @@ THE SOFTWARE.
 #include FT_XFREE86_H
 #include FT_BBOX_H
 #include FT_INTERNAL_TRUETYPE_TYPES_H
-#include "ttobjs.h"
+#ifdef USE_INTERNAL_FREETYPE
+# include "ttobjs.h"
+#endif
+
 /*
  *  If you want to use FT_Outline_Get_CBox instead of 
  *  FT_Outline_Get_BBox, define here.
@@ -118,7 +122,7 @@ static char *xlfd_props[] = {
 
 
 static int ftypeInitP = 0;      /* is the engine initialised? */
-static FT_Library ftypeLibrary;
+FT_Library ftypeLibrary;
 
 static FTFacePtr faceTable[NUMFACEBUCKETS];
 
@@ -906,9 +910,15 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 	    /* If sbit is available, we don't use very lazy method. */
 	    /* See TT_Load_Glyph */
 	    if( FT_IS_SFNT( face->face ) ) {
+#ifdef USE_INTERNAL_FREETYPE
 		TT_Size tt_size = (TT_Size)instance->size;
-		if( !( !(instance->load_flags & FT_LOAD_NO_BITMAP) 
-		       && tt_size->strike_index != 0xFFFFU ) ) correct=1;
+		if( !( !(instance->load_flags & FT_LOAD_NO_BITMAP)
+		       && tt_size->strike_index != 0xFFFFU ) )
+#else
+		if((instance->load_flags & FT_LOAD_NO_BITMAP)
+		   || (face->face->face_flags & FT_FACE_FLAG_FIXED_SIZES) == 0)
+#endif
+		    correct=1;
 	    }
 	}
     }
