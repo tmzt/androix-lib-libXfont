@@ -137,9 +137,6 @@ FontFileCheckRegisterFpeFunctions (void)
 #ifdef BUILD_FREETYPE
     FreeTypeRegisterFontFileFunctions();
 #endif
-#ifdef BUILD_XTRUETYPE
-    XTrueTypeRegisterFontFileFunctions();
-#endif
 
 #endif /* ifndef LOWMEMFTPT */
 
