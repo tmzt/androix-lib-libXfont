@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/bitsource.c,v 1.4 2001/12/14 19:56:49 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -35,8 +36,7 @@ in this Software without prior written authorization from The Open Group.
 BitmapSourcesRec	FontFileBitmapSources;
 
 Bool
-FontFileRegisterBitmapSource (fpe)
-    FontPathElementPtr	fpe;
+FontFileRegisterBitmapSource (FontPathElementPtr fpe)
 {
     FontPathElementPtr	*new;
     int			i;
@@ -59,8 +59,7 @@ FontFileRegisterBitmapSource (fpe)
 }
 
 void
-FontFileUnregisterBitmapSource (fpe)
-    FontPathElementPtr	fpe;
+FontFileUnregisterBitmapSource (FontPathElementPtr fpe)
 {
     int	    i;
 
@@ -90,7 +89,7 @@ FontFileUnregisterBitmapSource (fpe)
  * The bitmap sources in the new path will be registered by the init_func.
  */
 void
-FontFileEmptyBitmapSource()
+FontFileEmptyBitmapSource(void)
 {
     if (FontFileBitmapSources.count == 0)
 	return;
@@ -102,16 +101,15 @@ FontFileEmptyBitmapSource()
 }
 
 int
-FontFileMatchBitmapSource (fpe, pFont, flags, entry, zeroPat, vals, format, fmask, noSpecificSize)
-    FontPathElementPtr	fpe;
-    FontPtr		*pFont;
-    int			flags;
-    FontEntryPtr	entry;
-    FontNamePtr		zeroPat;
-    FontScalablePtr	vals;
-    fsBitmapFormat	format;
-    fsBitmapFormatMask	fmask;
-    Bool		noSpecificSize;
+FontFileMatchBitmapSource (FontPathElementPtr fpe, 
+			   FontPtr *pFont, 
+			   int flags, 
+			   FontEntryPtr entry, 
+			   FontNamePtr zeroPat, 
+			   FontScalablePtr vals, 
+			   fsBitmapFormat format, 
+			   fsBitmapFormatMask fmask, 
+			   Bool noSpecificSize)
 {
     int			source;
     FontEntryPtr	zero;

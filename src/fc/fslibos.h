@@ -31,6 +31,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fc/fslibos.h,v 3.7 2002/05/31 18:45:49 dawes Exp $ */
 
 /*
  * FSlib networking & os include file
@@ -56,8 +57,12 @@ from The Open Group.
 #endif
 #endif
 #ifndef OPEN_MAX
-#ifdef SVR4
+#if defined(SVR4) || defined(__UNIXOS2__)
+#ifdef SCO325
+#define OPEN_MAX sysconf(_SC_OPEN_MAX)
+#else
 #define OPEN_MAX 256
+#endif
 #else
 #include <sys/param.h>
 #ifndef OPEN_MAX

@@ -27,6 +27,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/bufio.c,v 3.10 2002/05/31 18:45:49 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -37,16 +38,13 @@ from The Open Group.
 #include <fontmisc.h>
 #include <bufio.h>
 #include <errno.h>
-#ifdef X_NOT_STDC_ENV
-extern int errno;
-#endif
 
 BufFilePtr
-BufFileCreate (private, io, skip, close)
-    char    *private;
-    int	    (*io)();
-    int	    (*skip)();
-    int	    (*close)();
+BufFileCreate (char *private,
+	       int (*input)(BufFilePtr),
+	       int (*output)(int, BufFilePtr),
+	       int (*skip)(BufFilePtr, int),
+	       int (*close)(BufFilePtr, int))
 {
     BufFilePtr	f;
 
@@ -56,17 +54,18 @@ BufFileCreate (private, io, skip, close)
     f->private = private;
     f->bufp = f->buffer;
     f->left = 0;
-    f->io = io;
+    f->input = input;
+    f->output = output;
     f->skip = skip;
+    f->eof  = 0;
     f->close = close;
     return f;
 }
 
-#define FileDes(f)  ((int) (f)->private)
+#define FileDes(f)  ((int)(long) (f)->private)
 
 static int
-BufFileRawFill (f)
-    BufFilePtr	f;
+BufFileRawFill (BufFilePtr f)
 {
     int	left;
 
@@ -81,9 +80,7 @@ BufFileRawFill (f)
 }
 
 static int
-BufFileRawSkip (f, count)
-    BufFilePtr	f;
-    int		count;
+BufFileRawSkip (BufFilePtr f, int count)
 {
     int	    curoff;
     int	    fileoff;
@@ -115,8 +112,7 @@ BufFileRawSkip (f, count)
 }
 
 static int
-BufFileRawClose (f, doClose)
-    BufFilePtr	f;
+BufFileRawClose (BufFilePtr f, int doClose)
 {
     if (doClose)
 	close (FileDes (f));
@@ -124,16 +120,17 @@ BufFileRawClose (f, doClose)
 }
 
 BufFilePtr
-BufFileOpenRead (fd)
-    int	fd;
+BufFileOpenRead (int fd)
 {
-    return BufFileCreate ((char *) fd, BufFileRawFill, BufFileRawSkip, BufFileRawClose);
+#ifdef __UNIXOS2__
+    /* hv: I'd bet WIN32 has the same effect here */
+    setmode(fd,O_BINARY);
+#endif
+    return BufFileCreate ((char *)(long) fd, BufFileRawFill, 0, BufFileRawSkip, BufFileRawClose);
 }
 
 static int
-BufFileRawFlush (c, f)
-    int		c;
-    BufFilePtr	f;
+BufFileRawFlush (int c, BufFilePtr f)
 {
     int	cnt;
 
@@ -148,22 +145,22 @@ BufFileRawFlush (c, f)
 }
 
 BufFilePtr
-BufFileOpenWrite (fd)
-    int	fd;
+BufFileOpenWrite (int fd)
 {
     BufFilePtr	f;
 
-    f = BufFileCreate ((char *) fd, BufFileRawFlush, 0, BufFileFlush);
+#ifdef __UNIXOS2__
+    /* hv: I'd bet WIN32 has the same effect here */
+    setmode(fd,O_BINARY);
+#endif
+    f = BufFileCreate ((char *)(long) fd, 0, BufFileRawFlush, 0, BufFileFlush);
     f->bufp = f->buffer;
     f->left = BUFFILESIZE;
     return f;
 }
 
 int
-BufFileRead (f, b, n)
-    BufFilePtr	f;
-    char	*b;
-    int		n;
+BufFileRead (BufFilePtr f, char *b, int n)
 {
     int	    c, cnt;
     cnt = n;
@@ -177,10 +174,7 @@ BufFileRead (f, b, n)
 }
 
 int
-BufFileWrite (f, b, n)
-    BufFilePtr	f;
-    char	*b;
-    int		n;
+BufFileWrite (BufFilePtr f, char *b, int n)
 {
     int	    cnt;
     cnt = n;
@@ -192,18 +186,15 @@ BufFileWrite (f, b, n)
 }
 
 int
-BufFileFlush (f)
-    BufFilePtr	f;
+BufFileFlush (BufFilePtr f, int doClose)
 {
     if (f->bufp != f->buffer)
-	return (*f->io) (BUFFILEEOF, f);
+	return (*f->output) (BUFFILEEOF, f);
     return 0;
 }
 
 int
-BufFileClose (f, doClose)
-    BufFilePtr	f;
-    int doClose;
+BufFileClose (BufFilePtr f, int doClose)
 {
     int ret;
     ret = (*f->close) (f, doClose);
@@ -212,8 +203,7 @@ BufFileClose (f, doClose)
 }
 
 void
-BufFileFree (f)
-    BufFilePtr	f;
+BufFileFree (BufFilePtr f)
 {
     xfree (f);
 }

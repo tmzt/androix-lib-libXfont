@@ -26,6 +26,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/Speedo/bics-iso.h,v 1.7 2001/12/14 19:56:41 dawes Exp $ */
 
 int  sp_bics_map[] = {
     32, 0,

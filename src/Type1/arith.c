@@ -26,6 +26,8 @@
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
+/* $XFree86: xc/lib/font/Type1/arith.c,v 1.6 2002/02/18 20:51:57 herrb Exp $ */
+
  /* ARITH    CWEB         V0006 ********                             */
 /*
 :h1.ARITH Module - Portable Module for Multiple Precision Fixed Point Arithmetic
@@ -48,9 +50,11 @@ assembly language, unlike C, will have 64-bit multiply products and
 The included files are:
 */
  
+#include "os.h"
 #include "objects.h"
 #include "spaces.h"
 #include "arith.h"
+
  
 /*
 :h3.
@@ -104,10 +108,8 @@ SIGNBITON tests the high order bit of a long 'w':
 The two multiplicands must be positive.
 */
  
-void DLmult(product, u, v)
-  register doublelong *product;
-  register unsigned long u;
-  register unsigned long v;
+void 
+DLmult(doublelong *product, unsigned long u, unsigned long v)
 {
 #ifdef LONG64
 /* printf("DLmult(? ?, %lx, %lx)\n", u, v); */
@@ -155,9 +157,9 @@ void DLmult(product, u, v)
 Both the dividend and the divisor must be positive.
 */
  
-void DLdiv(quotient, divisor)
-       doublelong *quotient;       /* also where dividend is, originally     */
-       unsigned long divisor;
+void 
+DLdiv(doublelong *quotient,  /* also where dividend is, originally     */
+      unsigned long divisor)
 {
 #ifdef LONG64
 /* printf("DLdiv(%lx %lx)\n", quotient, divisor); */
@@ -213,7 +215,7 @@ void DLdiv(quotient, divisor)
        divisor >>= 1;
  
        if ((u1u2 >> (LONGSIZE - shift)) != 0 && shift != 0)
-               abort("DLdiv:  dividend too large");
+               Abort("DLdiv:  dividend too large");
        u1u2 = (u1u2 << shift) + ((shift == 0) ? 0 : u3u4 >> (LONGSIZE - shift));
        u3u4 <<= shift;
  
@@ -276,7 +278,7 @@ void DLdiv(quotient, divisor)
                */
                u1u2 = t;
                if (HIGHDIGIT(u1u2) != 0)
-                       abort("divide algorithm error");
+                       Abort("divide algorithm error");
                u1u2 = ASSEMBLE(u1u2, LOWDIGIT(u3));
                u3 = LOWDIGIT(u3u4);
                q3q4 = ASSEMBLE(q3q4, qhat);
@@ -299,9 +301,9 @@ carry.  Conversely, if there was a carry, the sum of the lows must be
 less than the max of the lows.  So, the test is "if and only if".
 */
  
-void DLadd(u, v)
-       doublelong *u;        /* u = u + v                                    */
-       doublelong *v;
+void 
+DLadd(doublelong *u, /* u = u + v                                    */
+      doublelong *v)
 {
 #ifdef LONG64
 /* printf("DLadd(%lx %lx)\n", *u, *v); */
@@ -324,9 +326,9 @@ Testing for a borrow is even easier.  If the v.low is greater than
 u.low, there must be a borrow.
 */
  
-void DLsub(u, v)
-       doublelong *u;        /* u = u - v                                    */
-       doublelong *v;
+void 
+DLsub(doublelong *u, /* u = u - v                                    */
+      doublelong *v)
 {
 #ifdef LONG64
 /* printf("DLsub(%lx %lx)\n", *u, *v); */
@@ -358,8 +360,8 @@ overflow will occur when the resulting value is passed back as
 a fractpel.
 */
  
-fractpel FPmult(u, v)
-  register fractpel u,v;
+fractpel 
+FPmult(fractpel u, fractpel v)
 {
   doublelong w;
   register int negative = FALSE; /* sign flag */
@@ -403,9 +405,8 @@ fractpel FPmult(u, v)
 These values may be signed.  The function returns the quotient.
 */
  
-fractpel FPdiv(dividend, divisor)
-       register fractpel dividend;
-       register fractpel divisor;
+fractpel 
+FPdiv(fractpel dividend, fractpel divisor)
 {
        doublelong w;         /* result will be built here                    */
        int negative = FALSE; /* flag for sign bit                            */
@@ -451,8 +452,10 @@ an operator that first multiplies by one constant then divides by
 another, keeping the intermediate result in extended precision.
 */
  
-fractpel FPstarslash(a, b, c)
-       register fractpel a,b,c;  /* result = a * b / c                       */
+fractpel 
+FPstarslash(fractpel a,   /* result = a * b / c                              */
+	    fractpel b, 
+	    fractpel c)
 {
        doublelong w;         /* result will be built here                    */
        int negative = FALSE;

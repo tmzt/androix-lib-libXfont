@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/util/patcache.c,v 3.5 2001/12/14 19:56:57 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -62,8 +63,7 @@ typedef struct _FontPatternCache {
 
 /* Empty cache (for rehash) */
 void
-EmptyFontPatternCache (cache)
-    FontPatternCachePtr	cache;
+EmptyFontPatternCache (FontPatternCachePtr cache)
 {
     int	    i;
     
@@ -84,7 +84,7 @@ EmptyFontPatternCache (cache)
 
 /* Create and initialize cache */
 FontPatternCachePtr
-MakeFontPatternCache ()
+MakeFontPatternCache (void)
 {
     FontPatternCachePtr	cache;
     int			i;
@@ -102,8 +102,7 @@ MakeFontPatternCache ()
 
 /* toss cache */
 void
-FreeFontPatternCache (cache)
-    FontPatternCachePtr	cache;
+FreeFontPatternCache (FontPatternCachePtr cache)
 {
     int	    i;
 
@@ -114,9 +113,7 @@ FreeFontPatternCache (cache)
 
 /* compute id for string */
 static int
-Hash (string, len)
-    char    *string;
-    int	    len;
+Hash (const char *string, int len)
 {
     int	hash;
 
@@ -130,11 +127,10 @@ Hash (string, len)
 
 /* add entry */
 void
-CacheFontPattern (cache, pattern, patlen, pFont)
-    FontPatternCachePtr	cache;
-    char		*pattern;
-    int			patlen;
-    FontPtr		pFont;
+CacheFontPattern (FontPatternCachePtr cache, 
+		  char *pattern, 
+		  int patlen, 
+		  FontPtr pFont)
 {
     FontPatternCacheEntryPtr	e;
     char			*newpat;
@@ -177,10 +173,9 @@ CacheFontPattern (cache, pattern, patlen, pFont)
 
 /* find matching entry */
 FontPtr
-FindCachedFontPattern (cache, pattern, patlen)
-    FontPatternCachePtr	cache;
-    char		*pattern;
-    int			patlen;
+FindCachedFontPattern (FontPatternCachePtr cache, 
+		       char *pattern, 
+		       int patlen)
 {
     int				hash;
     int				i;
@@ -200,9 +195,8 @@ FindCachedFontPattern (cache, pattern, patlen)
 }
 
 void
-RemoveCachedFontPattern (cache, pFont)
-    FontPatternCachePtr	cache;
-    FontPtr		pFont;
+RemoveCachedFontPattern (FontPatternCachePtr cache, 
+			 FontPtr pFont)
 {
     FontPatternCacheEntryPtr	e;
     int				i;

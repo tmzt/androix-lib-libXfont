@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/fontscale.c,v 3.10 2001/12/14 19:56:52 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -40,11 +41,8 @@ in this Software without prior written authorization from The Open Group.
 #endif
 
 Bool
-FontFileAddScaledInstance (entry, vals, pFont, bitmapName)
-    FontEntryPtr		entry;
-    FontScalablePtr		vals;
-    FontPtr			pFont;
-    char			*bitmapName;
+FontFileAddScaledInstance (FontEntryPtr entry, FontScalablePtr vals, 
+			   FontPtr pFont, char *bitmapName)
 {
     FontScalableEntryPtr    scalable;
     FontScalableExtraPtr    extra;
@@ -75,8 +73,7 @@ FontFileAddScaledInstance (entry, vals, pFont, bitmapName)
 /* Must call this after the directory is sorted */
 
 void
-FontFileSwitchStringsToBitmapPointers (dir)
-    FontDirectoryPtr	dir;
+FontFileSwitchStringsToBitmapPointers (FontDirectoryPtr dir)
 {
     int	    s;
     int	    b;
@@ -100,9 +97,7 @@ FontFileSwitchStringsToBitmapPointers (dir)
 }
 
 void
-FontFileRemoveScaledInstance (entry, pFont)
-    FontEntryPtr	entry;
-    FontPtr		pFont;
+FontFileRemoveScaledInstance (FontEntryPtr entry, FontPtr pFont)
 {
     FontScalableEntryPtr    scalable;
     FontScalableExtraPtr    extra;
@@ -124,9 +119,7 @@ FontFileRemoveScaledInstance (entry, pFont)
 }
 
 Bool
-FontFileCompleteXLFD (vals, def)
-    register FontScalablePtr	vals;
-    FontScalablePtr	def;
+FontFileCompleteXLFD (FontScalablePtr vals, FontScalablePtr def)
 {
     FontResolutionPtr res;
     int		num_res;
@@ -247,7 +240,7 @@ FontFileCompleteXLFD (vals, def)
 
 	pixel_setsize_adjustment = (double)vals->x / (double)vals->y;
 	vals->pixel_matrix[0] *= pixel_setsize_adjustment;
-	vals->values_supplied  = vals->values_supplied & ~PIXELSIZE_MASK |
+	vals->values_supplied  = (vals->values_supplied & ~PIXELSIZE_MASK) |
 				 PIXELSIZE_SCALAR_NORMALIZED;
     }
 
@@ -349,8 +342,7 @@ FontFileCompleteXLFD (vals, def)
 }
 
 static Bool
-MatchScalable (a, b)
-    FontScalablePtr	a, b;
+MatchScalable (FontScalablePtr a, FontScalablePtr b)
 {
     int i;
 
@@ -370,15 +362,15 @@ MatchScalable (a, b)
 
     if (!(a->x == b->x &&
 	  a->y == b->y &&
-	  (a->width == b->width || a->width == 0 || b->width == 0) &&
+	  (a->width == b->width || a->width == 0 || b->width == 0 || b->width == -1) &&
 	  (!(b->values_supplied & PIXELSIZE_MASK) ||
-	    (a->values_supplied & PIXELSIZE_MASK) ==
-	    (b->values_supplied & PIXELSIZE_MASK) &&
-	    EQUAL(a->pixel_matrix, b->pixel_matrix)) &&
+	    ((a->values_supplied & PIXELSIZE_MASK) ==
+	     (b->values_supplied & PIXELSIZE_MASK) &&
+	    EQUAL(a->pixel_matrix, b->pixel_matrix))) &&
 	  (!(b->values_supplied & POINTSIZE_MASK) ||
-	    (a->values_supplied & POINTSIZE_MASK) ==
-	    (b->values_supplied & POINTSIZE_MASK) &&
-	    EQUAL(a->point_matrix, b->point_matrix)) &&
+	    ((a->values_supplied & POINTSIZE_MASK) ==
+	     (b->values_supplied & POINTSIZE_MASK) &&
+	    EQUAL(a->point_matrix, b->point_matrix))) &&
 	  (a->nranges == 0 || a->nranges == b->nranges)))
       return FALSE;
 
@@ -393,9 +385,8 @@ MatchScalable (a, b)
 }
 
 FontScaledPtr
-FontFileFindScaledInstance (entry, vals, noSpecificSize)
-    FontEntryPtr	entry;
-    FontScalablePtr	vals;
+FontFileFindScaledInstance (FontEntryPtr entry, FontScalablePtr vals, 
+			    int noSpecificSize)
 {
     FontScalableEntryPtr    scalable;
     FontScalableExtraPtr    extra;

@@ -49,10 +49,16 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/Speedo/spinfo.c,v 1.13 2002/09/10 16:14:33 tsi Exp $ */
 
 #include "fntfilst.h"
+#include "fontutil.h"
 #include "spint.h"
+#ifndef FONTMODULE
 #include <math.h>
+#else
+#include "xf86_ansic.h"
+#endif
 
 /* percentage of pointsize used to specify ascent & descent */
 #define	STRETCH_FACTOR	120
@@ -95,7 +101,9 @@ static fontProp extraProps[] = {
     { "RAW_POINT_SIZE", 0, },
     { "RAW_ASCENT", 0, },
     { "RAW_DESCENT", 0, },
-    { "RAW_AVERAGE_WIDTH", 0, }
+    { "RAW_AVERAGE_WIDTH", 0, },
+    { "FONT_TYPE", 0, },
+    { "RASTERIZER_NAME", 0, }
 };
 
 /* this is a bit kludgy */
@@ -106,14 +114,13 @@ static fontProp extraProps[] = {
 #define RAWASCENTPROP	4
 #define RAWDESCENTPROP	5
 #define RAWWIDTHPROP	6
-
+#define FONT_TYPEPROP   7
+#define RASTERIZER_NAMEPROP 8
 
 #define NNAMEPROPS (sizeof(fontNamePropTable) / sizeof(fontProp))
 #define NEXTRAPROPS (sizeof(extraProps) / sizeof(fontProp))
 
 #define	NPROPS	(NNAMEPROPS + NEXTRAPROPS)
-
-extern Atom MakeAtom();
 
 void
 sp_make_standard_props()
@@ -130,9 +137,9 @@ sp_make_standard_props()
 }
 
 void
-sp_make_header(spf, pinfo)
-    SpeedoFontPtr spf;
-    FontInfoPtr pinfo;
+sp_make_header(
+    SpeedoFontPtr spf,
+    FontInfoPtr pinfo)
 {
     int         pixel_size;
     SpeedoMasterFontPtr spmf = spf->master;
@@ -172,10 +179,10 @@ sp_make_header(spf, pinfo)
 }
 
 static void
-adjust_min_max(minc, maxc, tmp)
+adjust_min_max(
     xCharInfo  *minc,
-               *maxc,
-               *tmp;
+    xCharInfo  *maxc,
+    xCharInfo  *tmp)
 {
 #define MINMAX(field,ci) \
 	if (minc->field > (ci)->field) \
@@ -199,11 +206,11 @@ adjust_min_max(minc, maxc, tmp)
 
 
 void
-sp_compute_bounds(spf, pinfo, flags, sWidth)
-    SpeedoFontPtr spf;
-    FontInfoPtr pinfo;
-    unsigned long flags;
-    long *sWidth;
+sp_compute_bounds(
+    SpeedoFontPtr spf,
+    FontInfoPtr pinfo,
+    unsigned long flags,
+    long *sWidth)
 {
     int         i,
                 id,
@@ -327,18 +334,18 @@ sp_compute_bounds(spf, pinfo, flags, sWidth)
 }
 
 void
-sp_compute_props(spf, fontname, pinfo, sWidth)
-    SpeedoFontPtr spf;
-    char       *fontname;
-    FontInfoPtr pinfo;
-    long	sWidth;
+sp_compute_props(
+    SpeedoFontPtr spf,
+    char       *fontname,
+    FontInfoPtr pinfo,
+    long	sWidth)
 {
     FontPropPtr pp;
     int         i,
                 nprops;
     fontProp   *fpt;
     char       *is_str;
-    char       *ptr1,
+    char       *ptr1 = NULL,
                *ptr2;
     char       *ptr3;
     char	tmpname[1024];
@@ -352,6 +359,7 @@ sp_compute_props(spf, fontname, pinfo, sWidth)
 	pinfo->isStringProp = (char *) 0;
 	xfree(pinfo->props);
 	pinfo->props = (FontPropPtr) 0;
+	pinfo->nprops = 0;
 	return;
     }
     bzero(pinfo->isStringProp, (sizeof(char) * nprops));
@@ -415,6 +423,16 @@ sp_compute_props(spf, fontname, pinfo, sWidth)
 	    *is_str = TRUE;
 	    pp->value = MakeAtom(spf->master->copyright,
 				 strlen(spf->master->copyright), TRUE);
+	    break;
+	case FONT_TYPEPROP:
+	    *is_str = TRUE;
+	    pp->value = MakeAtom("Speedo", strlen("Speedo"), TRUE);
+	    break;
+	case RASTERIZER_NAMEPROP:
+	    *is_str = TRUE;
+	    pp->value = MakeAtom("X Consortium Speedo Rasterizer",
+                                 strlen("X Consortium Speedo Rasterizer"), 
+                                 TRUE);
 	    break;
          case RAWPIXELPROP:
             *is_str = FALSE;

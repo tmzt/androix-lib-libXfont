@@ -27,6 +27,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/util/fontnames.c,v 1.5 2001/12/14 19:56:56 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -38,8 +39,7 @@ from The Open Group.
 #include	"fontstruct.h"
 
 void
-FreeFontNames(pFN)
-    FontNamesPtr pFN;
+FreeFontNames(FontNamesPtr pFN)
 {
     int         i;
 
@@ -54,8 +54,7 @@ FreeFontNames(pFN)
 }
 
 FontNamesPtr
-MakeFontNamesRecord(size)
-    unsigned    size;
+MakeFontNamesRecord(unsigned int size)
 {
     FontNamesPtr pFN;
 
@@ -84,10 +83,7 @@ MakeFontNamesRecord(size)
 }
 
 int
-AddFontNamesName(names, name, length)
-    FontNamesPtr names;
-    char       *name;
-    int         length;
+AddFontNamesName(FontNamesPtr names, char *name, int length)
 {
     int         index = names->nnames;
     char       *nelt;

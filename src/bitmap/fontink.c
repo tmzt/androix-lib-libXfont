@@ -27,12 +27,15 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/bitmap/fontink.c,v 1.7 2001/12/14 19:56:46 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
  */
 
 #include "fntfilst.h"
+#include "bitmap.h"
+#include "bdfint.h"
 
 static unsigned char ink_mask_msb[8] = {
     0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01,
@@ -43,23 +46,20 @@ static unsigned char ink_mask_lsb[8] = {
 };
 
 void
-FontCharInkMetrics(pFont, pCI, pInk)
-    FontPtr     pFont;
-    CharInfoPtr pCI;
-    xCharInfo  *pInk;
+FontCharInkMetrics(FontPtr pFont, CharInfoPtr pCI, xCharInfo *pInk)
 {
     int         leftBearing,
                 ascent,
                 descent;
     register int vpos,
                 hpos,
-                bpos;
+                bpos = 0;
     int         bitmapByteWidth,
                 bitmapByteWidthPadded;
     int         bitmapBitWidth;
     int         span;
     register unsigned char *p;
-    unsigned char *ink_mask;
+    unsigned char *ink_mask = 0;
     register int bmax;
     register unsigned char charbits;
 
@@ -157,10 +157,7 @@ found_right:
 #define Max(a,b)    ((a)>(b)?(a):(b))
 
 void
-FontCharReshape(pFont, pSrc, pDst)
-    FontPtr     pFont;
-    CharInfoPtr pSrc,
-                pDst;
+FontCharReshape(FontPtr pFont, CharInfoPtr pSrc, CharInfoPtr pDst)
 {
     int         x,
                 y;

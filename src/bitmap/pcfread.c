@@ -1,5 +1,4 @@
 /* $Xorg: pcfread.c,v 1.5 2001/02/09 02:04:02 xorgcvs Exp $ */
-
 /*
 
 Copyright 1990, 1998  The Open Group
@@ -27,6 +26,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/bitmap/pcfread.c,v 1.20 2003/01/12 03:55:46 tsi Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -35,6 +35,7 @@ from The Open Group.
 #include "fntfilst.h"
 #include "bitmap.h"
 #include "pcf.h"
+
 #ifndef MAX
 #define   MAX(a,b)    (((a)>(b)) ? a : b)
 #endif
@@ -57,24 +58,28 @@ pcfError (message, va_alist)
     va_list args;
 
 #if NeedVarargsPrototypes
-    va_start (args, message);
+    va_start(args, message);
 #else
-    va_start (args);
+    va_start(args);
 #endif
 
     fprintf(stderr, "PCF Error: ");
     vfprintf(stderr, message, args);
-    va_end (args);
+    va_end(args);
 }
-
+                              
 /* Read PCF font files */
 
-void        pcfUnloadFont();
+static void pcfUnloadFont ( FontPtr pFont );
 static int  position;
 
+
+#define IS_EOF(file) ((file)->eof == BUFFILEEOF)
+
+#define FONT_FILE_GETC_ERR(f)  (tmp = FontFileGetc(f), BAIL_ON_EOF)
+
 static int
-pcfGetLSB32(file)
-    FontFilePtr file;
+pcfGetLSB32(FontFilePtr file)
 {
     int         c;
 
@@ -87,9 +92,7 @@ pcfGetLSB32(file)
 }
 
 static int
-pcfGetINT32(file, format)
-    FontFilePtr file;
-    CARD32      format;
+pcfGetINT32(FontFilePtr file, CARD32 format)
 {
     int         c;
 
@@ -109,9 +112,7 @@ pcfGetINT32(file, format)
 }
 
 static int
-pcfGetINT16(file, format)
-    FontFilePtr file;
-    CARD32      format;
+pcfGetINT16(FontFilePtr file, CARD32 format)
 {
     int         c;
 
@@ -129,9 +130,7 @@ pcfGetINT16(file, format)
 #define pcfGetINT8(file, format) (position++, FontFileGetc(file))
 
 static      PCFTablePtr
-pcfReadTOC(file, countp)
-    FontFilePtr file;
-    int        *countp;
+pcfReadTOC(FontFilePtr file, int *countp)
 {
     CARD32      version;
     PCFTablePtr tables;
@@ -143,9 +142,10 @@ pcfReadTOC(file, countp)
     if (version != PCF_FILE_VERSION)
 	return (PCFTablePtr) NULL;
     count = pcfGetLSB32(file);
+    if (IS_EOF(file)) return (PCFTablePtr) NULL;
     tables = (PCFTablePtr) xalloc(count * sizeof(PCFTableRec));
     if (!tables) {
-	pcfError("pcfReadTOC(): Couldn't allocate tables (%d*%d)\n", count, sizeof(PCFTableRec));
+      pcfError("pcfReadTOC(): Couldn't allocate tables (%d*%d)\n", count, sizeof(PCFTableRec));
 	return (PCFTablePtr) NULL;
     }
     for (i = 0; i < count; i++) {
@@ -153,9 +153,15 @@ pcfReadTOC(file, countp)
 	tables[i].format = pcfGetLSB32(file);
 	tables[i].size = pcfGetLSB32(file);
 	tables[i].offset = pcfGetLSB32(file);
+	if (IS_EOF(file)) goto Bail;
     }
+
     *countp = count;
     return tables;
+
+ Bail:
+    xfree(tables);
+    return (PCFTablePtr) NULL;
 }
 
 /*
@@ -165,11 +171,8 @@ pcfReadTOC(file, countp)
  * metrics
  */
 
-static void
-pcfGetMetric(file, format, metric)
-    FontFilePtr file;
-    CARD32      format;
-    xCharInfo  *metric;
+static Bool
+pcfGetMetric(FontFilePtr file, CARD32 format, xCharInfo *metric)
 {
     metric->leftSideBearing = pcfGetINT16(file, format);
     metric->rightSideBearing = pcfGetINT16(file, format);
@@ -177,13 +180,13 @@ pcfGetMetric(file, format, metric)
     metric->ascent = pcfGetINT16(file, format);
     metric->descent = pcfGetINT16(file, format);
     metric->attributes = pcfGetINT16(file, format);
+    if (IS_EOF(file)) return FALSE;
+
+    return TRUE;
 }
 
-static void
-pcfGetCompressedMetric(file, format, metric)
-    FontFilePtr file;
-    CARD32      format;
-    xCharInfo  *metric;
+static Bool
+pcfGetCompressedMetric(FontFilePtr file, CARD32 format, xCharInfo *metric)
 {
     metric->leftSideBearing = pcfGetINT8(file, format) - 0x80;
     metric->rightSideBearing = pcfGetINT8(file, format) - 0x80;
@@ -191,6 +194,9 @@ pcfGetCompressedMetric(file, format, metric)
     metric->ascent = pcfGetINT8(file, format) - 0x80;
     metric->descent = pcfGetINT8(file, format) - 0x80;
     metric->attributes = 0;
+    if (IS_EOF(file)) return FALSE;
+
+    return TRUE;
 }
 
 /*
@@ -198,13 +204,8 @@ pcfGetCompressedMetric(file, format, metric)
  * in the font file
  */
 static Bool
-pcfSeekToType(file, tables, ntables, type, formatp, sizep)
-    FontFilePtr file;
-    PCFTablePtr tables;
-    int         ntables;
-    CARD32      type;
-    CARD32     *formatp;
-    CARD32     *sizep;
+pcfSeekToType(FontFilePtr file, PCFTablePtr tables, int ntables, 
+	      CARD32 type, CARD32 *formatp, CARD32 *sizep)
 {
     int         i;
 
@@ -223,10 +224,7 @@ pcfSeekToType(file, tables, ntables, type, formatp, sizep)
 }
 
 static Bool
-pcfHasType (tables, ntables, type)
-    PCFTablePtr tables;
-    int         ntables;
-    CARD32      type;
+pcfHasType (PCFTablePtr tables, int ntables, CARD32 type)
 {
     int         i;
 
@@ -244,18 +242,15 @@ pcfHasType (tables, ntables, type)
  */
 
 static Bool
-pcfGetProperties(pFontInfo, file, tables, ntables)
-    FontInfoPtr pFontInfo;
-    FontFilePtr file;
-    PCFTablePtr tables;
-    int         ntables;
+pcfGetProperties(FontInfoPtr pFontInfo, FontFilePtr file, 
+		 PCFTablePtr tables, int ntables)
 {
     FontPropPtr props = 0;
     int         nprops;
     char       *isStringProp = 0;
     CARD32      format;
     int         i;
-    int         size;
+    CARD32      size;
     int         string_size;
     char       *strings;
 
@@ -267,20 +262,22 @@ pcfGetProperties(pFontInfo, file, tables, ntables)
     if (!PCF_FORMAT_MATCH(format, PCF_DEFAULT_FORMAT))
 	goto Bail;
     nprops = pcfGetINT32(file, format);
+    if (IS_EOF(file)) goto Bail;
     props = (FontPropPtr) xalloc(nprops * sizeof(FontPropRec));
     if (!props) {
-	pcfError("pcfGetProperties(): Couldn't allocate props (%d*%d)\n", nprops, sizeof(FontPropRec));
+      pcfError("pcfGetProperties(): Couldn't allocate props (%d*%d)\n", nprops, sizeof(FontPropRec));
 	goto Bail;
     }
     isStringProp = (char *) xalloc(nprops * sizeof(char));
     if (!isStringProp) {
-	pcfError("pcfGetProperties(): Couldn't allocate isStringProp (%d*%d)\n", nprops, sizeof(char));
+      pcfError("pcfGetProperties(): Couldn't allocate isStringProp (%d*%d)\n", nprops, sizeof(char));
 	goto Bail;
     }
     for (i = 0; i < nprops; i++) {
 	props[i].name = pcfGetINT32(file, format);
 	isStringProp[i] = pcfGetINT8(file, format);
 	props[i].value = pcfGetINT32(file, format);
+	if (IS_EOF(file)) goto Bail;
     }
     /* pad the property array */
     /*
@@ -290,16 +287,19 @@ pcfGetProperties(pFontInfo, file, tables, ntables)
     if (nprops & 3)
     {
 	i = 4 - (nprops & 3);
-	FontFileSkip(file, i);
+	(void)FontFileSkip(file, i);
 	position += i;
     }
+    if (IS_EOF(file)) goto Bail;
     string_size = pcfGetINT32(file, format);
+    if (IS_EOF(file)) goto Bail;
     strings = (char *) xalloc(string_size);
     if (!strings) {
-	pcfError("pcfGetProperties(): Couldn't allocate strings (%d)\n", string_size);
+      pcfError("pcfGetProperties(): Couldn't allocate strings (%d)\n", string_size);
 	goto Bail;
     }
     FontFileRead(file, strings, string_size);
+    if (IS_EOF(file)) goto Bail;
     position += string_size;
     for (i = 0; i < nprops; i++) {
 	props[i].name = MakeAtom(strings + props[i].name,
@@ -329,17 +329,14 @@ Bail:
  */
 
 static Bool
-pcfGetAccel(pFontInfo, file, tables, ntables, type)
-    FontInfoPtr pFontInfo;
-    FontFilePtr file;
-    PCFTablePtr	tables;
-    int		ntables;
-    CARD32	type;
+pcfGetAccel(FontInfoPtr pFontInfo, FontFilePtr file, 
+	    PCFTablePtr tables, int ntables, CARD32 type)
 {
     CARD32      format;
-    int		size;
+    CARD32	size;
 
-    if (!pcfSeekToType(file, tables, ntables, type, &format, &size))
+    if (!pcfSeekToType(file, tables, ntables, type, &format, &size) ||
+	IS_EOF(file))
 	goto Bail;
     format = pcfGetLSB32(file);
     if (!PCF_FORMAT_MATCH(format, PCF_DEFAULT_FORMAT) &&
@@ -360,11 +357,16 @@ pcfGetAccel(pFontInfo, file, tables, ntables, type)
     pFontInfo->fontAscent = pcfGetINT32(file, format);
     pFontInfo->fontDescent = pcfGetINT32(file, format);
     pFontInfo->maxOverlap = pcfGetINT32(file, format);
-    pcfGetMetric(file, format, &pFontInfo->minbounds);
-    pcfGetMetric(file, format, &pFontInfo->maxbounds);
+    if (IS_EOF(file)) goto Bail;
+    if (!pcfGetMetric(file, format, &pFontInfo->minbounds))
+	goto Bail;
+    if (!pcfGetMetric(file, format, &pFontInfo->maxbounds))
+	goto Bail;
     if (PCF_FORMAT_MATCH(format, PCF_ACCEL_W_INKBOUNDS)) {
-	pcfGetMetric(file, format, &pFontInfo->ink_minbounds);
-	pcfGetMetric(file, format, &pFontInfo->ink_maxbounds);
+	if (!pcfGetMetric(file, format, &pFontInfo->ink_minbounds))
+	    goto Bail;
+	if (!pcfGetMetric(file, format, &pFontInfo->ink_maxbounds))
+	    goto Bail;
     } else {
 	pFontInfo->ink_minbounds = pFontInfo->minbounds;
 	pFontInfo->ink_maxbounds = pFontInfo->maxbounds;
@@ -375,13 +377,8 @@ Bail:
 }
 
 int
-pcfReadFont(pFont, file, bit, byte, glyph, scan)
-    FontPtr     pFont;
-    FontFilePtr file;
-    int         bit,
-                byte,
-                glyph,
-                scan;
+pcfReadFont(FontPtr pFont, FontFilePtr file, 
+	    int bit, int byte, int glyph, int scan)
 {
     CARD32      format;
     CARD32      size;
@@ -396,13 +393,14 @@ pcfReadFont(pFont, file, bit, byte, glyph, scan)
     CharInfoPtr metrics = 0;
     xCharInfo  *ink_metrics = 0;
     char       *bitmaps = 0;
-    CharInfoPtr *encoding = 0;
-    int         nencoding;
+    CharInfoPtr **encoding = 0;
+    int         nencoding = 0;
     int         encodingOffset;
     CARD32      bitmapSizes[GLYPHPADOPTIONS];
     CARD32     *offsets = 0;
     Bool	hasBDFAccelerators;
 
+    pFont->info.nprops = 0;
     pFont->info.props = 0;
     if (!(tables = pcfReadTOC(file, &ntables)))
 	goto Bail;
@@ -433,17 +431,21 @@ pcfReadFont(pFont, file, bit, byte, glyph, scan)
 	nmetrics = pcfGetINT32(file, format);
     else
 	nmetrics = pcfGetINT16(file, format);
+    if (IS_EOF(file)) goto Bail;
     metrics = (CharInfoPtr) xalloc(nmetrics * sizeof(CharInfoRec));
     if (!metrics) {
-	pcfError("pcfReadFont(): Couldn't allocate metrics (%d*%d)\n", nmetrics, sizeof(CharInfoRec));
+      pcfError("pcfReadFont(): Couldn't allocate metrics (%d*%d)\n", nmetrics, sizeof(CharInfoRec));
 	goto Bail;
     }
     for (i = 0; i < nmetrics; i++)
-	if (PCF_FORMAT_MATCH(format, PCF_DEFAULT_FORMAT))
-	    pcfGetMetric(file, format, &(metrics + i)->metrics);
-	else
-	    pcfGetCompressedMetric(file, format, &(metrics + i)->metrics);
-
+	if (PCF_FORMAT_MATCH(format, PCF_DEFAULT_FORMAT)) {
+	    if (!pcfGetMetric(file, format, &(metrics + i)->metrics))
+		goto Bail;
+	} else {
+	    if (!pcfGetCompressedMetric(file, format, &(metrics + i)->metrics))
+		goto Bail;
+	}
+    
     /* bitmaps */
 
     if (!pcfSeekToType(file, tables, ntables, PCF_BITMAPS, &format, &size))
@@ -453,41 +455,46 @@ pcfReadFont(pFont, file, bit, byte, glyph, scan)
 	goto Bail;
 
     nbitmaps = pcfGetINT32(file, format);
-    if (nbitmaps != nmetrics)
+    if (nbitmaps != nmetrics || IS_EOF(file))
 	goto Bail;
 
     offsets = (CARD32 *) xalloc(nbitmaps * sizeof(CARD32));
     if (!offsets) {
-	pcfError("pcfReadFont(): Couldn't allocate offsets (%d*%d)\n", nbitmaps, sizeof(CARD32));
+      pcfError("pcfReadFont(): Couldn't allocate offsets (%d*%d)\n", nbitmaps, sizeof(CARD32));
 	goto Bail;
     }
-
-    for (i = 0; i < nbitmaps; i++)
+    for (i = 0; i < nbitmaps; i++) {
 	offsets[i] = pcfGetINT32(file, format);
+	if (IS_EOF(file)) goto Bail;
+    }
 
-    for (i = 0; i < GLYPHPADOPTIONS; i++)
+    for (i = 0; i < GLYPHPADOPTIONS; i++) {
 	bitmapSizes[i] = pcfGetINT32(file, format);
+	if (IS_EOF(file)) goto Bail;
+    }
+    
     sizebitmaps = bitmapSizes[PCF_GLYPH_PAD_INDEX(format)];
     /* guard against completely empty font */
-    bitmaps = (char *) xalloc(sizebitmaps ? sizebitmaps : 1);
+    bitmaps = xalloc(sizebitmaps ? sizebitmaps : 1);
     if (!bitmaps) {
-	pcfError("pcfReadFont(): Couldn't allocate bitmaps (%d)\n", sizebitmaps ? sizebitmaps : 1);
+      pcfError("pcfReadFont(): Couldn't allocate bitmaps (%d)\n", sizebitmaps ? sizebitmaps : 1);
 	goto Bail;
     }
     FontFileRead(file, bitmaps, sizebitmaps);
+    if (IS_EOF(file)) goto Bail;
     position += sizebitmaps;
 
     if (PCF_BIT_ORDER(format) != bit)
-	BitOrderInvert(bitmaps, sizebitmaps);
+	BitOrderInvert((unsigned char *)bitmaps, sizebitmaps);
     if ((PCF_BYTE_ORDER(format) == PCF_BIT_ORDER(format)) != (bit == byte)) {
 	switch (bit == byte ? PCF_SCAN_UNIT(format) : scan) {
 	case 1:
 	    break;
 	case 2:
-	    TwoByteSwap(bitmaps, sizebitmaps);
+	    TwoByteSwap((unsigned char *)bitmaps, sizebitmaps);
 	    break;
 	case 4:
-	    FourByteSwap(bitmaps, sizebitmaps);
+	    FourByteSwap((unsigned char *)bitmaps, sizebitmaps);
 	    break;
 	}
     }
@@ -501,7 +508,7 @@ pcfReadFont(pFont, file, bit, byte, glyph, scan)
 	sizepadbitmaps = bitmapSizes[PCF_SIZE_TO_INDEX(glyph)];
 	padbitmaps = (char *) xalloc(sizepadbitmaps);
 	if (!padbitmaps) {
-	    pcfError("pcfReadFont(): Couldn't allocate padbitmaps (%d)\n", sizepadbitmaps);
+          pcfError("pcfReadFont(): Couldn't allocate padbitmaps (%d)\n", sizepadbitmaps);
 	    goto Bail;
 	}
 	new = 0;
@@ -536,18 +543,22 @@ pcfReadFont(pFont, file, bit, byte, glyph, scan)
 	    nink_metrics = pcfGetINT32(file, format);
 	else
 	    nink_metrics = pcfGetINT16(file, format);
+	if (IS_EOF(file)) goto Bail;
 	if (nink_metrics != nmetrics)
 	    goto Bail;
 	ink_metrics = (xCharInfo *) xalloc(nink_metrics * sizeof(xCharInfo));
-	if (!ink_metrics) {
-	    pcfError("pcfReadFont(): Couldn't allocate ink_metrics (%d*%d)\n", nink_metrics, sizeof(xCharInfo));
+      if (!ink_metrics) {
+          pcfError("pcfReadFont(): Couldn't allocate ink_metrics (%d*%d)\n", nink_metrics, sizeof(xCharInfo));       
 	    goto Bail;
-	}
+      }
 	for (i = 0; i < nink_metrics; i++)
-	    if (PCF_FORMAT_MATCH(format, PCF_DEFAULT_FORMAT))
-		pcfGetMetric(file, format, ink_metrics + i);
-	    else
-		pcfGetCompressedMetric(file, format, ink_metrics + i);
+	    if (PCF_FORMAT_MATCH(format, PCF_DEFAULT_FORMAT)) {
+		if (!pcfGetMetric(file, format, ink_metrics + i))
+		    goto Bail;
+	    } else {
+		if (!pcfGetCompressedMetric(file, format, ink_metrics + i))
+		    goto Bail;
+	    }
     }
 
     /* encoding */
@@ -563,24 +574,34 @@ pcfReadFont(pFont, file, bit, byte, glyph, scan)
     pFont->info.firstRow = pcfGetINT16(file, format);
     pFont->info.lastRow = pcfGetINT16(file, format);
     pFont->info.defaultCh = pcfGetINT16(file, format);
+    if (IS_EOF(file)) goto Bail;
 
     nencoding = (pFont->info.lastCol - pFont->info.firstCol + 1) *
 	(pFont->info.lastRow - pFont->info.firstRow + 1);
 
-    encoding = (CharInfoPtr *) xalloc(nencoding * sizeof(CharInfoPtr));
+    encoding = (CharInfoPtr **) xcalloc(NUM_SEGMENTS(nencoding),
+                                       sizeof(CharInfoPtr*));
     if (!encoding) {
-	pcfError("pcfReadFont(): Couldn't allocate encoding (%d*%d)\n", nencoding, sizeof(CharInfoPtr));
+      pcfError("pcfReadFont(): Couldn't allocate encoding (%d*%d)\n", nencoding, sizeof(CharInfoPtr));    
 	goto Bail;
     }
-
+    
     pFont->info.allExist = TRUE;
     for (i = 0; i < nencoding; i++) {
 	encodingOffset = pcfGetINT16(file, format);
+	if (IS_EOF(file)) goto Bail;
 	if (encodingOffset == 0xFFFF) {
 	    pFont->info.allExist = FALSE;
-	    encoding[i] = 0;
-	} else
-	    encoding[i] = metrics + encodingOffset;
+	} else {
+            if(!encoding[SEGMENT_MAJOR(i)]) {
+                encoding[SEGMENT_MAJOR(i)]=
+                    (CharInfoPtr*)xcalloc(BITMAP_FONT_SEGMENT_SIZE,
+                                          sizeof(CharInfoPtr));
+                if(!encoding[SEGMENT_MAJOR(i)])
+                    goto Bail;
+            }
+	    ACCESSENCODINGL(encoding, i) = metrics + encodingOffset;
+        }
     }
 
     /* BDF style accelerators (i.e. bounds based on encoded glyphs) */
@@ -591,7 +612,7 @@ pcfReadFont(pFont, file, bit, byte, glyph, scan)
 
     bitmapFont = (BitmapFontPtr) xalloc(sizeof *bitmapFont);
     if (!bitmapFont) {
-	pcfError("pcfReadFont(): Couldn't allocate bitmapFont (%d)\n", sizeof *bitmapFont);
+      pcfError("pcfReadFont(): Couldn't allocate bitmapFont (%d)\n", sizeof *bitmapFont);
 	goto Bail;
     }
 
@@ -615,7 +636,7 @@ pcfReadFont(pFont, file, bit, byte, glyph, scan)
 	    cols = pFont->info.lastCol - pFont->info.firstCol + 1;
 	    r = r - pFont->info.firstRow;
 	    c = c - pFont->info.firstCol;
-	    bitmapFont->pDefault = encoding[r * cols + c];
+	    bitmapFont->pDefault = ACCESSENCODING(encoding, r * cols + c);
 	}
     }
     bitmapFont->bitmapExtra = (BitmapExtraPtr) 0;
@@ -632,21 +653,25 @@ pcfReadFont(pFont, file, bit, byte, glyph, scan)
     return Successful;
 Bail:
     xfree(ink_metrics);
+    if(encoding) {
+        for(i=0; i<NUM_SEGMENTS(nencoding); i++)
+            xfree(encoding[i]);
+    }
     xfree(encoding);
     xfree(bitmaps);
-    xfree(offsets);
     xfree(metrics);
     xfree(pFont->info.props);
+    pFont->info.nprops = 0;
     pFont->info.props = 0;
+    xfree (pFont->info.isStringProp);
     xfree(bitmapFont);
     xfree(tables);
+    xfree(offsets);
     return AllocError;
 }
 
 int
-pcfReadFontInfo(pFontInfo, file)
-    FontInfoPtr pFontInfo;
-    FontFilePtr file;
+pcfReadFontInfo(FontInfoPtr pFontInfo, FontFilePtr file)
 {
     PCFTablePtr tables;
     int         ntables;
@@ -657,6 +682,7 @@ pcfReadFontInfo(pFontInfo, file)
 
     pFontInfo->isStringProp = NULL;
     pFontInfo->props = NULL;
+    pFontInfo->nprops = 0;
 
     if (!(tables = pcfReadTOC(file, &ntables)))
 	goto Bail;
@@ -686,6 +712,7 @@ pcfReadFontInfo(pFontInfo, file)
     pFontInfo->firstRow = pcfGetINT16(file, format);
     pFontInfo->lastRow = pcfGetINT16(file, format);
     pFontInfo->defaultCh = pcfGetINT16(file, format);
+    if (IS_EOF(file)) goto Bail;
 
     nencoding = (pFontInfo->lastCol - pFontInfo->firstCol + 1) *
 	(pFontInfo->lastRow - pFontInfo->firstRow + 1);
@@ -694,7 +721,9 @@ pcfReadFontInfo(pFontInfo, file)
     while (nencoding--) {
 	if (pcfGetINT16(file, format) == 0xFFFF)
 	    pFontInfo->allExist = FALSE;
+	if (IS_EOF(file)) goto Bail;
     }
+    if (IS_EOF(file)) goto Bail;
 
     /* BDF style accelerators (i.e. bounds based on encoded glyphs) */
 
@@ -705,38 +734,39 @@ pcfReadFontInfo(pFontInfo, file)
     xfree(tables);
     return Successful;
 Bail:
+    pFontInfo->nprops = 0;
     xfree (pFontInfo->props);
     xfree (pFontInfo->isStringProp);
     xfree(tables);
     return AllocError;
 }
 
-void
-pcfUnloadFont(pFont)
-    FontPtr     pFont;
+static void
+pcfUnloadFont(FontPtr pFont)
 {
     BitmapFontPtr  bitmapFont;
+    int i,nencoding;
 
     bitmapFont = (BitmapFontPtr) pFont->fontPrivate;
     xfree(bitmapFont->ink_metrics);
+    if(bitmapFont->encoding) {
+        nencoding = (pFont->info.lastCol - pFont->info.firstCol + 1) *
+	    (pFont->info.lastRow - pFont->info.firstRow + 1);
+        for(i=0; i<NUM_SEGMENTS(nencoding); i++)
+            xfree(bitmapFont->encoding[i]);
+    }
     xfree(bitmapFont->encoding);
     xfree(bitmapFont->bitmaps);
     xfree(bitmapFont->metrics);
     xfree(pFont->info.isStringProp);
     xfree(pFont->info.props);
     xfree(bitmapFont);
-    xfree(pFont->devPrivates);
-    xfree(pFont);
+    DestroyFontRec(pFont);
 }
 
 int
-pmfReadFont(pFont, file, bit, byte, glyph, scan)
-    FontPtr     pFont;
-    FontFilePtr file;
-    int         bit,
-                byte,
-                glyph,
-                scan;
+pmfReadFont(FontPtr pFont, FontFilePtr file, 
+	    int bit, int byte, int glyph, int scan)
 {
     CARD32      format;
     CARD32      size;
@@ -750,13 +780,15 @@ pmfReadFont(pFont, file, bit, byte, glyph, scan)
     CharInfoPtr metrics = 0;
     xCharInfo  *ink_metrics = 0;
     char       *bitmaps = 0;
-    CharInfoPtr *encoding = 0;
-    int         nencoding;
+    CharInfoPtr **encoding = 0;
+    int         nencoding = 0;
     int         encodingOffset;
     Bool	hasBDFAccelerators;
     CharInfoPtr pci;
 
+    pFont->info.nprops = 0;
     pFont->info.props = 0;
+
     if (!(tables = pcfReadTOC(file, &ntables)))
 	goto Bail;
 
@@ -786,17 +818,21 @@ pmfReadFont(pFont, file, bit, byte, glyph, scan)
 	nmetrics = pcfGetINT32(file, format);
     else
 	nmetrics = pcfGetINT16(file, format);
+    if (IS_EOF(file)) goto Bail;
     metrics = (CharInfoPtr) xalloc(nmetrics * sizeof(CharInfoRec));
     if (!metrics) {
-	pcfError("pmfReadFont(): Couldn't allocate metrics (%d*%d)\n", nmetrics, sizeof(CharInfoRec));
+      pcfError("pmfReadFont(): Couldn't allocate metrics (%d*%d)\n", nmetrics, sizeof(CharInfoRec));
 	goto Bail;
     }
     for (i = 0; i < nmetrics; i++)
-	if (PCF_FORMAT_MATCH(format, PCF_DEFAULT_FORMAT))
-	    pcfGetMetric(file, format, &(metrics + i)->metrics);
-	else
-	    pcfGetCompressedMetric(file, format, &(metrics + i)->metrics);
-
+	if (PCF_FORMAT_MATCH(format, PCF_DEFAULT_FORMAT)) {
+	    if (!pcfGetMetric(file, format, &(metrics + i)->metrics))
+		goto Bail;
+	} else {
+	    if (!pcfGetCompressedMetric(file, format, &(metrics + i)->metrics))
+		goto Bail;
+	}
+    
     /* Set the bitmaps to all point to the same zero filled array 
      * that is the size of the largest bitmap.
      */
@@ -809,11 +845,15 @@ pmfReadFont(pFont, file, bit, byte, glyph, scan)
 	pci++;
     }
 
+#ifdef FONTMODULE
+    sizebitmaps = 1024; /* Default - we xalloc the size anyway */
+#else
     sizebitmaps = BUFSIZ;
+#endif
     /* guard against completely empty font */
     bitmaps = (char *) xalloc(sizebitmaps);
     if (!bitmaps) {
-	pcfError("pmfReadFont(): Couldn't allocate bitmaps (%d)\n", sizebitmaps);
+      pcfError("pmfReadFont(): Couldn't allocate bitmaps (%d)\n", sizebitmaps);
 	goto Bail;
     }
 
@@ -836,16 +876,20 @@ pmfReadFont(pFont, file, bit, byte, glyph, scan)
 	    nink_metrics = pcfGetINT16(file, format);
 	if (nink_metrics != nmetrics)
 	    goto Bail;
+	if (IS_EOF(file)) goto Bail;
 	ink_metrics = (xCharInfo *) xalloc(nink_metrics * sizeof(xCharInfo));
-	if (!ink_metrics) {
-	    pcfError("pmfReadFont(): Couldn't allocate ink_metrics (%d*%d)\n", nink_metrics, sizeof(xCharInfo));
+      if (!ink_metrics) {
+          pcfError("pmfReadFont(): Couldn't allocate ink_metrics (%d*%d)\n", nink_metrics, sizeof(xCharInfo));
 	    goto Bail;
-	}
+      }
 	for (i = 0; i < nink_metrics; i++)
-	    if (PCF_FORMAT_MATCH(format, PCF_DEFAULT_FORMAT))
-		pcfGetMetric(file, format, ink_metrics + i);
-	    else
-		pcfGetCompressedMetric(file, format, ink_metrics + i);
+	    if (PCF_FORMAT_MATCH(format, PCF_DEFAULT_FORMAT)) {
+		if (!pcfGetMetric(file, format, ink_metrics + i))
+		    goto Bail;
+	    } else {
+		if (!pcfGetCompressedMetric(file, format, ink_metrics + i))
+		    goto Bail;
+	    }
     }
 
     /* encoding */
@@ -861,25 +905,36 @@ pmfReadFont(pFont, file, bit, byte, glyph, scan)
     pFont->info.firstRow = pcfGetINT16(file, format);
     pFont->info.lastRow = pcfGetINT16(file, format);
     pFont->info.defaultCh = pcfGetINT16(file, format);
+    if (IS_EOF(file)) goto Bail;
 
     nencoding = (pFont->info.lastCol - pFont->info.firstCol + 1) *
 	(pFont->info.lastRow - pFont->info.firstRow + 1);
 
-    encoding = (CharInfoPtr *) xalloc(nencoding * sizeof(CharInfoPtr));
+    encoding = (CharInfoPtr **) xcalloc(NUM_SEGMENTS(nencoding),
+                                       sizeof(CharInfoPtr*));
     if (!encoding) {
-	pcfError("pmfReadFont(): Couldn't allocate encoding (%d*%d)\n", nencoding, sizeof(CharInfoPtr));
+      pcfError("pmfReadFont(): Couldn't allocate encoding (%d*%d)\n", nencoding, sizeof(CharInfoPtr));
 	goto Bail;
     }
-
     pFont->info.allExist = TRUE;
     for (i = 0; i < nencoding; i++) {
 	encodingOffset = pcfGetINT16(file, format);
+	if (IS_EOF(file)) goto Bail;
 	if (encodingOffset == 0xFFFF) {
 	    pFont->info.allExist = FALSE;
 	    encoding[i] = 0;
-	} else
-	    encoding[i] = metrics + encodingOffset;
+	} else {
+            if(!encoding[SEGMENT_MAJOR(i)]) {
+                encoding[SEGMENT_MAJOR(i)]=
+                    (CharInfoPtr*)xcalloc(BITMAP_FONT_SEGMENT_SIZE,
+                                          sizeof(CharInfoPtr));
+                if(!encoding[SEGMENT_MAJOR(i)])
+                    goto Bail;
+            }
+	    ACCESSENCODINGL(encoding, i) = metrics + encodingOffset;
+	}
     }
+    if (IS_EOF(file)) goto Bail;
 
     /* BDF style accelerators (i.e. bounds based on encoded glyphs) */
 
@@ -889,10 +944,10 @@ pmfReadFont(pFont, file, bit, byte, glyph, scan)
 
     bitmapFont = (BitmapFontPtr) xalloc(sizeof *bitmapFont);
     if (!bitmapFont) {
-	pcfError("pmfReadFont(): Couldn't allocate bitmapFont (%d)\n", sizeof *bitmapFont);
+      pcfError("pmfReadFont(): Couldn't allocate bitmapFont (%d)\n", sizeof *bitmapFont);
 	goto Bail;
     }
-
+    
     bitmapFont->version_num = PCF_FILE_VERSION;
     bitmapFont->num_chars = nmetrics;
     bitmapFont->num_tables = ntables;
@@ -913,7 +968,7 @@ pmfReadFont(pFont, file, bit, byte, glyph, scan)
 	    cols = pFont->info.lastCol - pFont->info.firstCol + 1;
 	    r = r - pFont->info.firstRow;
 	    c = c - pFont->info.firstCol;
-	    bitmapFont->pDefault = encoding[r * cols + c];
+	    bitmapFont->pDefault = ACCESSENCODING(encoding, r * cols + c);
 	}
     }
     bitmapFont->bitmapExtra = (BitmapExtraPtr) 0;
@@ -930,11 +985,18 @@ pmfReadFont(pFont, file, bit, byte, glyph, scan)
     return Successful;
 Bail:
     xfree(ink_metrics);
+    if(encoding) {
+        for(i=0; i<NUM_SEGMENTS(nencoding); i++)
+            xfree(encoding[i]);
+    }
     xfree(encoding);
+    xfree(bitmaps);
     xfree(metrics);
     xfree(pFont->info.props);
-    xfree(bitmapFont);
+    pFont->info.nprops = 0;
     pFont->info.props = 0;
+    xfree (pFont->info.isStringProp);
+    xfree(bitmapFont);
     xfree(tables);
     return AllocError;
 }

@@ -27,6 +27,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/util/fontaccel.c,v 1.7 2001/12/14 19:56:56 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -34,9 +35,10 @@ from The Open Group.
 
 #include    "fontmisc.h"
 #include    "fontstruct.h"
+#include    "fontutil.h"
 
-void FontComputeInfoAccelerators(pFontInfo)
-    FontInfoPtr pFontInfo;
+void
+FontComputeInfoAccelerators(FontInfoPtr pFontInfo)
 {
     pFontInfo->noOverlap = FALSE;
     if (pFontInfo->maxOverlap <= pFontInfo->minbounds.leftSideBearing)
@@ -80,8 +82,8 @@ void FontComputeInfoAccelerators(pFontInfo)
 	pFontInfo->inkInside = FALSE;
 }
 
-int FontCouldBeTerminal(pFontInfo)
-    FontInfoPtr pFontInfo;
+int 
+FontCouldBeTerminal(FontInfoPtr pFontInfo)
 {
     if ((pFontInfo->minbounds.leftSideBearing >= 0) &&
 	    (pFontInfo->maxbounds.rightSideBearing <= pFontInfo->maxbounds.characterWidth) &&

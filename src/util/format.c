@@ -50,19 +50,21 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/util/format.c,v 1.5 2001/12/14 19:56:57 dawes Exp $ */
 
 #include	"FSproto.h"
 #include	"font.h"
+#include	"fontstruct.h"
+#include	"fontutil.h"
 
 int
-CheckFSFormat(format, fmask, bit_order, byte_order, scan, glyph, image)
-    fsBitmapFormat format;
-    fsBitmapFormatMask fmask;
-    int        *bit_order,
-               *byte_order,
-               *scan,
-               *glyph,
-               *image;
+CheckFSFormat(fsBitmapFormat format, 
+	      fsBitmapFormatMask fmask, 
+	      int *bit_order, 
+	      int *byte_order, 
+	      int *scan, 
+	      int *glyph, 
+	      int *image)
 {
     /* convert format to what the low levels want */
     if (fmask & BitmapFormatMaskBit) {

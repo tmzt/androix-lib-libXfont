@@ -47,12 +47,17 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/Speedo/spint.h,v 1.10 2001/12/14 19:56:42 dawes Exp $ */
 
 #ifndef _SPINT_H_
 #define _SPINT_H_
 
-#include <stdio.h>
 #include "fntfilst.h"
+#ifndef XFree86LOADER
+#include <stdio.h>
+#else
+#include <xf86_ansic.h>
+#endif
 #include <X11/Xfuncproto.h>
 #include "speedo.h"
 
@@ -141,24 +146,27 @@ typedef struct _sp_font {
 
 extern SpeedoFontPtr sp_fp_cur;
 
-extern int  sp_open_font();
-extern int  sp_open_master();
-extern void sp_close_font();
-extern void sp_close_master_font();
-extern void sp_close_master_file();
-extern void sp_reset_master();
-#if NeedVarargsPrototypes
+extern int sp_open_font(char *, char *, FontEntryPtr, FontScalablePtr,
+			fsBitmapFormat, fsBitmapFormatMask, Mask,
+			SpeedoFontPtr *);
+extern int  sp_open_master(const char *, const char *, SpeedoMasterFontPtr *);
+extern void sp_close_font(SpeedoFontPtr);
+extern void sp_close_master_font(SpeedoMasterFontPtr);
+extern void sp_close_master_file(SpeedoMasterFontPtr);
+extern void sp_reset_master(SpeedoMasterFontPtr);
 extern void SpeedoErr(char *fmt, ...);
-#else
-extern void SpeedoErr();
-#endif
 
-extern void sp_make_standard_props();
-extern void sp_make_header();
-extern void sp_compute_bounds();
-extern void sp_compute_props();
-extern int  sp_build_all_bitmaps();
-extern unsigned long sp_compute_data_size();
+extern void sp_make_standard_props(void);
+extern void sp_make_header(SpeedoFontPtr, FontInfoPtr);
+extern void sp_compute_bounds(SpeedoFontPtr, FontInfoPtr, unsigned long, long *);
+extern void sp_compute_props(SpeedoFontPtr, char *, FontInfoPtr, long);
+extern int  sp_build_all_bitmaps(FontPtr, fsBitmapFormat, fsBitmapFormatMask);
+extern unsigned long sp_compute_data_size(FontPtr, int, int, unsigned long,
+						unsigned long);
+
+extern int SpeedoFontLoad(FontPtr *, char *, char *, FontEntryPtr,
+			  FontScalablePtr, fsBitmapFormat, fsBitmapFormatMask,
+			  Mask);
 
 extern int  sp_bics_map[];
 extern int  sp_bics_map_size;

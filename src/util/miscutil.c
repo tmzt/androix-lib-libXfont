@@ -27,13 +27,11 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/util/miscutil.c,v 1.8 2001/12/14 19:56:57 dawes Exp $ */
 
 #include <X11/Xosdefs.h>
-#ifndef X_NOT_STDC_ENV
 #include <stdlib.h>
-#else
-char *malloc(), *realloc();
-#endif
+#include "fontmisc.h"
 
 #define XK_LATIN1
 #include    <X11/keysymdef.h>
@@ -43,32 +41,36 @@ char *malloc(), *realloc();
 
 long serverGeneration = 1;
 
-unsigned long *
-Xalloc (m)
+void *
+Xalloc (unsigned long m)
 {
-    return (unsigned long *) malloc (m);
+    return malloc (m);
 }
 
-unsigned long *
-Xrealloc (n,m)
-    unsigned long   *n;
+void *
+Xrealloc (void *n, unsigned long m)
 {
     if (!n)
-	return (unsigned long *) malloc (m);
+	return malloc (m);
     else
-	return (unsigned long *) realloc ((char *) n, m);
+	return realloc (n, m);
 }
 
-void Xfree (n)
-    unsigned long   *n;
+void
+Xfree (void *n)
 {
     if (n)
-	free ((char *) n);
+	free (n);
 }
 
-void CopyISOLatin1Lowered (dst, src, len)
-    char    *dst, *src;
-    int	    len;
+void *
+Xcalloc (unsigned long n)
+{
+    return calloc (n, 1);
+}
+
+void
+CopyISOLatin1Lowered (char *dst, char *src, int len)
 {
     register unsigned char *dest, *source;
 
@@ -88,6 +90,7 @@ void CopyISOLatin1Lowered (dst, src, len)
     *dest = '\0';
 }
 
-void register_fpe_functions ()
+void
+register_fpe_functions ()
 {
 }

@@ -26,6 +26,8 @@
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
+/* $XFree86: xc/lib/font/Type1/paths.c,v 1.7 2002/02/18 20:51:57 herrb Exp $ */
+
  /* PATHS    CWEB         V0021 ********                             */
 /*
 :h1 id=paths.PATHS Module - Path Operator Handler
@@ -42,6 +44,7 @@ The included files are:
 */
  
                              /*   after the system includes  (dsr)           */
+#include  "os.h"
 #include  "objects.h"
 #include  "spaces.h"
 #include  "paths.h"
@@ -50,6 +53,7 @@ The included files are:
 #include  "pictures.h"     /* understands about handles                    */
 #include  "strokes.h"      /* understands how to coerce stroke paths       */
 #include  "trig.h"
+
 
 /*
 :h3.Routines Available to the TYPE1IMAGER User
@@ -112,10 +116,10 @@ text, which has some auxilliary things involved.  We don't feel
 competent to duplicate text in this module, so we call someone who
 knows how (in the FONTS module).
 */
-struct segment *CopyPath(p0)
-       register struct segment *p0;  /* path to duplicate                    */
+struct segment *
+CopyPath(struct segment *p0)         /* path to duplicate                    */
 {
-       register struct segment *p,*n,*last,*anchor;
+       register struct segment *p,*n = NULL,*last = NULL,*anchor;
  
        for (p = p0, anchor = NULL; p != NULL; p = p->link) {
  
@@ -150,8 +154,8 @@ At this point we have a chain of newly allocated segments hanging off
 Destroying a path is simply a matter of freeing each segment in the
 linked list.  Again, we let the experts handle text.
 */
-void KillPath(p)
-       register struct segment *p;  /* path to destroy                       */
+void 
+KillPath(struct segment *p)         /* path to destroy                       */
 {
        register struct segment *linkp;  /* temp register holding next segment*/
  
@@ -194,15 +198,15 @@ This template is used as a generic segment structure for Allocate:
  
 /* added reference field 1 to temporary template below 3-26-91 PNM */
 static struct segment movetemplate = { MOVETYPE, 0, 1, sizeof(struct segment), 0,
-                NULL, NULL, 0, 0 };
+                NULL, NULL, {0, 0} };
 /*
 :h3.Loc() - Create an "Invisible Line" Between (0,0) and a Point
  
 */
  
-struct segment *t1_Loc(S, x, y)
-       register struct XYspace *S;  /* coordinate space to interpret X,Y     */
-       double x,y;           /* destination point                            */
+struct segment *
+t1_Loc(struct XYspace *S,    /* coordinate space to interpret X,Y            */
+       double x, double y)   /* destination point                            */
 {
        register struct segment *r;
  
@@ -222,9 +226,9 @@ struct segment *t1_Loc(S, x, y)
 :h3.ILoc() - Loc() With Integer Arguments
  
 */
-struct segment *ILoc(S, x, y)
-       register struct XYspace *S;  /* coordinate space to interpret X,Y     */
-       register int x,y;        /* destination point                         */
+struct segment *
+ILoc(struct XYspace *S,         /* coordinate space to interpret X,Y         */
+     int x, int y)              /* destination point                         */
 {
        register struct segment *r;
  
@@ -250,9 +254,8 @@ The symmetrical function AddLoc() is totally redundent with Join(),
 so it is not provided.
 */
  
-struct segment *SubLoc(p1, p2)
-       register struct segment *p1;
-       register struct segment *p2;
+struct segment *
+SubLoc(struct segment *p1, struct segment *p2)
 {
        IfTrace2((MustTraceCalls),"SubLoc(%z, %z)\n", p1, p2);
  
@@ -277,9 +280,9 @@ conversion is unnecessary.  PathSegment() is an internal routine
 provided to the rest of TYPE1IMAGER for handling these cases.
 */
  
-struct segment *t1_PathSegment(type, x, y)
-       int type;             /* LINETYPE or MOVETYPE                         */
-       fractpel x,y;         /* where to go to, if known                     */
+struct segment *
+t1_PathSegment(int type,     /* LINETYPE or MOVETYPE                         */
+	       fractpel x, fractpel y) /* where to go to, if known           */
 {
        register struct segment *r;  /* newly created segment                 */
  
@@ -295,8 +298,8 @@ struct segment *t1_PathSegment(type, x, y)
  
 This involves just creating and filling out a segment structure:
 */
-struct segment *Line(P)
-       register struct segment *P;  /* relevant coordinate space             */
+struct segment *
+Line(struct segment *P)      /* relevant coordinate space                    */
 {
  
        IfTrace1((MustTraceCalls),"..Line(%z)\n", P);
@@ -330,10 +333,10 @@ inversely related to the length |CD|.  Point A is always point (0,0).
 This is just a simple matter of filling out a 'beziersegment' structure:
 */
  
-struct beziersegment *Bezier(B, C, D)
-       register struct segment *B;  /* second control point                  */
-       register struct segment *C;  /* third control point                   */
-       register struct segment *D;  /* fourth control point (ending point)   */
+struct beziersegment *
+Bezier(struct segment *B,           /* second control point                  */
+       struct segment *C,           /* third control point                   */
+       struct segment *D)           /* fourth control point (ending point)   */
 {
 /* added reference field of 1 to temporary template below 3-26-91  PNM */
        static struct beziersegment template =
@@ -371,15 +374,10 @@ This is temporary code while we experiment with hints.
 */
  
 /*SHARED LINE(S) ORIGINATED HERE*/
-struct hintsegment *Hint(S, ref, width, orientation, hinttype, adjusttype, direction, label)
-       struct XYspace *S;
-       float ref;
-       float width;
-       char orientation;
-       char hinttype;
-       char adjusttype;
-       char direction;
-       int label;
+struct hintsegment *
+Hint(struct XYspace *S, float ref, float width, 
+     char orientation, char hinttype, char adjusttype, char direction, 
+     int label)
 {
 /* added reference field of 1 to hintsegment template below 3-26-91 PNM */
        static struct hintsegment template = { HINTTYPE, 0, 1, sizeof(struct hintsegment), 0,
@@ -446,8 +444,8 @@ types other than paths, and also check for certain path consistency
 rules.
 */
  
-struct segment *Join(p1, p2)
-       register struct segment *p1,*p2;
+struct segment *
+Join(struct segment *p1, struct segment *p2)
 {
        IfTrace2((MustTraceCalls && PathDebug > 1),"..Join(%z, %z)\n", p1, p2);
        IfTrace2((MustTraceCalls && PathDebug <=1),"..Join(%x, %x)\n", p1, p2);
@@ -570,11 +568,11 @@ This internal function is quicker than a full-fledged join because
 it can do much less checking.
 */
  
-struct segment *t1_JoinSegment(before, type, x, y, after)
-       register struct segment *before;  /* path to join before new segment  */
-       int type;             /* type of new segment (MOVETYPE or LINETYPE)   */
-       fractpel x,y;         /* x,y of new segment                           */
-       register struct segment *after;  /* path to join after new segment    */
+struct segment *
+t1_JoinSegment(struct segment *before, /* path to join before new segment    */
+	       int type,     /* type of new segment (MOVETYPE or LINETYPE)   */
+	       fractpel x, fractpel y, /* x,y of new segment                 */
+	       struct segment *after) /* path to join after new segment      */
 {
        register struct segment *r;  /* returned path built here              */
  
@@ -596,14 +594,14 @@ struct segment *t1_JoinSegment(before, type, x, y, after)
 */
  
  
-struct segment *t1_ClosePath(p0,lastonly)
-       register struct segment *p0;  /* path to close                        */
-       register int lastonly;  /*  flag deciding to close all subpaths or... */
+struct segment *
+t1_ClosePath(struct segment *p0, /* path to close                            */
+	     int lastonly)     /*  flag deciding to close all subpaths or... */
 {
-       register struct segment *p,*last,*start;  /* used in looping through path */
+       register struct segment *p,*last = NULL,*start;  /* used in looping through path */
        register fractpel x,y;  /* current position in path                   */
-       register fractpel firstx,firsty;  /* start position of sub path       */
-       register struct segment *lastnonhint;  /* last non-hint segment in path */
+       register fractpel firstx = 0,firsty = 0;  /* start position of sub path       */
+       register struct segment *lastnonhint = NULL;  /* last non-hint segment in path */
  
        IfTrace1((MustTraceCalls),"ClosePath(%z)\n", p0);
        if (p0 != NULL && p0->type == TEXTTYPE)
@@ -689,18 +687,22 @@ etc.
 We need three subroutines:
 */
  
-static struct segment *SplitPath(); /* break a path at any point             */
-static struct segment *DropSubPath();  /* breaks a path after first sub-path */
-static struct segment *ReverseSubPath();  /* reverses a single sub-path      */
- 
+/* break a path at any point             */
+static struct segment *SplitPath ( struct segment *anchor, 
+					  struct segment *before );
+/* breaks a path after first sub-path */
+static struct segment *DropSubPath ( struct segment *p0 );
+/* reverses a single sub-path      */
+static struct segment *ReverseSubPath ( struct segment *p );
+
 /*
 :h3.Reverse() - User Operator to Reverse a Path
  
 This operator reverses the entire path.
 */
  
-struct segment *Reverse(p)
-       register struct segment *p;    /* full path to reverse                */
+struct segment *
+Reverse(struct segment *p)            /* full path to reverse                */
 {
        register struct segment *r;    /* output path built here              */
        register struct segment *nextp;  /* contains next sub-path            */
@@ -733,8 +735,8 @@ struct segment *Reverse(p)
 :h4.ReverseSubPath() - Subroutine to Reverse a Single Sub-Path
 */
  
-static struct segment *ReverseSubPath(p)
-       register struct segment *p;  /* input path                            */
+static struct segment *
+ReverseSubPath(struct segment *p)   /* input path                            */
 {
        register struct segment *r;  /* reversed path will be created here    */
        register struct segment *nextp;  /* temporary variable used in loop   */
@@ -790,7 +792,7 @@ So, we add "dest" instead of subtracting it:
                        break;
  
                    default:
-                       abort("Reverse: bad path segment");
+                       Abort("Reverse: bad path segment");
                }
 /*
 We need to reverse the order of segments too, so we break this segment
@@ -821,8 +823,8 @@ breaks the input path after the first sub-path so that a pointer to
 the original path now contains the first sub-path only.
 */
  
-static struct segment *DropSubPath(p0)
-       register struct segment *p0;  /* original path                        */
+static struct segment *
+DropSubPath(struct segment *p0)     /* original path                         */
 {
        register struct segment *p;  /* returned remainder here               */
  
@@ -834,9 +836,8 @@ static struct segment *DropSubPath(p0)
        return(SplitPath(p0, p));
 }
  
-static struct segment *SplitPath(anchor, before)
-       register struct segment *anchor;
-       register struct segment *before;
+static struct segment *
+SplitPath(struct segment *anchor, struct segment *before)
 {
        register struct segment *r;
  
@@ -852,15 +853,14 @@ static struct segment *SplitPath(anchor, before)
 }
  
 static void
-UnClose(p0)
-       register struct segment *p0;
+UnClose(struct segment *p0)
 {
        register struct segment *p;
  
        for (p=p0; p->link->link != NULL; p=p->link) { ; }
  
        if (!LASTCLOSED(p->link->flag))
-               abort("UnClose:  no LASTCLOSED");
+               Abort("UnClose:  no LASTCLOSED");
  
        Free(SplitPath(p0, p));
        p0->flag &= ~ISCLOSED(ON);
@@ -874,8 +874,8 @@ This user operator reverses the sub-paths in a path, but leaves the
 already established.
 */
  
-struct segment *ReverseSubPaths(p)
-       register struct segment *p;  /* input path                            */
+struct segment *
+ReverseSubPaths(struct segment *p)  /* input path                            */
 {
        register struct segment *r;  /* reversed path will be created here    */
        register struct segment *nextp;  /* temporary variable used in loop   */
@@ -951,9 +951,9 @@ The transform is described as a "space", that way we can use our
 old friend the "iconvert" function, which should be very efficient.
 */
  
-struct segment *PathTransform(p0, S)
-       register struct segment *p0;    /* path to transform                  */
-       register struct XYspace *S;     /* pseudo space to transform in       */
+struct segment *
+PathTransform(struct segment *p0,      /* path to transform                  */
+	      struct XYspace *S)       /* pseudo space to transform in       */
 {
        register struct segment *p;   /* to loop through path with            */
        register fractpel newx,newy;  /* current transformed position in path */
@@ -1025,7 +1025,7 @@ struct segment *PathTransform(p0, S)
  
                    default:
                        IfTrace1(TRUE,"path = %z\n", p);
-                       abort("PathTransform:  invalid segment");
+                       Abort("PathTransform:  invalid segment");
                }
                oldx += savex;
                oldy += savey;
@@ -1039,9 +1039,9 @@ struct segment *PathTransform(p0, S)
 :h3.PathDelta() - Return a Path's Ending Point
 */
  
-void PathDelta(p, pt)
-       register struct segment *p; /* input path                             */
-       register struct fractpoint *pt; /* pointer to x,y to set              */
+void 
+PathDelta(struct segment *p,       /* input path                             */
+	  struct fractpoint *pt)   /* pointer to x,y to set                  */
 {
        struct fractpoint mypoint;  /* I pass this to TextDelta               */
        register fractpel x,y;  /* working variables for path current point   */
@@ -1067,8 +1067,8 @@ This function is called by image code, when we know the size of the
 image in pels, and need to get a bounding box path that surrounds it.
 The starting/ending handle is in the lower right hand corner.
 */
-struct segment *BoundingBox(h, w)
-       register pel h,w;     /* size of box                                  */
+struct segment *
+BoundingBox(pel h, pel w)    /* size of box                                  */
 {
        register struct segment *path;
  
@@ -1086,10 +1086,10 @@ struct segment *BoundingBox(h, w)
 :h3.QueryLoc() - Return the X,Y of a Locition
 */
  
-void QueryLoc(P, S, xP, yP)
-       register struct segment *P;  /* location to query, not consumed       */
-       register struct XYspace *S;  /* XY space to return coordinates in     */
-       register double *xP,*yP;  /* coordinates returned here                */
+void 
+QueryLoc(struct segment *P,      /* location to query, not consumed          */
+	 struct XYspace *S,      /* XY space to return coordinates in        */
+	 double *xP, double *yP) /* coordinates returned here                */
 {
        IfTrace4((MustTraceCalls),"QueryLoc(P=%z, S=%z, (%x, %x))\n",
                                             P, S, xP, yP);
@@ -1114,13 +1114,13 @@ a move segment, for example, he only needs to pass pointers to return
 one control point.
 */
  
-void QueryPath(path, typeP, Bp, Cp, Dp, fP)
-       register struct segment *path;  /* path to check                      */
-       register int *typeP;  /* return the type of path here                 */
-       register struct segment **Bp;  /* return location of first point      */
-       register struct segment **Cp;  /* return location of second point     */
-       register struct segment **Dp;  /* return location of third point      */
-       register double *fP;  /* return Conic sharpness                       */
+void 
+QueryPath(struct segment *path, /* path to check                             */
+	  int *typeP,        /* return the type of path here                 */
+	  struct segment **Bp,  /* return location of first point            */
+	  struct segment **Cp,  /* return location of second point           */
+	  struct segment **Dp,  /* return location of third point            */
+	  double *fP)           /* return Conic sharpness                    */
 {
        register int coerced = FALSE;  /* did I coerce a text path?           */
  
@@ -1177,7 +1177,7 @@ void QueryPath(path, typeP, Bp, Cp, Dp, fP)
                break;
  
            default:
-               abort("QueryPath: unknown segment");
+               Abort("QueryPath: unknown segment");
        }
        if (coerced)
                KillPath(path);
@@ -1188,11 +1188,13 @@ void QueryPath(path, typeP, Bp, Cp, Dp, fP)
 Returns the bounding box by setting the user's variables.
 */
  
-void QueryBounds(p0, S, xminP, yminP, xmaxP, ymaxP)
-       register struct segment *p0;  /* object to check for bound            */
-       struct XYspace *S;    /* coordinate space of returned values          */
-       double *xminP,*yminP; /* lower left hand corner (set by routine)      */
-       double *xmaxP,*ymaxP; /* upper right hand corner (set by routine)     */
+void 
+QueryBounds(struct segment *p0, /* object to check for bound                 */
+	    struct XYspace *S, /* coordinate space of returned values        */
+	    double *xminP,   /* lower left hand corner (set by routine)      */
+	    double *yminP,
+	    double *xmaxP,   /* upper right hand corner (set by routine)     */
+	    double *ymaxP)
 {
        register struct segment *path;  /* loop variable for path segments    */
        register fractpel lastx,lasty;  /* loop variables:  previous endingpoint */
@@ -1219,7 +1221,7 @@ void QueryBounds(p0, S, xminP, yminP, xmaxP, ymaxP)
                                p0 = (struct segment *) DoStroke(Dup(p0));
                                /* no break here, we have a region in p0 */
                            case REGIONTYPE:
-                               p0 = RegionBounds(p0);
+                               p0 = RegionBounds((struct region *)p0);
                                break;
  
                            case PICTURETYPE:
@@ -1317,7 +1319,7 @@ void QueryBounds(p0, S, xminP, yminP, xmaxP, ymaxP)
                    case HINTTYPE:
                        break;
                    default:
-                       abort("QueryBounds: unknown type");
+                       Abort("QueryBounds: unknown type");
                }
  
                if (x < min.x) min.x = x;
@@ -1356,9 +1358,8 @@ done:
 /*
 :h3.BoxPath()
 */
-struct segment *BoxPath(S, h, w)
-       struct XYspace *S;
-       int h,w;
+struct segment *
+BoxPath(struct XYspace *S, int h, int w)
 {
        struct segment *path;
  
@@ -1375,8 +1376,8 @@ shorter.  It can be used in conjunction with QueryPath(), for example,
 to ask about an entire path.
 */
  
-struct segment *DropSegment(path)
-       register struct segment *path;
+struct segment *
+DropSegment(struct segment *path)
 {
        IfTrace1((MustTraceCalls),"DropSegment(%z)\n", path);
        if (path != NULL && path->type == STROKEPATHTYPE)
@@ -1397,8 +1398,8 @@ This routine takes the path and returns a new path consists of the
 first segment only.
 */
  
-struct segment *HeadSegment(path)
-       register struct segment *path;  /* input path                         */
+struct segment *
+HeadSegment(struct segment *path)     /* input path                         */
 {
        IfTrace1((MustTraceCalls),"HeadSegment(%z)\n", path);
        if (path == NULL)
@@ -1423,8 +1424,8 @@ struct segment *HeadSegment(path)
 :h3.DumpPath() - Display a Path on the Trace File
 */
  
-void DumpPath(p)
-       register struct segment *p;
+void 
+DumpPath(struct segment *p)
 {
        register fractpel x,y;
        register fractpel lastx,lasty;
@@ -1466,8 +1467,6 @@ void DumpPath(p)
  
                    case BEZIERTYPE:
                    {
-                       register struct beziersegment *bp = (struct beziersegment *) p;
- 
                        IfTrace4(TRUE,". bezier to (%p,%p), B=(%p,%p)",
                                        x + lastx, y + lasty,
                                        bp->B.x + lastx, bp->B.y + lasty);
@@ -1478,8 +1477,6 @@ void DumpPath(p)
  
                    case HINTTYPE:
                    {
-                       register struct hintsegment *hp = (struct hintsegment *) p;
- 
                        IfTrace4(TRUE,". hint ref=(%p,%p), width=(%p,%p)",
                                        hp->ref.x + lastx, hp->ref.y + lasty,
                                        hp->width.x, hp->width.y);
@@ -1491,7 +1488,9 @@ void DumpPath(p)
                        break;
  
                    case TEXTTYPE:
+#ifdef notyet
                        DumpText(p);
+#endif
                        break;
  
                    default:

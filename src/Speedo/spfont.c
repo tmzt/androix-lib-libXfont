@@ -21,6 +21,7 @@
  *
  * Author: Dave Lemke, Network Computing Devices Inc
  */
+/* $XFree86: xc/lib/font/Speedo/spfont.c,v 3.12 2001/12/14 19:56:41 dawes Exp $ */
 
 /*
 
@@ -56,13 +57,18 @@ from The Open Group.
 
 #include	"FSproto.h"
 #include	"spint.h"
-#include	<servermd.h>
+#include	"servermd.h"
+#include	"fontutil.h"
+#ifndef FONTMODULE
 #ifdef _XOPEN_SOURCE
 #include <math.h>
 #else
 #define _XOPEN_SOURCE	/* to get prototype for hypot on some systems */
 #include <math.h>
 #undef _XOPEN_SOURCE
+#endif
+#else
+#include "xf86_ansic.h"
 #endif
 
 #ifndef M_PI
@@ -78,19 +84,16 @@ from The Open Group.
 
 #endif
 
-extern void SpeedoCloseFont();
-static int sp_get_glyphs();
-static int sp_get_metrics();
-static int sp_load_font();
+static void SpeedoCloseFont(FontPtr pfont);
 
 static int
-sp_get_glyphs(pFont, count, chars, charEncoding, glyphCount, glyphs)
-    FontPtr     pFont;
-    unsigned long count;
-    register unsigned char *chars;
-    FontEncoding charEncoding;
-    unsigned long *glyphCount;	/* RETURN */
-    CharInfoPtr *glyphs;	/* RETURN */
+sp_get_glyphs(
+    FontPtr     pFont,
+    unsigned long count,
+    register unsigned char *chars,
+    FontEncoding charEncoding,
+    unsigned long *glyphCount,	/* RETURN */
+    CharInfoPtr *glyphs)	/* RETURN */
 {
     SpeedoFontPtr spf;
     unsigned int firstCol;
@@ -196,13 +199,13 @@ sp_get_glyphs(pFont, count, chars, charEncoding, glyphCount, glyphs)
 static CharInfoRec nonExistantChar;
 
 static int
-sp_get_metrics(pFont, count, chars, charEncoding, glyphCount, glyphs)
-    FontPtr     pFont;
-    unsigned long count;
-    register unsigned char *chars;
-    FontEncoding charEncoding;
-    unsigned long *glyphCount;	/* RETURN */
-    xCharInfo **glyphs;		/* RETURN */
+sp_get_metrics(
+    FontPtr     pFont,
+    unsigned long count,
+    register unsigned char *chars,
+    FontEncoding charEncoding,
+    unsigned long *glyphCount,	/* RETURN */
+    xCharInfo **glyphs)		/* RETURN */
 {
     int         ret;
     SpeedoFontPtr spf;
@@ -219,15 +222,15 @@ sp_get_metrics(pFont, count, chars, charEncoding, glyphCount, glyphs)
 }
 
 int
-sp_open_font(fontname, filename, entry, vals, format, fmask, flags, spfont)
-    char       *fontname,
-               *filename;
-    FontEntryPtr entry;
-    FontScalablePtr vals;
-    fsBitmapFormat format;
-    fsBitmapFormatMask fmask;
-    Mask        flags;
-    SpeedoFontPtr *spfont;
+sp_open_font(
+    char        *fontname,
+    char        *filename,
+    FontEntryPtr entry,
+    FontScalablePtr vals,
+    fsBitmapFormat format,
+    fsBitmapFormatMask fmask,
+    Mask        flags,
+    SpeedoFontPtr *spfont)
 {
     SpeedoFontPtr spf;
     SpeedoMasterFontPtr spmf;
@@ -239,7 +242,7 @@ sp_open_font(fontname, filename, entry, vals, format, fmask, flags, spfont)
     spmf = (SpeedoMasterFontPtr) entry->u.scalable.extra->private;
     if (!spmf)
     {
-	ret = sp_open_master(filename, &spmf);
+	ret = sp_open_master(fontname, filename, &spmf);
 	if (ret != Successful)
 	    return ret;
 	entry->u.scalable.extra->private = (pointer) spmf;
@@ -314,15 +317,15 @@ sp_open_font(fontname, filename, entry, vals, format, fmask, flags, spfont)
 }
 
 static int
-sp_load_font(fontname, filename, entry, vals, format, fmask, pfont, flags)
+sp_load_font(
     char       *fontname,
-               *filename;
-    FontEntryPtr    entry;
-    FontScalablePtr vals;
-    fsBitmapFormat format;
-    fsBitmapFormatMask fmask;
-    FontPtr     pfont;
-    Mask        flags;
+    char       *filename,
+    FontEntryPtr    entry,
+    FontScalablePtr vals,
+    fsBitmapFormat format,
+    fsBitmapFormatMask fmask,
+    FontPtr     pfont,
+    Mask        flags)
 {
     SpeedoFontPtr spf;
     SpeedoMasterFontPtr spmf;
@@ -377,8 +380,6 @@ sp_load_font(fontname, filename, entry, vals, format, fmask, pfont, flags)
     pfont->unload_font = SpeedoCloseFont;
     pfont->unload_glyphs = NULL;
     pfont->refcnt = 0;
-    pfont->maxPrivate = -1;
-    pfont->devPrivates = (pointer *) 0;
 
     /* have to hold on to master for min/max id */
     sp_close_master_file(spmf);
@@ -387,15 +388,15 @@ sp_load_font(fontname, filename, entry, vals, format, fmask, pfont, flags)
 }
 
 int
-SpeedoFontLoad(ppfont, fontname, filename, entry, vals, format, fmask, flags)
-    FontPtr    *ppfont;
-    char       *fontname;
-    char       *filename;
-    FontEntryPtr    entry;
-    FontScalablePtr vals;
-    fsBitmapFormat format;
-    fsBitmapFormatMask fmask;
-    Mask        flags;
+SpeedoFontLoad(
+    FontPtr    *ppfont,
+    char       *fontname,
+    char       *filename,
+    FontEntryPtr    entry,
+    FontScalablePtr vals,
+    fsBitmapFormat format,
+    fsBitmapFormatMask fmask,
+    Mask        flags)
 {
     FontPtr     pfont;
     int         ret;
@@ -405,24 +406,22 @@ SpeedoFontLoad(ppfont, fontname, filename, entry, vals, format, fmask, flags)
 	hypot(vals->pixel_matrix[2], vals->pixel_matrix[3]) < 1.0)
 	return BadFontName;
 
-    pfont = (FontPtr) xalloc(sizeof(FontRec));
-    if (!pfont) {
+    if (!(pfont = CreateFontRec()))
 	return AllocError;
-    }
+
     ret = sp_load_font(fontname, filename, entry, vals, format, fmask,
 		       pfont, flags);
 
     if (ret == Successful)
 	*ppfont = pfont;
     else
-	xfree (pfont);
+	DestroyFontRec (pfont);
     
     return ret;
 }
 
 void
-sp_close_font(spf)
-    SpeedoFontPtr spf;
+sp_close_font(SpeedoFontPtr spf)
 {
     SpeedoMasterFontPtr spmf;
 
@@ -435,9 +434,8 @@ sp_close_font(spf)
     xfree(spf);
 }
 
-void
-SpeedoCloseFont(pfont)
-    FontPtr     pfont;
+static void
+SpeedoCloseFont(FontPtr pfont)
 {
     SpeedoFontPtr spf;
 
@@ -445,6 +443,6 @@ SpeedoCloseFont(pfont)
     sp_close_font(spf);
     xfree(pfont->info.isStringProp);
     xfree(pfont->info.props);
-    xfree(pfont->devPrivates);
-    xfree(pfont);
+    DestroyFontRec(pfont);
+
 }

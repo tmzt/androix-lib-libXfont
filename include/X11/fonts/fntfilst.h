@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/include/fntfilst.h,v 3.9 2002/12/10 22:23:52 tsi Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -33,13 +34,15 @@ in this Software without prior written authorization from The Open Group.
 #ifndef _FONTFILEST_H_
 #define _FONTFILEST_H_
 
+#ifndef FONTMODULE
 #include <X11/Xos.h>
+#endif
 #ifndef XP_PSTEXT
 #include "fontmisc.h"
 #endif
 #include "fontstruct.h"
-#include "fntfil.h"
 #include "fontxlfd.h"
+#include "fntfil.h"
 
 typedef struct _FontName {
     char	*name;
@@ -116,6 +119,7 @@ typedef struct _FontDirectory {
     unsigned long   alias_mtime;
     FontTableRec    scalable;
     FontTableRec    nonScalable;
+    char	    *attributes;
 } FontDirectoryRec;
 
 /* Capability bits: for definition of capabilities bitmap in the
@@ -127,17 +131,45 @@ typedef struct _FontDirectory {
 typedef struct _FontRenderer {
     char    *fileSuffix;
     int	    fileSuffixLen;
-    int	    (*OpenBitmap)(/* fpe, pFont, flags, entry, fileName, format, fmask */);
-    int	    (*OpenScalable)(/* fpe, pFont, flags, entry, fileName, vals, format, fmask */);
-    int	    (*GetInfoBitmap)(/* fpe, pFontInfo, entry, fileName */);
-    int	    (*GetInfoScalable)(/* fpe, pFontInfo, entry, fileName, vals */);
+    int	    (*OpenBitmap)(FontPathElementPtr /* fpe */, 
+			  FontPtr * /* pFont */,
+			  int /* flags */, 
+			  FontEntryPtr /* entry */, 
+			  char * /* fileName */, 
+			  fsBitmapFormat /* format */, 
+			  fsBitmapFormatMask /* mask */,
+			  FontPtr /* non_cachable_font */);
+    int	    (*OpenScalable)(FontPathElementPtr /* fpe */, 
+			    FontPtr * /* pFont */, 
+			    int /* flags */, 
+			    FontEntryPtr /* entry */, 
+			    char * /* fileName */, 
+			    FontScalablePtr /* vals */, 
+			    fsBitmapFormat /* format */, 
+			    fsBitmapFormatMask /* fmask */,
+			    FontPtr /* non_cachable_font */);
+    int	    (*GetInfoBitmap)(FontPathElementPtr /* fpe */, 
+			     FontInfoPtr /* pFontInfo */, 
+			     FontEntryPtr /* entry */, 
+			     char * /*fileName */);
+    int	    (*GetInfoScalable)(FontPathElementPtr /* fpe */, 
+			       FontInfoPtr /* pFontInfo */, 
+			       FontEntryPtr /* entry */, 
+			       FontNamePtr /* fontName */,
+			       char * /* fileName */, 
+			       FontScalablePtr /* vals */);
     int	    number;
     int     capabilities;	/* Bitmap components defined above */
 } FontRendererRec;
 
 typedef struct _FontRenders {
     int		    number;
-    FontRendererPtr *renderers;
+    struct _FontRenderersElement {
+        /* In order to preserve backward compatibility, the
+           priority field is made invisible to renderers */
+        FontRendererPtr renderer;
+        int priority;
+    } *renderers;
 } FontRenderersRec, *FontRenderersPtr;
 
 typedef struct _BitmapInstance {

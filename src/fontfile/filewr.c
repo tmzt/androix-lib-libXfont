@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/filewr.c,v 3.7 2002/05/31 18:45:50 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -34,12 +35,11 @@ in this Software without prior written authorization from The Open Group.
 #include <X11/Xos.h>
 
 FontFilePtr
-FontFileOpenWrite (name)
-    char    *name;
+FontFileOpenWrite (const char *name)
 {
     int	fd;
 
-#ifdef WIN32
+#if defined(WIN32) || defined(__UNIXOS2__) || defined(__CYGWIN__)
     fd = open (name, O_CREAT|O_TRUNC|O_RDWR|O_BINARY, 0666);
 #else
     fd = creat (name, 0666);
@@ -50,14 +50,13 @@ FontFileOpenWrite (name)
 }
 
 FontFilePtr
-FontFileOpenWriteFd (fd)
+FontFileOpenWriteFd (int fd)
 {
     return (FontFilePtr) BufFileOpenWrite (fd);
 }
 
 FontFilePtr
-FontFileOpenFd (fd)
-    int	fd;
+FontFileOpenFd (int fd)
 {
     return (FontFilePtr) BufFileOpenRead (fd);
 }

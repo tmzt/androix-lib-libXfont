@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/register.c,v 1.15 2001/12/14 19:56:52 dawes Exp $ */
 
 /*
  * This is in a separate source file so that small programs
@@ -32,19 +33,55 @@ in this Software without prior written authorization from The Open Group.
  * end up dragging in code from all the renderers, which is not small.
  */
 
+#include "fontmisc.h"
+#include "fntfilst.h"
+#include "bitmap.h"
+
+#ifdef LOADABLEFONTS
+#include "fontmod.h"
+#endif
+
 void
-FontFileRegisterFpeFunctions()
+FontFileRegisterFpeFunctions(void)
 {
+#ifndef LOADABLEFONTS
     BitmapRegisterFontFileFunctions ();
 
 #ifndef LOWMEMFTPT
 
 #ifndef CRAY
+#ifdef BUILD_SPEEDO
     SpeedoRegisterFontFileFunctions ();
+#endif
+#ifdef BUILD_TYPE1
     Type1RegisterFontFileFunctions();
+#endif
+#endif
+#ifdef BUILD_CID
+    CIDRegisterFontFileFunctions();
+#endif
+#ifdef BUILD_FREETYPE
+    FreeTypeRegisterFontFileFunctions();
+#endif
+#ifdef BUILD_XTRUETYPE
+    XTrueTypeRegisterFontFileFunctions();
 #endif
 
 #endif /* ifndef LOWMEMFTPT */
 
+#else
+    {
+	int i;
+
+	if (FontModuleList) {
+	    for (i = 0; FontModuleList[i].name; i++) {
+		if (FontModuleList[i].initFunc)
+		    FontModuleList[i].initFunc();
+	    }
+	}
+    }
+#endif
+
     FontFileRegisterLocalFpeFunctions ();
 }
+

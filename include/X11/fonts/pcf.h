@@ -27,6 +27,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/bitmap/pcf.h,v 1.4 2001/12/14 19:56:47 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -87,5 +88,12 @@ typedef struct _PCFTable {
 #define PCF_SWIDTHS		    (1<<6)
 #define PCF_GLYPH_NAMES		    (1<<7)
 #define PCF_BDF_ACCELERATORS	    (1<<8)
+
+extern int pcfReadFont ( FontPtr pFont, FontFilePtr file, 
+			 int bit, int byte, int glyph, int scan );
+extern int pcfReadFontInfo ( FontInfoPtr pFontInfo, FontFilePtr file );
+extern int pmfReadFont ( FontPtr pFont, FontFilePtr file, 
+			 int bit, int byte, int glyph, int scan );
+extern int pcfWriteFont ( FontPtr pFont, FontFilePtr file );
 
 #endif				/* _PCF_H_ */

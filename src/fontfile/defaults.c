@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/defaults.c,v 1.8 2001/12/14 19:56:50 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -62,8 +63,10 @@ in this Software without prior written authorization from The Open Group.
 #define DEFAULT_SCAN_UNIT 1
 #endif
 
-FontDefaultFormat (bit, byte, glyph, scan)
-    int	    *bit, *byte, *glyph, *scan;
+#include "fntfilst.h"
+
+void
+FontDefaultFormat (int *bit, int *byte, int *glyph, int *scan)
 {
     *bit = DEFAULT_BIT_ORDER;
     *byte = DEFAULT_BYTE_ORDER;

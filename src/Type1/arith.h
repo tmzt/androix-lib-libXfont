@@ -26,21 +26,20 @@
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
+/* $XFree86: xc/lib/font/Type1/arith.h,v 1.5 2001/01/17 19:43:22 dawes Exp $ */
+
 /*SHARED*/
 
 #include <X11/Xmd.h>		/* LONG64 */
 
-void DLmult(),DLdiv(),DLadd(),DLsub();
- 
-fractpel FPmult();
-fractpel FPdiv();
-fractpel FPstarslash();
- 
 /*END SHARED*/
 /*SHARED*/
  
+#undef      SHORTSIZE
 #define     SHORTSIZE         (sizeof(short)*8)
+#undef      LONGSIZE
 #define     LONGSIZE          (SHORTSIZE*2)
+#undef      MAXSHORT
 #define     MAXSHORT          ((1<<SHORTSIZE)-1)
  
 /*END SHARED*/
@@ -66,5 +65,13 @@ typedef struct {
        dl.high >>= N; \
 }
 #endif
+
+extern void DLmult ( doublelong *product, unsigned long u, unsigned long v );
+extern void DLdiv ( doublelong *quotient, unsigned long divisor );
+extern void DLadd ( doublelong *u, doublelong *v );
+extern void DLsub ( doublelong *u, doublelong *v );
+extern fractpel FPmult ( fractpel u, fractpel v );
+extern fractpel FPdiv ( fractpel dividend, fractpel divisor );
+extern fractpel FPstarslash ( fractpel a, fractpel b, fractpel c );
 
 /*END SHARED*/

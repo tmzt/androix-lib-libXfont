@@ -26,6 +26,8 @@
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
+/* $XFree86: xc/lib/font/Type1/lines.c,v 1.4 2001/01/17 19:43:22 dawes Exp $ */
+
  /* LINES    CWEB         V0003 ********                             */
 /*
 :h1.LINES Module - Rasterizing Lines
@@ -40,6 +42,7 @@ The included files are:
  
 #include "objects.h"
 #include "spaces.h"
+#include "paths.h"
 #include "regions.h"
 #include "lines.h"
  

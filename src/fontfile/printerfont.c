@@ -25,11 +25,12 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/printerfont.c,v 1.5 2001/12/14 19:56:52 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
  */
-/* $NCDId: @(#)fontfile.c,v 1.6 1991/07/02 17:00:46 lemke Exp $ */
+/* $NCDXorg: @(#)fontfile.c,v 1.6 1991/07/02 17:00:46 lemke Exp $ */
 
 #include    "fntfilst.h"
 
@@ -37,10 +38,6 @@ in this Software without prior written authorization from The Open Group.
  * Map FPE functions to renderer functions
  */
 
-extern int FontFileInitFPE();
-extern int FontFileResetFPE();
-extern int FontFileFreeFPE();
-extern void FontFileCloseFont();
 #define PRINTERPATHPREFIX  "PRINTER:"
 
 /* STUB
@@ -50,9 +47,8 @@ FontPathElementPtr	fpe;
 { return 1; }
  */
 
-int
-PrinterFontNameCheck (name)
-    char    *name;
+static int
+PrinterFontNameCheck (char *name)
 {
     if (strncmp(name,PRINTERPATHPREFIX,strlen(PRINTERPATHPREFIX)) != 0)
 	return 0;
@@ -64,9 +60,8 @@ PrinterFontNameCheck (name)
 #endif
 }
 
-int
-PrinterFontInitFPE (fpe)
-    FontPathElementPtr	fpe;
+static int
+PrinterFontInitFPE (FontPathElementPtr fpe)
 {
     int			status;
     FontDirectoryPtr	dir;
@@ -91,20 +86,12 @@ PrinterFontInitFPE (fpe)
  * it that allows us to access the printer fonts
  */
 
-int
-PrinterFontOpenFont (client, fpe, flags, name, namelen, format, fmask,
-		  id, pFont, aliasName, non_cachable_font)
-    pointer		client;
-    FontPathElementPtr	fpe;
-    int			flags;
-    char		*name;
-    int			namelen;
-    fsBitmapFormat	format;
-    fsBitmapFormatMask	fmask;
-    XID			id;
-    FontPtr		*pFont;
-    char		**aliasName;
-    FontPtr		non_cachable_font;
+static int
+PrinterFontOpenFont (pointer client, FontPathElementPtr fpe, Mask flags, 
+		     char *name, int namelen, 
+		     fsBitmapFormat format, fsBitmapFormatMask fmask,
+		     XID id, FontPtr *pFont, char **aliasName, 
+		     FontPtr non_cachable_font)
 {
     if (XpClientIsPrintClient(client,fpe))
 	return (FontFileOpenFont  (client, fpe, flags, name, namelen, format, 
@@ -112,28 +99,19 @@ PrinterFontOpenFont (client, fpe, flags, name, namelen, format, fmask,
     return BadFontName;
 }
 
-int
-PrinterFontListFonts (client, fpe, pat, len, max, names)
-    pointer     client;
-    FontPathElementPtr fpe;
-    char       *pat;
-    int         len;
-    int         max;
-    FontNamesPtr names;
+static int
+PrinterFontListFonts (pointer client, FontPathElementPtr fpe, char *pat, 
+		      int len, int max, FontNamesPtr names)
 {
     if (XpClientIsPrintClient(client,fpe))
 	return FontFileListFonts (client, fpe, pat, len, max, names);
     return BadFontName;
 }
 
-int
-PrinterFontStartListFontsWithInfo(client, fpe, pat, len, max, privatep)
-    pointer     client;
-    FontPathElementPtr fpe;
-    char       *pat;
-    int         len;
-    int         max;
-    pointer    *privatep;
+static int
+PrinterFontStartListFontsWithInfo(pointer client, FontPathElementPtr fpe, 
+				  char *pat, int len, int max, 
+				  pointer *privatep)
 {
     if (XpClientIsPrintClient(client,fpe))
 	return FontFileStartListFontsWithInfo(client, fpe, pat, len, 
@@ -141,16 +119,11 @@ PrinterFontStartListFontsWithInfo(client, fpe, pat, len, max, privatep)
     return BadFontName;
 }
 
-int
-PrinterFontListNextFontWithInfo(client, fpe, namep, namelenp, pFontInfo,
-			     numFonts, private)
-    pointer		client;
-    FontPathElementPtr	fpe;
-    char		**namep;
-    int			*namelenp;
-    FontInfoPtr		*pFontInfo;
-    int			*numFonts;
-    pointer		private;
+static int
+PrinterFontListNextFontWithInfo(pointer client, FontPathElementPtr fpe, 
+				char **namep, int *namelenp, 
+				FontInfoPtr *pFontInfo,
+				int *numFonts, pointer private)
 {
     if (XpClientIsPrintClient(client,fpe))
 	return FontFileListNextFontWithInfo(client, fpe, namep, namelenp, 
@@ -158,14 +131,10 @@ PrinterFontListNextFontWithInfo(client, fpe, namep, namelenp, pFontInfo,
     return BadFontName;
 }
 
-int
-PrinterFontStartListFontsAndAliases(client, fpe, pat, len, max, privatep)
-    pointer     client;
-    FontPathElementPtr fpe;
-    char       *pat;
-    int         len;
-    int         max;
-    pointer    *privatep;
+static int
+PrinterFontStartListFontsAndAliases(pointer client, FontPathElementPtr fpe, 
+				    char *pat, int len, int max, 
+				    pointer *privatep)
 {
     if (XpClientIsPrintClient(client,fpe))
 	return FontFileStartListFontsAndAliases(client, fpe, pat, len, 
@@ -173,16 +142,11 @@ PrinterFontStartListFontsAndAliases(client, fpe, pat, len, max, privatep)
     return BadFontName;
 }
 
-int
-PrinterFontListNextFontOrAlias(client, fpe, namep, namelenp, resolvedp,
-			    resolvedlenp, private)
-    pointer		client;
-    FontPathElementPtr	fpe;
-    char		**namep;
-    int			*namelenp;
-    char		**resolvedp;
-    int			*resolvedlenp;
-    pointer		private;
+static int
+PrinterFontListNextFontOrAlias(pointer client, FontPathElementPtr fpe, 
+			       char **namep, int *namelenp, 
+			       char **resolvedp, int *resolvedlenp, 
+			       pointer private)
 {
     if (XpClientIsPrintClient(client,fpe))
 	return FontFileListNextFontOrAlias(client, fpe, namep, namelenp, 
@@ -190,12 +154,11 @@ PrinterFontListNextFontOrAlias(client, fpe, namep, namelenp, resolvedp,
     return BadFontName;
 }
 
-extern void FontFileEmptyBitmapSource();
-typedef int (*IntFunc) ();
+typedef int (*IntFunc) (void);
 static int  printer_font_type;
 
 void
-PrinterFontRegisterFpeFunctions ()
+PrinterFontRegisterFpeFunctions (void)
 {
     /* what is the use of printer font type? */
     printer_font_type = RegisterFPEFunctions(PrinterFontNameCheck,
@@ -207,9 +170,9 @@ PrinterFontRegisterFpeFunctions ()
 					  PrinterFontListFonts,
 					  PrinterFontStartListFontsWithInfo,
 					  PrinterFontListNextFontWithInfo,
-					  (IntFunc) 0,
-					  (IntFunc) 0,
-					  (IntFunc) 0,
+					  NULL,
+					  NULL,
+					  NULL,
 					  PrinterFontStartListFontsAndAliases,
 					  PrinterFontListNextFontOrAlias,
 					  FontFileEmptyBitmapSource);

@@ -49,24 +49,27 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/Speedo/spfuncs.c,v 1.8 2001/12/14 19:56:42 dawes Exp $ */
 
+#ifndef FONTMODULE
 #include <X11/Xos.h>
+#endif
 #include "fntfilst.h"
+#include "fontutil.h"
 #include "spint.h"
 
 /* ARGSUSED */
-int 
-SpeedoOpenScalable (fpe, pFont, flags, entry, fileName, vals, format, fmask,
-		    non_cachable_font)
-    FontPathElementPtr	fpe;
-    FontPtr		*pFont;
-    int			flags;
-    FontEntryPtr	entry;
-    char		*fileName;
-    FontScalablePtr	vals;
-    fsBitmapFormat	format;
-    fsBitmapFormatMask	fmask;
-    FontPtr		non_cachable_font;	/* We don't do licensing */
+static int 
+SpeedoOpenScalable (
+    FontPathElementPtr	fpe,
+    FontPtr		*pFont,
+    int			flags,
+    FontEntryPtr	entry,
+    char		*fileName,
+    FontScalablePtr	vals,
+    fsBitmapFormat	format,
+    fsBitmapFormatMask	fmask,
+    FontPtr		non_cachable_font)	/* We don't do licensing */
 {
     char	fullName[MAXFONTNAMELEN];
 
@@ -85,13 +88,13 @@ SpeedoOpenScalable (fpe, pFont, flags, entry, fileName, vals, format, fmask,
  * and to simply save the values without doing the work.
  */
 static int
-get_font_info(pinfo, fontname, filename, entry, vals, spfont)
-    FontInfoPtr pinfo;
-    char       *fontname;
-    char       *filename;
-    FontEntryPtr	entry;
-    FontScalablePtr	vals;
-    SpeedoFontPtr *spfont;
+get_font_info(
+    FontInfoPtr pinfo,
+    char       *fontname,
+    char       *filename,
+    FontEntryPtr	entry,
+    FontScalablePtr	vals,
+    SpeedoFontPtr *spfont)
 {
     SpeedoFontPtr spf;
     int         err;
@@ -122,14 +125,14 @@ get_font_info(pinfo, fontname, filename, entry, vals, spfont)
 }
 
 /* ARGSUSED */
-int
-SpeedoGetInfoScaleable(fpe, pFontInfo, entry, fontName, fileName, vals)
-    FontPathElementPtr	fpe;
-    FontInfoPtr		pFontInfo;
-    FontEntryPtr	entry;
-    FontNamePtr		fontName;
-    char		*fileName;
-    FontScalablePtr	vals;
+static int
+SpeedoGetInfoScaleable(
+    FontPathElementPtr	fpe,
+    FontInfoPtr		pFontInfo,
+    FontEntryPtr	entry,
+    FontNamePtr		fontName,
+    char		*fileName,
+    FontScalablePtr	vals)
 {
     SpeedoFontPtr spf = NULL;
     char        fullName[MAXFONTNAMELEN];
@@ -147,8 +150,8 @@ SpeedoGetInfoScaleable(fpe, pFontInfo, entry, fontName, fileName, vals)
 }
 
 static FontRendererRec renderer = {
-    ".spd", 4, (int (*)()) 0, SpeedoOpenScalable,
-	(int (*)()) 0, SpeedoGetInfoScaleable, 0
+    ".spd", 4, NULL, SpeedoOpenScalable,
+	NULL, SpeedoGetInfoScaleable, 0
     , CAP_MATRIX | CAP_CHARSUBSETTING
 };
     

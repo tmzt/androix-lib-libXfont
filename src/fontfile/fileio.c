@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/fileio.c,v 3.10 2002/05/31 18:45:50 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -33,12 +34,11 @@ in this Software without prior written authorization from The Open Group.
 #include <fntfilio.h>
 #include <X11/Xos.h>
 #ifndef O_BINARY
-#define O_BINARY 0
+#define O_BINARY O_RDONLY
 #endif
 
 FontFilePtr
-FontFileOpen (name)
-    char    *name;
+FontFileOpen (const char *name)
 {
     int		fd;
     int		len;
@@ -54,7 +54,12 @@ FontFileOpen (name)
 	return 0;
     }
     len = strlen (name);
+#ifndef __UNIXOS2__
     if (len > 2 && !strcmp (name + len - 2, ".Z")) {
+#else
+    if (len > 2 && (!strcmp (name + len - 4, ".pcz") || 
+		    !strcmp (name + len - 2, ".Z"))) {
+#endif
 	cooked = BufFilePushCompressed (raw);
 	if (!cooked) {
 	    BufFileClose (raw, TRUE);
@@ -75,8 +80,7 @@ FontFileOpen (name)
 }
 
 int
-FontFileClose (f)
-    FontFilePtr	f;
+FontFileClose (FontFilePtr f)
 {
     return BufFileClose ((BufFilePtr) f, TRUE);
 }

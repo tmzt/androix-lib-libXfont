@@ -27,6 +27,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/include/bitmap.h,v 1.10 2001/12/14 19:56:53 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -35,12 +36,19 @@ from The Open Group.
 #ifndef _BITMAP_H_
 #define _BITMAP_H_
 
-#include <fntfilio.h>
+#include "fntfilio.h"
+#ifndef FONTMODULE
 #include <stdio.h>  /* just for NULL */
+#else
+#include "xf86_ansic.h"
+#endif
 
 /*
  * Internal format used to store bitmap fonts
  */
+
+/* number of encoding entries in one segment */
+#define BITMAP_FONT_SEGMENT_SIZE 128
 
 typedef struct _BitmapExtra {
     Atom       *glyphNames;
@@ -56,17 +64,53 @@ typedef struct _BitmapFont {
     CharInfoPtr metrics;	/* font metrics, including glyph pointers */
     xCharInfo  *ink_metrics;	/* ink metrics */
     char       *bitmaps;	/* base of bitmaps, useful only to free */
-    CharInfoPtr *encoding;	/* array of char info pointers */
+    CharInfoPtr **encoding;	/* array of arrays of char info pointers */
     CharInfoPtr pDefault;	/* default character */
     BitmapExtraPtr bitmapExtra;	/* stuff not used by X server */
 }           BitmapFontRec, *BitmapFontPtr;
 
-extern int  bitmapReadFont(), bitmapReadFontInfo();
-extern int  bitmapGetGlyphs(), bitmapGetMetrics();
-extern int  bitmapGetBitmaps(), bitmapGetExtents();
-extern void bitmapUnloadFont();
+#define ACCESSENCODING(enc,i) \
+(enc[(i)/BITMAP_FONT_SEGMENT_SIZE]?\
+(enc[(i)/BITMAP_FONT_SEGMENT_SIZE][(i)%BITMAP_FONT_SEGMENT_SIZE]):\
+0)
+#define ACCESSENCODINGL(enc,i) \
+(enc[(i)/BITMAP_FONT_SEGMENT_SIZE][(i)%BITMAP_FONT_SEGMENT_SIZE])
 
-extern void bitmapComputeFontBounds();
-extern void bitmapComputeFontInkBounds();
+#define SEGMENT_MAJOR(n) ((n)/BITMAP_FONT_SEGMENT_SIZE)
+#define SEGMENT_MINOR(n) ((n)%BITMAP_FONT_SEGMENT_SIZE)
+#define NUM_SEGMENTS(n) \
+  (((n)+BITMAP_FONT_SEGMENT_SIZE-1)/BITMAP_FONT_SEGMENT_SIZE)
+
+extern int bitmapGetGlyphs ( FontPtr pFont, unsigned long count, 
+			     unsigned char *chars, FontEncoding charEncoding, 
+			     unsigned long *glyphCount, CharInfoPtr *glyphs );
+extern int bitmapGetMetrics ( FontPtr pFont, unsigned long count, 
+			      unsigned char *chars, FontEncoding charEncoding,
+			      unsigned long *glyphCount, xCharInfo **glyphs );
+
+extern void bitmapComputeFontBounds ( FontPtr pFont );
+extern void bitmapComputeFontInkBounds ( FontPtr pFont );
+extern Bool bitmapAddInkMetrics ( FontPtr pFont );
+extern int bitmapComputeWeight ( FontPtr pFont );
+
+extern int BitmapOpenBitmap ( FontPathElementPtr fpe, FontPtr *ppFont, 
+			      int flags, FontEntryPtr entry, char *fileName, 
+			      fsBitmapFormat format, fsBitmapFormatMask fmask,
+			      FontPtr non_cachable_font );
+extern int BitmapGetInfoBitmap ( FontPathElementPtr fpe, 
+				 FontInfoPtr pFontInfo, FontEntryPtr entry, 
+				 char *fileName );
+extern void BitmapRegisterFontFileFunctions ( void );
+extern int BitmapGetRenderIndex ( FontRendererPtr renderer );
+
+extern int BitmapOpenScalable ( FontPathElementPtr fpe, FontPtr *pFont, 
+				int flags, FontEntryPtr entry, char *fileName,
+				FontScalablePtr vals, fsBitmapFormat format, 
+				fsBitmapFormatMask fmask, 
+				FontPtr non_cachable_font );
+extern int BitmapGetInfoScalable ( FontPathElementPtr fpe, 
+				   FontInfoPtr pFontInfo, FontEntryPtr entry, 
+				   FontNamePtr fontName, char *fileName, 
+				   FontScalablePtr vals );
 
 #endif				/* _BITMAP_H_ */

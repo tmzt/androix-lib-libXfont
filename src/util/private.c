@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/util/private.c,v 1.8 2001/12/14 19:56:57 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -33,33 +34,64 @@ in this Software without prior written authorization from The Open Group.
 #include    "fontmisc.h"
 #include    "fontstruct.h"
 
-int _FontPrivateAllocateIndex;
+static int _FontPrivateAllocateIndex = 0;
 
 int
-AllocateFontPrivateIndex ()
+AllocateFontPrivateIndex (void)
 {
     return _FontPrivateAllocateIndex++;
 }
 
+FontPtr 
+CreateFontRec (void)
+{
+    FontPtr pFont;
+    int size;
+
+    size = sizeof(FontRec) + (sizeof(pointer) * _FontPrivateAllocateIndex);
+
+    pFont = (FontPtr)xalloc(size);
+    bzero((char*)pFont, size);
+    
+    if(pFont) {
+	pFont->maxPrivate = _FontPrivateAllocateIndex - 1;
+	if(_FontPrivateAllocateIndex)
+	    pFont->devPrivates = (pointer)(&pFont[1]);
+    }
+
+    return pFont;
+}
+
+void DestroyFontRec (FontPtr pFont)
+{
+   if (pFont->devPrivates && pFont->devPrivates != (pointer)(&pFont[1]))
+	xfree(pFont->devPrivates);
+   xfree(pFont);
+}
+
 void
-ResetFontPrivateIndex ()
+ResetFontPrivateIndex (void)
 {
     _FontPrivateAllocateIndex = 0;
 }
 
 Bool
-_FontSetNewPrivate (pFont, n, ptr)
-    FontPtr pFont;
-    int	    n;
-    pointer ptr;
+_FontSetNewPrivate (FontPtr pFont, int n, pointer ptr)
 {
     pointer *new;
 
-    if (n > pFont->maxPrivate)
-    {
-	new = (pointer *) xrealloc (pFont->devPrivates, (n + 1) * sizeof (pointer));
-	if (!new)
-	    return FALSE;
+    if (n > pFont->maxPrivate) {
+	if (pFont->devPrivates && pFont->devPrivates != (pointer)(&pFont[1])) {
+	    new = (pointer *) xrealloc (pFont->devPrivates, (n + 1) * sizeof (pointer));
+	    if (!new)
+		return FALSE;
+	} else {
+	    new = (pointer *) xalloc ((n + 1) * sizeof (pointer));
+	    if (!new)
+		return FALSE;
+	    if (pFont->devPrivates)
+		memcpy (new, pFont->devPrivates, (pFont->maxPrivate + 1) * sizeof (pointer));
+	}
 	pFont->devPrivates = new;
 	/* zero out new, uninitialized privates */
 	while(++pFont->maxPrivate < n)
@@ -68,3 +100,4 @@ _FontSetNewPrivate (pFont, n, ptr)
     pFont->devPrivates[n] = ptr;
     return TRUE;
 }
+

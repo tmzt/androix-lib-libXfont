@@ -49,9 +49,11 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/Speedo/spglyph.c,v 1.7 2001/12/14 19:56:42 dawes Exp $ */
 
 #include	<X11/X.h>	/* for bit order #defines */
 #include	"spint.h"
+#include	"fontutil.h"
 
 #undef	CLIP_BBOX_NOISE
 
@@ -62,12 +64,12 @@ static int  bit_order,
             scan;
 
 unsigned long
-sp_compute_data_size(pfont, mappad, scanlinepad, start, end)
-    FontPtr     pfont;
+sp_compute_data_size(
+    FontPtr     pfont,
     int         mappad,
-                scanlinepad;
+    int         scanlinepad,
     unsigned long start,
-                end;
+    unsigned long end)
 {
     unsigned long ch;
     unsigned long size = 0;
@@ -121,8 +123,7 @@ sp_compute_data_size(pfont, mappad, scanlinepad, start, end)
 }
 
 static void
-finish_line(spf)
-    SpeedoFontPtr spf;
+finish_line(SpeedoFontPtr spf)
 {
     int         bpr = cfv->bpr;
     CharInfoPtr ci = &spf->encoding[cfv->char_id - spf->master->first_char_id];
@@ -131,17 +132,14 @@ finish_line(spf)
 	bpr = GLYPH_SIZE(ci, cfv->scanpad);
     }
     if (bpr) {			/* char may not have any metrics... */
-	cfv->bp += bpr;
+	cfv->bp = (char *)cfv->bp + bpr;
     }
     assert(cfv->bp - sp_fp_cur->bitmaps <= sp_fp_cur->bitmap_size);
 }
 
 
 void
-sp_set_bitmap_bits(y, xbit1, xbit2)
-    fix15       y;
-    fix15       xbit1,
-                xbit2;
+sp_set_bitmap_bits(fix15 y, fix15 xbit1, fix15 xbit2)
 {
     int         nmiddle;
     CARD8	startmask,
@@ -188,7 +186,7 @@ sp_set_bitmap_bits(y, xbit1, xbit2)
 	xbit1 = 0;
 
     nmiddle = (xbit1 >> 3);
-    dst = (CARD8 *) (cfv->bp + nmiddle);
+    dst = (CARD8 *)cfv->bp + nmiddle;
     xbit2 -= (xbit1 & ~7);
     nmiddle = (xbit2 >> 3);
     xbit1 &= 7;
@@ -212,13 +210,8 @@ sp_set_bitmap_bits(y, xbit1, xbit2)
 
 /* ARGSUSED */
 void
-sp_open_bitmap(x_set_width, y_set_width, xorg, yorg, xsize, ysize)
-    fix31       x_set_width;
-    fix31       y_set_width;
-    fix31       xorg;
-    fix31       yorg;
-    fix15       xsize;
-    fix15       ysize;
+sp_open_bitmap(fix31 x_set_width, fix31 y_set_width, fix31 xorg, fix31 yorg,
+		fix15 xsize, fix15 ysize)
 {
     CharInfoPtr ci = &sp_fp_cur->encoding[cfv->char_id - sp_fp_cur->master->first_char_id];
 
@@ -314,10 +307,10 @@ sp_close_bitmap()
 }
 
 int
-sp_build_all_bitmaps(pfont, format, fmask)
-    FontPtr     pfont;
-    fsBitmapFormat format;
-    fsBitmapFormatMask fmask;
+sp_build_all_bitmaps(
+    FontPtr     pfont,
+    fsBitmapFormat format,
+    fsBitmapFormatMask fmask)
 {
     int         ret,
                 glyph = 1,
@@ -372,7 +365,7 @@ sp_build_all_bitmaps(pfont, format, fmask)
 	int j;
 	cfv->char_index = spmf->enc[i * 2 + 1];
 	cfv->char_id = spmf->enc[i * 2];
-#if DEBUG
+#ifdef DEBUG
 fprintf(stderr, "build_all_sp_bitmaps:i = %d, Char ID = %d\n", i, cfv->char_id);
 #endif
 	if (!cfv->char_id)

@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/include/fontmisc.h,v 3.16 2001/12/14 19:56:54 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -33,13 +34,9 @@ in this Software without prior written authorization from The Open Group.
 #ifndef _FONTMISC_H_
 #define _FONTMISC_H_
 
+#ifndef FONTMODULE
 #include <X11/Xfuncs.h>
-
-#ifndef X_NOT_STDC_ENV
 #include <stdlib.h>
-#else
-extern int rand();
-#endif
 #include <stdio.h>
 
 #ifndef X_NOT_POSIX
@@ -48,19 +45,10 @@ extern int rand();
 extern int close();
 #endif
 
-typedef unsigned char	*pointer;
-typedef int		Bool;
+#endif /* FONTMODULE */
 
-#ifndef X_PROTOCOL
-#ifndef _XSERVER64
-typedef unsigned long	Atom;
-typedef unsigned long	XID;
-#else
-#include <X11/Xmd.h>
-typedef CARD32 XID;
-typedef CARD32 Atom;
-#endif 
-#endif
+#include "X11/Xdefs.h"
+
 
 #ifndef LSBFirst
 #define LSBFirst	0
@@ -76,49 +64,69 @@ typedef CARD32 Atom;
 #define FALSE 0
 #endif
 
-extern char	    *NameForAtom ();
+extern Atom MakeAtom ( char *string, unsigned len, int makeit );
+extern int ValidAtom ( Atom atom );
+extern char *NameForAtom (Atom atom);
 
+#ifndef OS_H
+extern pointer Xalloc(unsigned long);
+extern pointer Xrealloc(pointer, unsigned long);
+extern void Xfree(pointer);
+extern pointer Xcalloc(unsigned long);
+#endif
+extern int f_strcasecmp(const char *s1, const char *s2);
+
+#ifndef xalloc
 #define xalloc(n)   Xalloc ((unsigned) n)
 #define xfree(p)    Xfree ((pointer) p)
 #define xrealloc(p,n)	Xrealloc ((pointer)p,n)
+#define xcalloc(n,s)    Xcalloc((unsigned) n * (unsigned) s)
+#endif
 #define lowbit(x) ((x) & (~(x) + 1))
 
-#define assert(x)
+#undef assert
+#define assert(x)	((void)0)
+
+#ifndef strcasecmp
+#if defined(NEED_STRCASECMP) && !defined(FONTMODULE)
+#define strcasecmp(s1,s2) f_strcasecmp(s1,s2)
+#endif
+#endif
 
 extern void
 BitOrderInvert(
-#if NeedFunctionPrototypes
     register unsigned char *,
     register int
-#endif
 );
 
 extern void
 TwoByteSwap(
-#if NeedFunctionPrototypes
     register unsigned char *,
     register int
-#endif
 );
 
 extern void
 FourByteSwap(
-#if NeedFunctionPrototypes
     register unsigned char *,
     register int
-#endif
 );
 
 extern int
 RepadBitmap (
-#if NeedFunctionPrototypes
     char*, 
     char*,
     unsigned, 
     unsigned,
     int, 
     int
-#endif
 );
+
+extern void CopyISOLatin1Lowered(
+    char * /*dest*/,
+    char * /*source*/,
+    int /*length*/
+);
+
+extern void register_fpe_functions(void);
 
 #endif /* _FONTMISC_H_ */

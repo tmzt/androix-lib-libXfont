@@ -27,6 +27,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/util/fontutil.c,v 3.7 2001/12/14 19:56:56 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -35,6 +36,7 @@ from The Open Group.
 #include    "fontmisc.h"
 #include    "fontstruct.h"
 #include    "FSproto.h"
+#include    "fontutil.h"
 
 /* Define global here...  doesn't hurt the servers, and avoids
    unresolved references in font clients.  */
@@ -43,13 +45,12 @@ static int defaultGlyphCachingMode = DEFAULT_GLYPH_CACHING_MODE;
 int glyphCachingMode = DEFAULT_GLYPH_CACHING_MODE;
 
 void
-GetGlyphs(font, count, chars, fontEncoding, glyphcount, glyphs)
-    FontPtr     font;
-    unsigned long count;
-    unsigned char *chars;
-    FontEncoding fontEncoding;
-    unsigned long *glyphcount;	/* RETURN */
-    CharInfoPtr *glyphs;	/* RETURN */
+GetGlyphs(FontPtr font, 
+	  unsigned long count, 
+	  unsigned char *chars, 
+	  FontEncoding fontEncoding, 
+	  unsigned long *glyphcount,	/* RETURN */
+	  CharInfoPtr *glyphs)		/* RETURN */
 {
     (*font->get_glyphs) (font, count, chars, fontEncoding, glyphcount, glyphs);
 }
@@ -58,11 +59,10 @@ GetGlyphs(font, count, chars, fontEncoding, glyphcount, glyphs)
 #define MAX(a,b)    ((a)>(b)?(a):(b))
 
 void
-QueryGlyphExtents(pFont, charinfo, count, info)
-    FontPtr     pFont;
-    CharInfoPtr *charinfo;
-    unsigned long count;
-    ExtentInfoRec *info;
+QueryGlyphExtents(FontPtr pFont, 
+		  CharInfoPtr *charinfo, 
+		  unsigned long count, 
+		  ExtentInfoRec *info)
 {
     register unsigned long i;
     xCharInfo  *pCI;
@@ -131,11 +131,10 @@ QueryGlyphExtents(pFont, charinfo, count, info)
 }
 
 Bool
-QueryTextExtents(pFont, count, chars, info)
-    FontPtr     pFont;
-    unsigned long count;
-    unsigned char *chars;
-    ExtentInfoRec *info;
+QueryTextExtents(FontPtr pFont, 
+		 unsigned long count, 
+		 unsigned char *chars, 
+		 ExtentInfoRec *info)
 {
     xCharInfo     **charinfo;
     unsigned long   n;
@@ -158,11 +157,11 @@ QueryTextExtents(pFont, count, chars, info)
     /* Do default character substitution as get_metrics doesn't */
 
 #define IsNonExistentChar(ci) (!(ci) || \
-			       (ci)->ascent == 0 && \
+			       ((ci)->ascent == 0 && \
 			       (ci)->descent == 0 && \
 			       (ci)->leftSideBearing == 0 && \
 			       (ci)->rightSideBearing == 0 && \
-			       (ci)->characterWidth == 0)
+			       (ci)->characterWidth == 0))
 
     firstReal = n;
     defc[0] = pFont->info.defaultCh >> 8;
@@ -191,8 +190,7 @@ QueryTextExtents(pFont, count, chars, info)
 }
 
 Bool
-ParseGlyphCachingMode(str)
-    char       *str;
+ParseGlyphCachingMode(char *str)
 {
     if (!strcmp(str, "none")) defaultGlyphCachingMode = CACHING_OFF;
     else if (!strcmp(str, "all")) defaultGlyphCachingMode = CACHE_ALL_GLYPHS;
@@ -202,7 +200,7 @@ ParseGlyphCachingMode(str)
 }
 
 void
-InitGlyphCaching()
+InitGlyphCaching(void)
 {
     /* Set glyphCachingMode to the mode the server hopes to
        support.  DDX drivers that do not support the requested level
@@ -217,8 +215,7 @@ InitGlyphCaching()
  * caching they can support.
  */
 void
-SetGlyphCachingMode(newmode)
-    int newmode;
+SetGlyphCachingMode(int newmode)
 {
     if ( (glyphCachingMode > newmode) && (newmode >= 0) )
 	glyphCachingMode = newmode;
@@ -230,16 +227,15 @@ SetGlyphCachingMode(newmode)
 
 /* add_range(): Add range to a list of ranges, with coalescence */
 int
-add_range(newrange, nranges, range, charset_subset)
-fsRange *newrange;
-int *nranges;
-fsRange **range;
-Bool charset_subset;
+add_range(fsRange *newrange, 
+	  int *nranges, 
+	  fsRange **range, 
+	  Bool charset_subset)
 {
     int first, last, middle;
     unsigned long keymin, keymax;
-    unsigned long ptrmin, ptrmax;
-    fsRange *ptr, *ptr1, *ptr2, *endptr;
+    unsigned long ptrmin = 0, ptrmax = 0;
+    fsRange *ptr = NULL, *ptr1, *ptr2, *endptr;
 
     /* There are two different ways to treat ranges:
 
@@ -257,7 +253,7 @@ Bool charset_subset;
     /* If newrange covers multiple rows; break up the rows */
     if (!charset_subset && newrange->min_char_high != newrange->max_char_high)
     {
-	int i, err;
+	int i, err = 0;
 	fsRange temprange;
 	for (i = newrange->min_char_high;
 	     i <= newrange->max_char_high;
@@ -414,3 +410,31 @@ Bool charset_subset;
 
     return Successful;
 }
+
+/* It is difficult to find a good place for this. */
+#ifdef NEED_STRCASECMP
+int
+f_strcasecmp(const char *s1, const char *s2)
+{
+  char c1, c2;
+
+  if (*s1 == 0)
+    if (*s2 == 0)
+      return 0;
+    else
+      return 1;
+
+  c1 = (isupper (*s1) ? tolower (*s1) : *s1);
+  c2 = (isupper (*s2) ? tolower (*s2) : *s2);
+  while (c1 == c2) {
+    if (c1 == '\0')
+      return 0;
+    s1++;
+    s2++;
+    c1 = (isupper (*s1) ? tolower (*s1) : *s1);
+    c2 = (isupper (*s2) ? tolower (*s2) : *s2);
+  }
+  return c1 - c2;
+}
+#endif
+

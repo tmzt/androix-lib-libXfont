@@ -27,16 +27,28 @@
  * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  * SOFTWARE.
  */
+/* $XFree86: xc/lib/font/Type1/t1stub.c,v 1.9 2002/02/18 20:51:57 herrb Exp $ */
 
-#include "objects.h"	/* get #define for abort() */
- 
-xiStub()
+#ifdef FONTMODULE
+#include "Xdefs.h"	/* Bool declaration */
+#include "Xmd.h"	/* INT32 declaration */
+#include "os.h"
+#include "xf86_ansic.h"
+#else 
+#include <stdio.h>
+#include "os.h"
+#endif
+#include "objects.h"	/* get #define for Abort() */
+
+static void 
+xiStub(void)
 {
        printf("xiStub called\n");
-       abort("xiStub called");
+       Abort("xiStub called");
 }
  
-void t1_DumpText()
+void 
+t1_DumpText(void)
 {
        xiStub();
 }

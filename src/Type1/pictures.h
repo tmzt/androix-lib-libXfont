@@ -27,6 +27,8 @@
  * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  * SOFTWARE.
  */
+/* $XFree86: xc/lib/font/Type1/pictures.h,v 1.4 2001/01/17 19:43:23 dawes Exp $ */
+
 /* STUB */
  
 #define    CopyPicture(p)         p
@@ -44,5 +46,5 @@ struct picture {
 #define    Phantom(o)             t1_Phantom(o)
 #define    Snap(o)                t1_Snap(o)
  
-struct segment *t1_Phantom();
-struct segment *t1_Snap();
+extern struct segment *t1_Phantom ( struct segment *p );
+extern struct segment *t1_Snap ( struct segment *p );

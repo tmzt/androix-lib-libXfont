@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/bitmap/bitmap.c,v 1.7 2001/12/14 19:56:45 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -33,19 +34,11 @@ in this Software without prior written authorization from The Open Group.
 #include "fntfilst.h"
 #include "bitmap.h"
 
-int         bitmapGetGlyphs(), bitmapGetMetrics();
-int         bitmapGetBitmaps(), bitmapGetExtents();
-void	    bitmapComputeFontBounds ();
-void	    bitmapComputeFontInkBounds ();
-
 int
-bitmapGetGlyphs(pFont, count, chars, charEncoding, glyphCount, glyphs)
-    FontPtr     pFont;
-    unsigned long count;
-    register unsigned char *chars;
-    FontEncoding charEncoding;
-    unsigned long *glyphCount;	/* RETURN */
-    CharInfoPtr *glyphs;	/* RETURN */
+bitmapGetGlyphs(FontPtr pFont, unsigned long count, unsigned char *chars, 
+		FontEncoding charEncoding, 
+		unsigned long *glyphCount, 	/* RETURN */
+		CharInfoPtr *glyphs) 		/* RETURN */
 {
     BitmapFontPtr  bitmapFont;
     unsigned int firstCol;
@@ -56,7 +49,7 @@ bitmapGetGlyphs(pFont, count, chars, charEncoding, glyphCount, glyphs)
     register unsigned int c;
     register CharInfoPtr pci;
     unsigned int r;
-    CharInfoPtr *encoding;
+    CharInfoPtr **encoding;
     CharInfoPtr pDefault;
 
     bitmapFont = (BitmapFontPtr) pFont->fontPrivate;
@@ -75,14 +68,14 @@ bitmapGetGlyphs(pFont, count, chars, charEncoding, glyphCount, glyphs)
 	    while (count--) {
 		c = (*chars++) - firstCol;
 		if (c < numCols)
-		    *glyphs++ = encoding[c];
+		    *glyphs++ = ACCESSENCODING(encoding,c);
 		else
 		    *glyphs++ = pDefault;
 	    }
 	} else {
 	    while (count--) {
 		c = (*chars++) - firstCol;
-		if (c < numCols && (pci = encoding[c]))
+		if (c < numCols && (pci = ACCESSENCODING(encoding,c)))
 		    *glyphs++ = pci;
 		else if (pDefault)
 		    *glyphs++ = pDefault;
@@ -95,7 +88,7 @@ bitmapGetGlyphs(pFont, count, chars, charEncoding, glyphCount, glyphs)
 		c = *chars++ << 8;
 		c = (c | *chars++) - firstCol;
 		if (c < numCols)
-		    *glyphs++ = encoding[c];
+		    *glyphs++ = ACCESSENCODING(encoding,c);
 		else
 		    *glyphs++ = pDefault;
 	    }
@@ -103,7 +96,7 @@ bitmapGetGlyphs(pFont, count, chars, charEncoding, glyphCount, glyphs)
 	    while (count--) {
 		c = *chars++ << 8;
 		c = (c | *chars++) - firstCol;
-		if (c < numCols && (pci = encoding[c]))
+		if (c < numCols && (pci = ACCESSENCODING(encoding,c)))
 		    *glyphs++ = pci;
 		else if (pDefault)
 		    *glyphs++ = pDefault;
@@ -118,7 +111,7 @@ bitmapGetGlyphs(pFont, count, chars, charEncoding, glyphCount, glyphs)
 	    r = (*chars++) - firstRow;
 	    c = (*chars++) - firstCol;
 	    if (r < numRows && c < numCols &&
-		    (pci = encoding[r * numCols + c]))
+		    (pci = ACCESSENCODING(encoding, r * numCols + c)))
 		*glyphs++ = pci;
 	    else if (pDefault)
 		*glyphs++ = pDefault;
@@ -132,13 +125,10 @@ bitmapGetGlyphs(pFont, count, chars, charEncoding, glyphCount, glyphs)
 static CharInfoRec nonExistantChar;
 
 int
-bitmapGetMetrics(pFont, count, chars, charEncoding, glyphCount, glyphs)
-    FontPtr     pFont;
-    unsigned long count;
-    register unsigned char *chars;
-    FontEncoding charEncoding;
-    unsigned long *glyphCount;	/* RETURN */
-    xCharInfo **glyphs;		/* RETURN */
+bitmapGetMetrics(FontPtr pFont, unsigned long count, unsigned char *chars, 
+		 FontEncoding charEncoding, 
+		 unsigned long *glyphCount,	/* RETURN */
+		 xCharInfo **glyphs)		/* RETURN */
 {
     int         ret;
     xCharInfo  *ink_metrics;

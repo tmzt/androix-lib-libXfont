@@ -49,43 +49,30 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/bitmap/bdfutils.c,v 1.10 2001/12/14 19:56:45 dawes Exp $ */
 
+#ifndef FONTMODULE
 #include <ctype.h>
-
 #include <stdio.h>
+#include <stdarg.h>
+#endif
+
 #include "fntfilst.h"
 #include "fontstruct.h"
 /* use bitmap structure */
 #include "bitmap.h"
 #include "bdfint.h"
-#if NeedVarargsPrototypes
-#include <stdarg.h>
-#else
-#include <varargs.h>
-#endif
 
 int bdfFileLineNum;
 
 /***====================================================================***/
 
-/* VARARGS1 */
 void
-#if NeedVarargsPrototypes
 bdfError(char* message, ...)
-#else
-bdfError (message, va_alist)
-    char* message;
-    va_dcl
-#endif
 {
     va_list args;
 
-#if NeedVarargsPrototypes
     va_start (args, message);
-#else
-    va_start (args);
-#endif
-
     fprintf(stderr, "BDF Error on line %d: ", bdfFileLineNum);
     vfprintf(stderr, message, args);
     va_end (args);
@@ -93,19 +80,15 @@ bdfError (message, va_alist)
 
 /***====================================================================***/
 
-/* VARARGS1 */
 void
-bdfWarning(message, a0, a1, a2, a3, a4, a5)
-    char       *message;
-    pointer     a0,
-                a1,
-                a2,
-                a3,
-                a4,
-                a5;
+bdfWarning(char *message, ...)
 {
+    va_list args;
+
+    va_start (args, message);
     fprintf(stderr, "BDF Warning on line %d: ", bdfFileLineNum);
-    fprintf(stderr, message, a0, a1, a2, a3, a4, a5);
+    vfprintf(stderr, message, args);
+    va_end (args);
 }
 
 /*
@@ -114,10 +97,7 @@ bdfWarning(message, a0, a1, a2, a3, a4, a5)
  */
 
 unsigned char *
-bdfGetLine(file, buf, len)
-    FontFilePtr file;
-    unsigned char *buf;
-    int         len;
+bdfGetLine(FontFilePtr file, unsigned char *buf, int len)
 {
     int         c;
     unsigned char *b;
@@ -147,19 +127,17 @@ bdfGetLine(file, buf, len)
 /***====================================================================***/
 
 Atom
-bdfForceMakeAtom(str, size)
-    register char *str;
-    register int *size;
+bdfForceMakeAtom(char *str, int *size)
 {
     register int len = strlen(str);
-    extern Atom	MakeAtom();
+    extern Atom   MakeAtom(); /* Added this line to be consistent with X.org code */
     Atom the_atom;
 
     if (size != NULL)
 	*size += len + 1;
     the_atom = MakeAtom(str, len, TRUE);
     if (the_atom == None)
-	bdfError("Atom allocation failed\n");
+      bdfError("Atom allocation failed\n");
     return the_atom;
 }
 
@@ -170,8 +148,7 @@ bdfForceMakeAtom(str, size)
  */
 
 Atom
-bdfGetPropertyValue(s)
-    char       *s;
+bdfGetPropertyValue(char *s)
 {
     register char *p,
                *pp;
@@ -198,8 +175,8 @@ bdfGetPropertyValue(s)
     s++;
     pp = p = (char *) xalloc((unsigned) strlen(s) + 1);
     if (pp == NULL) {
-	bdfError("Couldn't allocate property value string (%d)\n", strlen(s) + 1);
-	return None;
+  bdfError("Couldn't allocate property value string (%d)\n", strlen(s) + 1);
+  return None;
     }
     while (*s) {
 	if (*s == '"') {
@@ -225,8 +202,7 @@ bdfGetPropertyValue(s)
  * return TRUE if string is a valid integer
  */
 int
-bdfIsInteger(str)
-    char       *str;
+bdfIsInteger(char *str)
 {
     char        c;
 
@@ -234,7 +210,7 @@ bdfIsInteger(str)
     if (!(isdigit(c) || c == '-' || c == '+'))
 	return (FALSE);
 
-    while (c = *str++)
+    while ((c = *str++))
 	if (!isdigit(c))
 	    return (FALSE);
 
@@ -248,8 +224,7 @@ bdfIsInteger(str)
  */
 
 unsigned char
-bdfHexByte(s)
-    char       *s;
+bdfHexByte(unsigned char *s)
 {
     unsigned char b = 0;
     register char c;
@@ -302,11 +277,8 @@ static char *SpecialAtoms[] = {
 };
 
 Bool
-bdfSpecialProperty(pFont, prop, isString, bdfState)
-    FontPtr     pFont;
-    FontPropPtr prop;
-    char        isString;
-    bdfFileState *bdfState;
+bdfSpecialProperty(FontPtr pFont, FontPropPtr prop, 
+		   char isString, bdfFileState *bdfState)
 {
     char      **special;
     char       *name;

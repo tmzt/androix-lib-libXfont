@@ -45,6 +45,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/decompress.c,v 1.5 2001/12/14 19:56:50 dawes Exp $ */
 /* 
  * decompress - cat a compressed file
  */
@@ -88,8 +89,6 @@ static char_type magic_header[] = { "\037\235" };	/* 1F 9D */
 # define MAXCODE(n_bits)	((1 << (n_bits)) - 1)
 #endif /* COMPATIBLE */
 
-static code_int getcode();
-
 /*
  * the next two codes should not be changed lightly, as they must not
  * lie within the contiguous general code space.
@@ -132,11 +131,13 @@ static int hsize_table[] = {
     69001	/* 16 bits - 95% occupancy */
 };
 
-static int  BufCompressedFill(), BufCompressedSkip(), BufCompressedClose();
+static int BufCompressedClose ( BufFilePtr f, int doClose );
+static int BufCompressedFill ( BufFilePtr f );
+static code_int getcode ( CompressedFile *file );
+static int BufCompressedSkip ( BufFilePtr f, int bytes );
 
 BufFilePtr
-BufFilePushCompressed (f)
-    BufFilePtr	f;
+BufFilePushCompressed (BufFilePtr f)
 {
     int		    code;
     int		    maxbits;
@@ -150,6 +151,8 @@ BufFilePushCompressed (f)
 	return 0;
     }
     code = BufFileGet (f);
+    if (code == BUFFILEEOF) return 0;
+    
     maxbits = code & BIT_MASK;
     if (maxbits > BITS || maxbits < 12)
 	return 0;
@@ -184,13 +187,13 @@ BufFilePushCompressed (f)
 	*file->stackp++ = file->finchar;
     return BufFileCreate ((char *) file,
 			  BufCompressedFill,
+			  0,
 			  BufCompressedSkip,
 			  BufCompressedClose);
 }
 
 static int
-BufCompressedClose (f, doClose)
-    BufFilePtr	f;
+BufCompressedClose (BufFilePtr f, int doClose)
 {
     CompressedFile  *file;
     BufFilePtr	    raw;
@@ -203,8 +206,7 @@ BufCompressedClose (f, doClose)
 }
 
 static int
-BufCompressedFill (f)
-    BufFilePtr	    f;
+BufCompressedFill (BufFilePtr f)
 {
     CompressedFile  *file;
     register char_type *stackp, *de_stack;
@@ -300,8 +302,7 @@ BufCompressedFill (f)
 static char_type rmask[9] = {0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff};
 
 static code_int
-getcode(file)
-    CompressedFile  *file;
+getcode(CompressedFile *file)
 {
     register code_int code;
     register int r_off, bits;
@@ -375,9 +376,7 @@ getcode(file)
 }
 
 static int
-BufCompressedSkip (f, bytes)
-    BufFilePtr	f;
-    int		bytes;
+BufCompressedSkip (BufFilePtr f, int bytes)
 {
     int		    c;
     while (bytes--) 
@@ -390,9 +389,8 @@ BufCompressedSkip (f, bytes)
 }
 
 #ifdef TEST
-main (argc, argv)
-    int	    argc;
-    char    **argv;
+int
+main (int argc, char *argv[])
 {
     BufFilePtr	    inputraw, input, output;
     int		    c;
@@ -400,9 +398,10 @@ main (argc, argv)
     inputraw = BufFileOpenRead (0);
     input = BufFilePushCompressed (inputraw);
     output = BufFileOpenWrite (1);
-    while ((c = BufFileGet (input)) != -1)
+    while ((c = BufFileGet (input)) != BUFFILEEOF)
 	BufFilePut (c, output);
     BufFileClose (input, FALSE);
     BufFileClose (output, FALSE);
+    return 0;
 }
 #endif

@@ -52,10 +52,15 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/Speedo/sperr.c,v 1.7 2002/05/31 18:45:48 dawes Exp $ */
+
 #include	"spint.h"
 
-#if NeedVarargsPrototypes
+#ifndef FONTMODULE
 #include <stdarg.h>
+#endif
+
+extern void ErrorF(const char* f, ...);
 
 void
 SpeedoErr(char *str, ...)
@@ -70,20 +75,6 @@ SpeedoErr(char *str, ...)
     va_end(v);
 }
 
-#else
-
-/* VARARGS1 */
-void
-SpeedoErr(str, a1)
-    char       *str;
-    char       *a1;
-{
-    ErrorF("Speedo: ");
-    ErrorF(str, a1);
-}
-#endif /* NeedVarargsPrototypes else */
-
-
 /*
  * Called by Speedo character generator to report an error.
  *
@@ -91,8 +82,7 @@ SpeedoErr(str, a1)
  *  that happens many times, don't report it to user
  */
 void
-sp_report_error(n)
-    fix15       n;
+sp_report_error(fix15 n)
 {
     switch (n) {
     case 1:

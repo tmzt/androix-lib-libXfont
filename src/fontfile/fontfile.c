@@ -25,11 +25,12 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/fontfile.c,v 3.16 2002/05/31 18:45:50 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
  */
-/* $NCDId: @(#)fontfile.c,v 1.6 1991/07/02 17:00:46 lemke Exp $ */
+/* $NCDXorg: @(#)fontfile.c,v 1.6 1991/07/02 17:00:46 lemke Exp $ */
 
 #include    "fntfilst.h"
 
@@ -37,11 +38,23 @@ in this Software without prior written authorization from The Open Group.
  * Map FPE functions to renderer functions
  */
 
+static int FontFileOpenBitmapNCF (FontPathElementPtr fpe, FontPtr *pFont, 
+				  int flags, FontEntryPtr entry, 
+				  fsBitmapFormat format, 
+				  fsBitmapFormatMask fmask,
+				  FontPtr non_cachable_font);
+
 int
-FontFileNameCheck (name)
-    char    *name;
+FontFileNameCheck (char *name)
 {
 #ifndef NCD
+#ifdef __UNIXOS2__
+    /* OS/2 uses D:/... as a path name for fonts, so accept this as a valid
+     * path if it starts with a letter and a colon
+     */
+    if (isalpha(*name) && name[1]==':')
+        return TRUE;
+#endif
     return *name == '/';
 #else
     return ((strcmp(name, "built-ins") == 0) || (*name == '/'));
@@ -49,8 +62,7 @@ FontFileNameCheck (name)
 }
 
 int
-FontFileInitFPE (fpe)
-    FontPathElementPtr	fpe;
+FontFileInitFPE (FontPathElementPtr fpe)
 {
     int			status;
     FontDirectoryPtr	dir;
@@ -71,12 +83,15 @@ FontFileInitFPE (fpe)
 
 /* ARGSUSED */
 int
-FontFileResetFPE (fpe)
-    FontPathElementPtr	fpe;
+FontFileResetFPE (FontPathElementPtr fpe)
 {
     FontDirectoryPtr	dir;
 
     dir = (FontDirectoryPtr) fpe->private;
+    /*
+     * The reset must fail for bitmap fonts because they get cleared when
+     * the path is set.
+     */
     if (FontFileDirectoryChanged (dir))
     {
 	/* can't do it, so tell the caller to close and re-open */
@@ -94,8 +109,7 @@ FontFileResetFPE (fpe)
 }
 
 int
-FontFileFreeFPE (fpe)
-    FontPathElementPtr	fpe;
+FontFileFreeFPE (FontPathElementPtr fpe)
 {
     FontFileUnregisterBitmapSource (fpe);
     FontFileFreeDir ((FontDirectoryPtr) fpe->private);
@@ -103,13 +117,9 @@ FontFileFreeFPE (fpe)
 }
 
 static int
-transfer_values_to_alias(entryname, entrynamelength, resolvedname,
-			 aliasName, vals)
-    char		*entryname;
-    int			entrynamelength;
-    char		*resolvedname;
-    char		**aliasName;
-    FontScalablePtr	vals;
+transfer_values_to_alias(char *entryname, int entrynamelength, 
+			 char *resolvedname,
+			 char **aliasName, FontScalablePtr vals)
 {
     static char		aliasname[MAXFONTNAMELEN];
     int			nameok = 1, len;
@@ -117,6 +127,7 @@ transfer_values_to_alias(entryname, entrynamelength, resolvedname,
 
     *aliasName = resolvedname;
     if ((len = strlen(*aliasName)) <= MAXFONTNAMELEN &&
+	(entrynamelength < MAXFONTNAMELEN) &&
 	FontFileCountDashes (*aliasName, len) == 14)
     {
 	FontScalableRec tmpVals;
@@ -158,7 +169,6 @@ transfer_values_to_alias(entryname, entrynamelength, resolvedname,
 		   gotchas */
 		if (FontFileCompleteXLFD(&tmpVals2, &tmpVals2))
 		{
-		    double hypot();
 		    tempmatrix[0] =
 			matrix[0] * tmpVals2.point_matrix[0] +
 			matrix[1] * tmpVals2.point_matrix[2];
@@ -219,19 +229,11 @@ transfer_values_to_alias(entryname, entrynamelength, resolvedname,
 
 /* ARGSUSED */
 int
-FontFileOpenFont (client, fpe, flags, name, namelen, format, fmask,
-		  id, pFont, aliasName, non_cachable_font)
-    pointer		client;
-    FontPathElementPtr	fpe;
-    int			flags;
-    char		*name;
-    int			namelen;
-    fsBitmapFormat	format;
-    fsBitmapFormatMask	fmask;
-    XID			id;
-    FontPtr		*pFont;
-    char		**aliasName;
-    FontPtr		non_cachable_font;
+FontFileOpenFont (pointer client, FontPathElementPtr fpe, Mask flags, 
+		  char *name, int namelen, 
+		  fsBitmapFormat format, fsBitmapFormatMask fmask,
+		  XID id, FontPtr *pFont, char **aliasName, 
+		  FontPtr non_cachable_font)
 {
     FontDirectoryPtr	dir;
     char		lowerName[MAXFONTNAMELEN];
@@ -461,9 +463,7 @@ FontFileOpenFont (client, fpe, flags, name, namelen, format, fmask,
 
 /* ARGSUSED */
 void
-FontFileCloseFont (fpe, pFont)
-    FontPathElementPtr	fpe;
-    FontPtr		pFont;
+FontFileCloseFont (FontPathElementPtr fpe, FontPtr pFont)
 {
     FontEntryPtr    entry;
 
@@ -484,14 +484,11 @@ FontFileCloseFont (fpe, pFont)
     (*pFont->unload_font) (pFont);
 }
 
-int
-FontFileOpenBitmapNCF (fpe, pFont, flags, entry, format, fmask,
-		       non_cachable_font)
-    FontPathElementPtr	fpe;
-    int			flags;
-    FontEntryPtr	entry;
-    FontPtr		*pFont;
-    FontPtr		non_cachable_font;
+static int
+FontFileOpenBitmapNCF (FontPathElementPtr fpe, FontPtr *pFont, 
+		       int flags, FontEntryPtr entry, 
+		       fsBitmapFormat format, fsBitmapFormatMask fmask,
+		       FontPtr non_cachable_font)
 {
     FontBitmapEntryPtr	bitmap;
     char		fileName[MAXFONTFILENAMELEN*2+1];
@@ -514,21 +511,17 @@ FontFileOpenBitmapNCF (fpe, pFont, flags, entry, format, fmask,
 }
 
 int
-FontFileOpenBitmap (fpe, pFont, flags, entry, format, fmask)
-    FontPathElementPtr	fpe;
-    int			flags;
-    FontEntryPtr	entry;
-    FontPtr		*pFont;
+FontFileOpenBitmap (FontPathElementPtr fpe, FontPtr *pFont, 
+		    int flags, FontEntryPtr entry, 
+		    fsBitmapFormat format, fsBitmapFormatMask fmask)
 {
     return FontFileOpenBitmapNCF (fpe, pFont, flags, entry, format, fmask,
 				  (FontPtr)0);
 }
 
-int
-FontFileGetInfoBitmap (fpe, pFontInfo, entry)
-    FontPathElementPtr	fpe;
-    FontInfoPtr		pFontInfo;
-    FontEntryPtr	entry;
+static int
+FontFileGetInfoBitmap (FontPathElementPtr fpe, FontInfoPtr pFontInfo, 
+		       FontEntryPtr entry)
 {
     FontBitmapEntryPtr	bitmap;
     char		fileName[MAXFONTFILENAMELEN*2+1];
@@ -544,16 +537,10 @@ FontFileGetInfoBitmap (fpe, pFontInfo, entry)
 }
 
 static void
-_FontFileAddScalableNames(names, scaleNames, nameptr, zeroChars, vals, ranges,
-			  nranges, max)
-    FontNamesPtr	names;
-    FontNamesPtr	scaleNames;
-    FontNamePtr		nameptr;
-    char		*zeroChars;
-    FontScalablePtr	vals;
-    fsRange		*ranges;
-    int			nranges;
-    int			*max;
+_FontFileAddScalableNames(FontNamesPtr names, FontNamesPtr scaleNames, 
+			  FontNamePtr nameptr, char *zeroChars, 
+			  FontScalablePtr vals, fsRange *ranges,
+			  int nranges, int *max)
 {
     int i;
     FontScalableRec	zeroVals, tmpVals;
@@ -667,14 +654,9 @@ _FontFileAddScalableNames(names, scaleNames, nameptr, zeroChars, vals, ranges,
 
 /* ARGSUSED */
 static int
-_FontFileListFonts (client, fpe, pat, len, max, names, mark_aliases)
-    pointer     client;
-    FontPathElementPtr fpe;
-    char       *pat;
-    int         len;
-    int         max;
-    FontNamesPtr names;
-    int		mark_aliases;
+_FontFileListFonts (pointer client, FontPathElementPtr fpe, 
+		    char *pat, int len, int max, FontNamesPtr names, 
+		    int mark_aliases)
 {
     FontDirectoryPtr	dir;
     char		lowerChars[MAXFONTNAMELEN], zeroChars[MAXFONTNAMELEN];
@@ -779,25 +761,16 @@ typedef struct _LFWIData {
 } LFWIDataRec, *LFWIDataPtr;
 
 int
-FontFileListFonts (client, fpe, pat, len, max, names)
-    pointer     client;
-    FontPathElementPtr fpe;
-    char       *pat;
-    int         len;
-    int         max;
-    FontNamesPtr names;
+FontFileListFonts (pointer client, FontPathElementPtr fpe, char *pat, 
+		   int len, int max, FontNamesPtr names)
 {
     return _FontFileListFonts (client, fpe, pat, len, max, names, 0);
 }
 
 int
-FontFileStartListFontsWithInfo(client, fpe, pat, len, max, privatep)
-    pointer     client;
-    FontPathElementPtr fpe;
-    char       *pat;
-    int         len;
-    int         max;
-    pointer    *privatep;
+FontFileStartListFontsWithInfo(pointer client, FontPathElementPtr fpe, 
+			       char *pat, int len, int max, 
+			       pointer *privatep)
 {
     LFWIDataPtr	data;
     int		ret;
@@ -825,12 +798,9 @@ FontFileStartListFontsWithInfo(client, fpe, pat, len, max, privatep)
 
 /* ARGSUSED */
 static int
-FontFileListOneFontWithInfo (client, fpe, namep, namelenp, pFontInfo)
-    pointer		client;
-    FontPathElementPtr	fpe;
-    char		**namep;
-    int			*namelenp;
-    FontInfoPtr		*pFontInfo;
+FontFileListOneFontWithInfo (pointer client, FontPathElementPtr fpe, 
+			     char **namep, int *namelenp, 
+			     FontInfoPtr *pFontInfo)
 {
     FontDirectoryPtr	dir;
     char		lowerName[MAXFONTNAMELEN];
@@ -979,15 +949,10 @@ FontFileListOneFontWithInfo (client, fpe, namep, namelenp, pFontInfo)
 }
 
 int
-FontFileListNextFontWithInfo(client, fpe, namep, namelenp, pFontInfo,
-			     numFonts, private)
-    pointer		client;
-    FontPathElementPtr	fpe;
-    char		**namep;
-    int			*namelenp;
-    FontInfoPtr		*pFontInfo;
-    int			*numFonts;
-    pointer		private;
+FontFileListNextFontWithInfo(pointer client, FontPathElementPtr fpe, 
+			     char **namep, int *namelenp, 
+			     FontInfoPtr *pFontInfo,
+			     int *numFonts, pointer private)
 {
     LFWIDataPtr	data = (LFWIDataPtr) private;
     int		ret;
@@ -1013,13 +978,9 @@ FontFileListNextFontWithInfo(client, fpe, namep, namelenp, pFontInfo,
 }
 
 int
-FontFileStartListFontsAndAliases(client, fpe, pat, len, max, privatep)
-    pointer     client;
-    FontPathElementPtr fpe;
-    char       *pat;
-    int         len;
-    int         max;
-    pointer    *privatep;
+FontFileStartListFontsAndAliases(pointer client, FontPathElementPtr fpe, 
+				 char *pat, int len, int max, 
+				 pointer *privatep)
 {
     LFWIDataPtr	data;
     int		ret;
@@ -1046,15 +1007,9 @@ FontFileStartListFontsAndAliases(client, fpe, pat, len, max, privatep)
 }
 
 int
-FontFileListNextFontOrAlias(client, fpe, namep, namelenp, resolvedp,
-			    resolvedlenp, private)
-    pointer		client;
-    FontPathElementPtr	fpe;
-    char		**namep;
-    int			*namelenp;
-    char		**resolvedp;
-    int			*resolvedlenp;
-    pointer		private;
+FontFileListNextFontOrAlias(pointer client, FontPathElementPtr fpe, 
+			    char **namep, int *namelenp, char **resolvedp,
+			    int *resolvedlenp, pointer private)
 {
     LFWIDataPtr	data = (LFWIDataPtr) private;
     int		ret;
@@ -1094,12 +1049,11 @@ FontFileListNextFontOrAlias(client, fpe, namep, namelenp, resolvedp,
 }
 
 
-extern void FontFileEmptyBitmapSource();
-typedef int (*IntFunc) ();
+typedef int (*IntFunc) (void);
 static int  font_file_type;
 
 void
-FontFileRegisterLocalFpeFunctions ()
+FontFileRegisterLocalFpeFunctions (void)
 {
     font_file_type = RegisterFPEFunctions(FontFileNameCheck,
 					  FontFileInitFPE,
@@ -1110,9 +1064,9 @@ FontFileRegisterLocalFpeFunctions ()
 					  FontFileListFonts,
 					  FontFileStartListFontsWithInfo,
 					  FontFileListNextFontWithInfo,
-					  (IntFunc) 0,
-					  (IntFunc) 0,
-					  (IntFunc) 0,
+					  NULL,
+					  NULL,
+					  NULL,
 					  FontFileStartListFontsAndAliases,
 					  FontFileListNextFontOrAlias,
 					  FontFileEmptyBitmapSource);

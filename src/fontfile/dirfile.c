@@ -25,6 +25,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
+/* $XFree86: xc/lib/font/fontfile/dirfile.c,v 3.15 2002/05/31 18:45:50 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium
@@ -41,20 +42,23 @@ in this Software without prior written authorization from The Open Group.
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
-#ifdef X_NOT_STDC_ENV
-extern int errno;
-#endif
 
-static int ReadFontAlias();
+static Bool AddFileNameAliases ( FontDirectoryPtr dir );
+static int ReadFontAlias ( char *directory, Bool isFile,
+			   FontDirectoryPtr *pdir );
+static int lexAlias ( FILE *file, char **lexToken );
+static int lexc ( FILE *file );
 
 int
-FontFileReadDirectory (directory, pdir)
-    char		*directory;
-    FontDirectoryPtr	*pdir;
+FontFileReadDirectory (char *directory, FontDirectoryPtr *pdir)
 {
     char        file_name[MAXFONTFILENAMELEN];
     char        font_name[MAXFONTNAMELEN];
     char        dir_file[MAXFONTFILENAMELEN];
+#ifdef FONTDIRATTRIB
+    char	dir_path[MAXFONTFILENAMELEN];
+    char	*ptr;
+#endif
     FILE       *file;
     int         count,
                 i,
@@ -64,8 +68,24 @@ FontFileReadDirectory (directory, pdir)
 
     FontDirectoryPtr	dir = NullFontDirectory;
 
+#ifdef FONTDIRATTRIB
+    /* Check for font directory attributes */
+#ifndef __UNIXOS2__
+    if ((ptr = strchr(directory, ':'))) {
+#else
+    /* OS/2 path might start with a drive letter, don't clip this */
+    if (ptr = strchr(directory+2, ':')) {
+#endif
+	strncpy(dir_path, directory, ptr - directory);
+	dir_path[ptr - directory] = '\0';
+    } else {
+	strcpy(dir_path, directory);
+    }
+    strcpy(dir_file, dir_path);
+#else
     strcpy(dir_file, directory);
-    if (directory[strlen(directory) - 1] != '/')
+#endif
+    if (dir_file[strlen(dir_file) - 1] != '/')
 	strcat(dir_file, "/");
     strcat(dir_file, FontDirFile);
     file = fopen(dir_file, "r");
@@ -85,8 +105,14 @@ FontFileReadDirectory (directory, pdir)
 	dir->dir_mtime = statb.st_mtime;
 	if (format[0] == '\0')
 	    sprintf(format, "%%%ds %%%d[^\n]\n",
-		    MAXFONTFILENAMELEN-1, MAXFONTNAMELEN-1);
+		MAXFONTFILENAMELEN-1, MAXFONTNAMELEN-1);
 	while ((count = fscanf(file, format, file_name, font_name)) != EOF) {
+#ifdef __UNIXOS2__
+	    /* strip any existing trailing CR */
+	    for (i=0; i<strlen(font_name); i++) {
+		if (font_name[i]=='\r') font_name[i] = '\0';
+	    }
+#endif
 	    if (count != 2) {
 		FontFileFreeDir (dir);
 		fclose(file);
@@ -103,7 +129,11 @@ FontFileReadDirectory (directory, pdir)
     } else if (errno != ENOENT) {
 	return BadFontPath;
     }
+#ifdef FONTDIRATTRIB
+    status = ReadFontAlias(dir_path, FALSE, &dir);
+#else
     status = ReadFontAlias(directory, FALSE, &dir);
+#endif
     if (status != Successful) {
 	if (dir)
 	    FontFileFreeDir (dir);
@@ -119,10 +149,9 @@ FontFileReadDirectory (directory, pdir)
 }
 
 Bool
-FontFileDirectoryChanged(dir)
-    FontDirectoryPtr	dir;
+FontFileDirectoryChanged(FontDirectoryPtr dir)
 {
-    char	dir_file[MAXFONTNAMELEN];
+    char	dir_file[MAXFONTFILENAMELEN];
     struct stat	statb;
 
     strcpy (dir_file, dir->directory);
@@ -153,11 +182,10 @@ FontFileDirectoryChanged(dir)
  */
 
 static Bool
-AddFileNameAliases(dir)
-    FontDirectoryPtr	dir;
+AddFileNameAliases(FontDirectoryPtr dir)
 {
     int		    i;
-    char	    copy[MAXFONTNAMELEN];
+    char	    copy[MAXFONTFILENAMELEN];
     char	    *fileName;
     FontTablePtr    table;
     FontRendererPtr renderer;
@@ -198,14 +226,12 @@ AddFileNameAliases(dir)
  * "font name \"With Double Quotes\" \\ and \\ back-slashes"
  * works just fine.
  *
- * A line beginning with a # denotes a newline-terminated comment.
+ * A line beginning with a ! denotes a newline-terminated comment.
  */
 
 /*
  * token types
  */
-
-static int  lexAlias(), lexc();
 
 #define NAME		0
 #define NEWLINE		1
@@ -213,14 +239,11 @@ static int  lexAlias(), lexc();
 #define EALLOC		3
 
 static int
-ReadFontAlias(directory, isFile, pdir)
-    char		*directory;
-    Bool		isFile;
-    FontDirectoryPtr	*pdir;
+ReadFontAlias(char *directory, Bool isFile, FontDirectoryPtr *pdir)
 {
     char		alias[MAXFONTNAMELEN];
     char		font_name[MAXFONTNAMELEN];
-    char		alias_file[MAXFONTNAMELEN];
+    char		alias_file[MAXFONTFILENAMELEN];
     FILE		*file;
     FontDirectoryPtr	dir;
     int			token;
@@ -279,12 +302,8 @@ ReadFontAlias(directory, isFile, pdir)
 		status = AllocError;
 		break;
 	    case NAME:
-		CopyISOLatin1Lowered((unsigned char *) alias,
-				     (unsigned char *) alias,
-				     strlen(alias));
-		CopyISOLatin1Lowered((unsigned char *) font_name,
-				     (unsigned char *) lexToken,
-				     strlen(lexToken));
+		CopyISOLatin1Lowered(alias, alias, strlen(alias));
+		CopyISOLatin1Lowered(font_name, lexToken, strlen(lexToken));
 		if (!FontFileAddFontAlias (dir, alias, font_name))
 		    status = AllocError;
 		break;
@@ -305,9 +324,7 @@ ReadFontAlias(directory, isFile, pdir)
 static int  charClass;
 
 static int
-lexAlias(file, lexToken)
-    FILE       *file;
-    char      **lexToken;
+lexAlias(FILE *file, char **lexToken)
 {
     int         c;
     char       *t;
@@ -370,6 +387,8 @@ lexAlias(file, lexToken)
 		break;
 	    case Comment:
 		continue;
+	    default:
+		break;
 	    }
 	    *t++ = c;
 	    ++count;
@@ -405,8 +424,7 @@ lexAlias(file, lexToken)
 }
 
 static int
-lexc(file)
-    FILE       *file;
+lexc(FILE *file)
 {
     int         c;
 
@@ -429,6 +447,7 @@ lexc(file)
     case '\t':
 	charClass = WHITE;
 	break;
+    case '\r':
     case '\n':
 	charClass = NL;
 	break;

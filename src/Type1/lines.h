@@ -26,12 +26,14 @@
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
+/* $XFree86: xc/lib/font/Type1/lines.h,v 1.4 2001/01/17 19:43:22 dawes Exp $ */
+
 /*SHARED*/
  
 #define   StepLine(R,x1,y1,x2,y2)   t1_StepLine(R,x1,y1,x2,y2)
 #define   Bresenham(e,x1,y1,x2,y2)  t1_Bresenham(e,x1,y1,x2,y2)
  
-void t1_StepLine();           /* check for special conditions, call Bresenham */
-void t1_Bresenham();          /* produce run ends for lines                   */
+extern void t1_StepLine ( struct region *R, fractpel x1, fractpel y1, fractpel x2, fractpel y2 );
+extern void t1_Bresenham ( pel *edgeP, fractpel x1, fractpel y1, fractpel x2, fractpel y2 );
  
 /*END SHARED*/
