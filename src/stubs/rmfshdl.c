@@ -1,4 +1,4 @@
-/* $XFree86$ */
+/* $XFree86: xc/lib/font/stubs/rmfshdl.c,v 1.2 2003/09/13 21:33:03 dawes Exp $ */
 
 #include "stubs.h"
 

@@ -44,7 +44,7 @@
  * The Original Software is CID font code that was developed by Silicon
  * Graphics, Inc.
  */
-/* $XFree86$ */
+/* $XFree86: xc/lib/font/Type1/util.h,v 1.5 2001/01/17 19:43:24 dawes Exp $ */
 
 #ifndef UTIL_H
 #define UTIL_H

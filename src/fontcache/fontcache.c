@@ -26,7 +26,7 @@
  *
  *	Id: fontcache.c,v 1.19 1999/01/31 13:06:00 akiyama Exp $
  */
-/* $XFree86$ */
+/* $XFree86: xc/lib/font/fontcache/fontcache.c,v 1.5 2001/10/28 03:32:45 tsi Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>

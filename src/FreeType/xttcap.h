@@ -30,7 +30,7 @@
 
 Notice===
  */
-/* $XFree86$ */
+/* $XFree86: xc/lib/font/FreeType/xttcap.h,v 1.1 2003/10/19 18:53:50 dawes Exp $ */
 
 #ifndef _XTTCAP_H_
 #define _XTTCAP_H_ (1)

@@ -26,7 +26,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
-/* $XFree86$ */
+/* $XFree86: xc/lib/font/bitmap/pcfwrite.c,v 1.12 2003/11/18 01:17:04 dawes Exp $ */
 
 /*
  * Author:  Keith Packard, MIT X Consortium

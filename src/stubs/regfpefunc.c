@@ -1,4 +1,4 @@
-/* $XFree86$ */
+/* $XFree86: xc/lib/font/stubs/regfpefunc.c,v 1.2 1999/08/21 13:48:07 dawes Exp $ */
 
 #include "stubs.h"
 

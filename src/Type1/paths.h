@@ -26,7 +26,7 @@
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-/* $XFree86$ */
+/* $XFree86: xc/lib/font/Type1/paths.h,v 1.4 2001/01/17 19:43:22 dawes Exp $ */
 
 /*SHARED*/
  
