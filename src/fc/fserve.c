@@ -24,7 +24,7 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
-/* $XFree86: xc/lib/font/fc/fserve.c,v 3.26tsi Exp $ */
+/* $XFree86: xc/lib/font/fc/fserve.c,v 3.27 2004/01/12 17:19:30 tsi Exp $ */
 
 /*
  * Copyright 1990 Network Computing Devices
