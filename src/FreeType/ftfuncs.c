@@ -25,7 +25,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-/* $XdotOrg: xc/lib/font/FreeType/ftfuncs.c,v 1.3 2004/05/04 18:47:31 gisburn Exp $ */
+/* $XdotOrg: xc/lib/font/FreeType/ftfuncs.c,v 1.5 2004/08/03 09:02:17 eich Exp $ */
 
 /* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.43 2004/02/07 04:37:18 dawes Exp $ */
 
@@ -1077,9 +1077,8 @@ FreeTypeRasteriseGlyph(unsigned idx, int flags, CharInfoPtr tgp,
 		rightSideBearing += instance->ttcap.rsbShiftOfBitmapAutoItalic;
 		leftSideBearing  += instance->ttcap.lsbShiftOfBitmapAutoItalic;
 		/* */
-		factor = instance->ttcap.scaleBBoxWidth;
-		rawCharacterWidth = bitmap_metrics->horiAdvance;
-		    (unsigned short)(short)(floor(1000 * factor
+		factor = bitmap_metrics->horiAdvance;
+		rawCharacterWidth = (unsigned short)(short)(floor(1000 * factor
 						  * instance->ttcap.scaleBBoxWidth * ratio / 64.
 						  / instance->pixel_size));
 	    }
