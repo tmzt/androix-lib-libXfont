@@ -169,7 +169,7 @@ FTcheckForTTCName(char *fileName, char **realFileName, int *faceNumber)
     if(start) {
         fn=0;
         i=1;
-        while(isdigit(start[i])) {
+        while(ft_isdigit(start[i])) {
             fn *= 10;
             fn += start[i]-'0';
             i++;
