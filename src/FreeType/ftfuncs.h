@@ -121,6 +121,7 @@ typedef struct _FTInstance {
     FT_Size size;
     FTNormalisedTransformationRec transformation;
     FT_Int32 load_flags;
+    FT_ULong strike_index;
     int spacing;		/* actual spacing */
     double pixel_size;          /* to calc attributes (actual height) */
     double pixel_width_unit_x;  /* to calc horiz. width (cosine) */
