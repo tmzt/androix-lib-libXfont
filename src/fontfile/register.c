@@ -47,7 +47,6 @@ FontFileRegisterFpeFunctions(void)
 #ifndef LOADABLEFONTS
     BitmapRegisterFontFileFunctions ();
 
-#ifndef LOWMEMFTPT
 
 #ifndef CRAY
 #ifdef BUILD_SPEEDO
@@ -64,7 +63,6 @@ FontFileRegisterFpeFunctions(void)
     FreeTypeRegisterFontFileFunctions();
 #endif
 
-#endif /* ifndef LOWMEMFTPT */
 
 #else
     {
