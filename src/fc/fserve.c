@@ -58,12 +58,12 @@ in this Software without prior written authorization from The Open Group.
 #endif
 #include	"X11/Xtrans.h"
 #include	"X11/Xpoll.h"
-#include	"FS.h"
-#include	"FSproto.h"
+#include	<X11/fonts/FS.h>
+#include	<X11/fonts/FSproto.h>
 #include	<X11/X.h>
 #include	<X11/Xos.h>
 #include	"fontmisc.h"
-#include	"fontstruct.h"
+#include	<X11/fonts/fontstruct.h>
 #include	"fservestr.h"
 #include	"fontutil.h"
 #include	<errno.h>

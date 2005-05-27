@@ -30,10 +30,10 @@
 #include        <X11/X.h>
 #include 	<X11/Xtrans.h>
 #include	<X11/Xpoll.h>
-#include	"FS.h"
-#include	"FSproto.h"
+#include	<X11/fonts/FS.h>
+#include	<X11/fonts/FSproto.h>
 #include	"fontmisc.h"
-#include	"fontstruct.h"
+#include	<X11/fonts/fontstruct.h>
 #include	"fservestr.h"
 #include	"fontutil.h"
 #include	"fslibos.h"

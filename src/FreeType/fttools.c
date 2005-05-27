@@ -33,7 +33,7 @@
 #include "xf86_ansic.h"
 #endif
 
-#include "font.h"
+#include <X11/fonts/font.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_SFNT_NAMES_H

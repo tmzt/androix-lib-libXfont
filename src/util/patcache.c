@@ -32,7 +32,7 @@ in this Software without prior written authorization from The Open Group.
  */
 
 #include    <fontmisc.h>
-#include    <fontstruct.h>
+#include    <X11/fonts/fontstruct.h>
 
 /*
  * Static sized hash table for looking up font name patterns

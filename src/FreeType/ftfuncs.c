@@ -42,7 +42,7 @@ THE SOFTWARE.
 
 #include "fntfilst.h"
 #include "fontutil.h"
-#include "FSproto.h"
+#include <X11/fonts/FSproto.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_SIZES_H

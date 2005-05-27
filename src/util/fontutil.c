@@ -34,8 +34,8 @@ from The Open Group.
  */
 
 #include    "fontmisc.h"
-#include    "fontstruct.h"
-#include    "FSproto.h"
+#include    <X11/fonts/fontstruct.h>
+#include    <X11/fonts/FSproto.h>
 #include    "fontutil.h"
 
 /* Define global here...  doesn't hurt the servers, and avoids

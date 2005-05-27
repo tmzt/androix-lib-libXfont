@@ -58,7 +58,7 @@ from The Open Group.
 #endif
 
 #include "fntfilst.h"
-#include "fontstruct.h"
+#include <X11/fonts/fontstruct.h>
 /* use bitmap structure */
 #include "bitmap.h"
 #include "bdfint.h"

@@ -36,7 +36,7 @@ from The Open Group.
  */
 
 #include	"fontmisc.h"
-#include	"fontstruct.h"
+#include	<X11/fonts/fontstruct.h>
 
 void
 FreeFontNames(FontNamesPtr pFN)

@@ -40,7 +40,7 @@ in this Software without prior written authorization from The Open Group.
 #ifndef XP_PSTEXT
 #include "fontmisc.h"
 #endif
-#include "fontstruct.h"
+#include <X11/fonts/fontstruct.h>
 #include "fontxlfd.h"
 #include "fntfil.h"
 

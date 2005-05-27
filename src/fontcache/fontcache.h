@@ -32,7 +32,7 @@
 #define _FONTCACHE_H_
 
 #include "fontmisc.h"
-#include "fontstruct.h"
+#include <X11/fonts/fontstruct.h>
 #include "fcqueue.h"
 #define _FONTCACHE_SERVER_
 #include <X11/extensions/fontcacheP.h>

@@ -52,9 +52,9 @@ from The Open Group.
 */
 /* $XFree86: xc/lib/font/util/format.c,v 1.4 2001/01/17 19:43:33 dawes Exp $ */
 
-#include	"FSproto.h"
-#include	"font.h"
-#include	"fontstruct.h"
+#include	<X11/fonts/FSproto.h>
+#include	<X11/fonts/font.h>
+#include	<X11/fonts/fontstruct.h>
 #include	"fontutil.h"
 
 int

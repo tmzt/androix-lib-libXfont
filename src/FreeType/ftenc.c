@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 #include "fntfilst.h"
 #include "fontutil.h"
-#include "FSproto.h"
+#include <X11/fonts/FSproto.h>
 
 #include "fontmisc.h"
 #include "fontenc.h"

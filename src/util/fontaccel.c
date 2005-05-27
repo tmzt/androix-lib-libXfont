@@ -34,7 +34,7 @@ from The Open Group.
  */
 
 #include    "fontmisc.h"
-#include    "fontstruct.h"
+#include    <X11/fonts/fontstruct.h>
 #include    "fontutil.h"
 
 void
