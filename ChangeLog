@@ -1,0 +1,4 @@
+2005-06-09  Alexander Gottwald <ago@freedesktop.org>
+
+	* src/fc/fstrans.c:
+	Replace <X11/transport.c> with <X11/Xtrans/transport.c>
