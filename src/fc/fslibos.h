@@ -37,7 +37,7 @@ from The Open Group.
  * FSlib networking & os include file
  */
 
-#include <X11/Xtrans.h>
+#include <X11/Xtrans/Xtrans.h>
 
 #ifndef WIN32
 

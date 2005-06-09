@@ -33,7 +33,7 @@
 #include	"X11/Xwindows.h"
 #endif
 
-#include 	"X11/Xtrans.h"
+#include 	"X11/Xtrans/Xtrans.h"
 #include	"X11/Xpoll.h"
 #include	<X11/fonts/FS.h>
 #include	<X11/fonts/FSproto.h>
