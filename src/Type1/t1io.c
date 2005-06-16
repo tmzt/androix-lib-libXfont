@@ -58,7 +58,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #else
-#include "Xdefs.h"	/* Bool declaration */
 #include "Xmd.h"	/* INT32 declaration */
 #include "xf86_ansic.h"
 #endif
@@ -67,7 +66,7 @@
 #ifdef WIN32
 #include <X11/Xw32defs.h>
 #endif
-#include "Xdefs.h"
+#include <X11/Xdefs.h>
 
 /* Constants and variables used in the decryption */
 #define c1 ((unsigned short)52845)

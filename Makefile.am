@@ -53,6 +53,16 @@ FC_DIR = src/fc
 FC_LIB = src/fc/libfc.la
 endif
 
+if XFONT_TYPE1
+TYPE1_DIR = src/Type1
+TYPE1_LIB = src/Type1/libtype1.la
+endif
+
+# if XFONT_SPEEDO
+# SPEEDO_DIR = src/Speedo
+# SPEEDO_LIB = src/Speedo/libspeedo.la
+# endif
+
 UTIL_DIR = src/util
 UTIL_LIB = src/util/libutil.la
 
@@ -60,11 +70,13 @@ STUBS_LIB = src/stubs/libstubs.la
 STUBS_DIR = src/stubs
 
 SUBDIRS=$(FONTFILE_DIR) $(FREETYPE_DIR) $(BITMAP_DIR) \
-	$(BUILTINS_DIR) $(FC_DIR) $(UTIL_DIR) $(STUBS_DIR) $(FONTCACHE_DIR)
+	$(BUILTINS_DIR) $(FC_DIR) $(UTIL_DIR) $(STUBS_DIR) $(FONTCACHE_DIR) \
+	$(TYPE1_DIR) $(SPEEDO_DIR)
 
 libXfont_la_LIBADD = $(FREETYPE_LIB) $(BITMAP_LIB) $(BUILTINS_LIB) \
 	$(FC_LIB) $(FONTFILE_LIB) $(UTIL_LIB) $(STUBS_LIB) \
-	$(FREETYPE_LIBS) $(Z_LIBS) $(MATH_LIBS) $(FONTCACHE_LIB)
+	$(FREETYPE_LIBS) $(Z_LIBS) $(MATH_LIBS) $(FONTCACHE_LIB) \
+	$(TYPE_1_LIB) $(SPEEDO_LIB)
 
 libXfont_la_SOURCES =
 

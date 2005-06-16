@@ -111,7 +111,7 @@ from The Open Group.
 #else
 #include "xf86_ansic.h"
 #endif
-#include "FSproto.h"
+#include <X11/fonts/FSproto.h>
 
 #ifdef BUILDCID
 #ifndef FONTMODULE

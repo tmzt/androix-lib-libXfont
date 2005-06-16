@@ -47,8 +47,8 @@
 /*SHARED*/
  
 /*END SHARED*/
-#include <Xdefs.h>
-#include <Xfuncproto.h>
+#include <X11/Xdefs.h>
+#include <X11/Xfuncproto.h>
 #ifndef FONTMODULE
 #include <stdlib.h>
 #endif

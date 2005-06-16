@@ -106,6 +106,12 @@ if test "x$XFONT_BITMAP" = xyes; then
 	AC_DEFINE(XFONT_BITMAP,1,[Support bitmap font files])
 fi
 
+AC_ARG_ENABLE(type1, [ --disable-type1 ], [XFONT_TYPE1=$enableval], [XFONT_TYPE1=yes])
+AM_CONDITIONAL(XFONT_TYPE1, [test "x$XFONT_TYPE1" = xyes ])
+if test "x$XFONT_TYPE1" = xyes; then
+	AC_DEFINE(XFONT_TYPE1,1,[Support Type 1 font files])
+fi
+
 if test "x$XFONT_BULITINS" = xyes -o "x$XFONT_BITMAP" = xyes -o "x$XFONT_FREETYPE" = xyes; then
 	XFONT_FONTFILE=yes
 else
@@ -145,6 +151,7 @@ AC_OUTPUT([Makefile
 	   src/FreeType/Makefile
 	   src/builtins/Makefile
 	   src/bitmap/Makefile
+	   src/Type1/Makefile
 	   src/fc/Makefile
 	   src/util/Makefile
 	   src/stubs/Makefile
