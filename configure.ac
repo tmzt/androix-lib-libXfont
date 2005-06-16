@@ -112,6 +112,12 @@ if test "x$XFONT_TYPE1" = xyes; then
 	AC_DEFINE(XFONT_TYPE1,1,[Support Type 1 font files])
 fi
 
+AC_ARG_ENABLE(speedo, [ --disable-speedo ], [XFONT_SPEEDO=$enableval], [XFONT_SPEEDO=yes])
+AM_CONDITIONAL(XFONT_SPEEDO, [test "x$XFONT_SPEEDO" = xyes ])
+if test "x$XFONT_SPEEDO" = xyes; then
+	AC_DEFINE(XFONT_SPEEDO,1,[Support Type 1 font files])
+fi
+
 if test "x$XFONT_BULITINS" = xyes -o "x$XFONT_BITMAP" = xyes -o "x$XFONT_FREETYPE" = xyes; then
 	XFONT_FONTFILE=yes
 else
@@ -152,6 +158,7 @@ AC_OUTPUT([Makefile
 	   src/builtins/Makefile
 	   src/bitmap/Makefile
 	   src/Type1/Makefile
+	   src/Speedo/Makefile
 	   src/fc/Makefile
 	   src/util/Makefile
 	   src/stubs/Makefile

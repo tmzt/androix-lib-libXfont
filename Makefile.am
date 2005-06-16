@@ -58,10 +58,10 @@ TYPE1_DIR = src/Type1
 TYPE1_LIB = src/Type1/libtype1.la
 endif
 
-# if XFONT_SPEEDO
-# SPEEDO_DIR = src/Speedo
-# SPEEDO_LIB = src/Speedo/libspeedo.la
-# endif
+if XFONT_SPEEDO
+SPEEDO_DIR = src/Speedo
+SPEEDO_LIB = src/Speedo/libspeedo.la
+endif
 
 UTIL_DIR = src/util
 UTIL_LIB = src/util/libutil.la
