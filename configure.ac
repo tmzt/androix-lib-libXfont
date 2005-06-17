@@ -112,7 +112,7 @@ if test "x$XFONT_TYPE1" = xyes; then
 	AC_DEFINE(XFONT_TYPE1,1,[Support Type 1 font files])
 fi
 
-AC_ARG_ENABLE(speedo, [ --disable-speedo ], [XFONT_SPEEDO=$enableval], [XFONT_SPEEDO=yes])
+AC_ARG_ENABLE(speedo, [ --disable-speedo ], [XFONT_SPEEDO=$enableval], [XFONT_SPEEDO=no])
 AM_CONDITIONAL(XFONT_SPEEDO, [test "x$XFONT_SPEEDO" = xyes ])
 if test "x$XFONT_SPEEDO" = xyes; then
 	AC_DEFINE(XFONT_SPEEDO,1,[Support Type 1 font files])

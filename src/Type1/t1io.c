@@ -58,6 +58,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #else
+#include "Xdefs.h"
 #include "Xmd.h"	/* INT32 declaration */
 #include "xf86_ansic.h"
 #endif

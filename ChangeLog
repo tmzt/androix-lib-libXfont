@@ -1,3 +1,7 @@
+Fri Jun 17 16:13:18 2005  Søren Sandmann  <sandmann@redhat.com>
+
+	* configure.ac (XFONT_SPEEDO): Disable Speedo by default.
+
 2005-06-09  Alexander Gottwald <ago@freedesktop.org>
 
 	* src/fc/fstrans.c:
