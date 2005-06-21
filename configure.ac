@@ -162,4 +162,5 @@ AC_OUTPUT([Makefile
 	   src/fc/Makefile
 	   src/util/Makefile
 	   src/stubs/Makefile
+	   src/fontenc/Makefile
            xfont.pc])
