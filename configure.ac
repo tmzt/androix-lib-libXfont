@@ -126,6 +126,7 @@ fi
 AM_CONDITIONAL(XFONT_FONTFILE, [test "x$XFONT_FONTFILE" = xyes])
 if test "x$XFONT_FONTFILE" = xyes; then
 	AC_DEFINE(XFONT_FONTFILE,,[Support fonts in files])
+	
 fi
 
 AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz
@@ -139,7 +140,7 @@ AC_SUBST(X_GZIP_FONT_COMPRESSION)
 AC_CHECK_LIB(m, hypot, [MATH_LIBS=-lm
 AC_SUBST(MATH_LIBS)], AC_MSG_ERROR([*** libm is required]))
 
-PKG_CHECK_MODULES(XFONT, xproto xtrans fontsproto)
+PKG_CHECK_MODULES(XFONT, xproto xtrans fontsproto fontenc)
 
 if test "x$GCC" = "xyes"; then
 	GCC_WARNINGS="-Wall -Wpointer-arith -Wstrict-prototypes \
@@ -162,5 +163,4 @@ AC_OUTPUT([Makefile
 	   src/fc/Makefile
 	   src/util/Makefile
 	   src/stubs/Makefile
-	   src/fontenc/Makefile
            xfont.pc])

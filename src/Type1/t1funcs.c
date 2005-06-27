@@ -133,7 +133,7 @@ from The Open Group.
 #include "fntfilst.h"
 #include "fontutil.h"
 #include <X11/fonts/FSproto.h>
-#include "fontenc.h"
+#include <X11/fonts/fontenc.h>
 #include "t1unicode.h"
  
 #ifdef BUILDCID

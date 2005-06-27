@@ -71,7 +71,7 @@ STUBS_DIR = src/stubs
 
 SUBDIRS=$(FONTFILE_DIR) $(FREETYPE_DIR) $(BITMAP_DIR) \
 	$(BUILTINS_DIR) $(FC_DIR) $(UTIL_DIR) $(STUBS_DIR) $(FONTCACHE_DIR) \
-	$(TYPE1_DIR) $(SPEEDO_DIR) src/fontenc
+	$(TYPE1_DIR) $(SPEEDO_DIR)
 
 libXfont_la_LIBADD = $(FREETYPE_LIB) $(BITMAP_LIB) $(BUILTINS_LIB) \
 	$(FC_LIB) $(FONTFILE_LIB) $(UTIL_LIB) $(STUBS_LIB) \
@@ -93,7 +93,6 @@ libXfontinclude_HEADERS = \
 	include/X11/fonts/fntfilio.h \
 	include/X11/fonts/fntfilst.h \
 	include/X11/fonts/fontconf.h \
-	include/X11/fonts/fontenc.h  \
 	include/X11/fonts/fontencc.h \
 	include/X11/fonts/fontmisc.h \
 	include/X11/fonts/fontmod.h  \

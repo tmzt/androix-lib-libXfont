@@ -28,7 +28,7 @@ THE SOFTWARE.
    *not* provide source compatibility, as many of the data structures
    now have different names. */
 
-#include "fontenc.h"
+#include <X11/fonts/fontenc.h>
 #include "fontencc.h"
 
 extern void ErrorF(const char *f, ...);

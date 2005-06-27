@@ -16,13 +16,10 @@ libfontfile_la_SOURCES = 	\
 	decompress.c		\
 	defaults.c		\
 	dirfile.c		\
-	encparse.c		\
 	ffcheck.c		\
 	fileio.c		\
 	filewr.c		\
 	fontdir.c		\
-	fontenc.c		\
-	fontencI.h		\
 	fontencc.c		\
 	fontfile.c		\
 	fontscale.c		\
