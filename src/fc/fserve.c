@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/font/fc/fserve.c,v 1.2 2004/04/23 18:44:21 eich Exp $ */
+/* $XdotOrg: xc/lib/font/fc/fserve.c,v 1.4 2005/06/09 15:52:03 ago Exp $ */
 /* $Xorg: fserve.c,v 1.4 2001/02/09 02:04:02 xorgcvs Exp $ */
 /*
 
@@ -56,6 +56,8 @@ in this Software without prior written authorization from The Open Group.
 #ifdef WIN32
 #define _WILLWINSOCK_
 #endif
+#define FONT_t
+#define TRANS_CLIENT
 #include	"X11/Xtrans/Xtrans.h"
 #include	"X11/Xpoll.h"
 #include	<X11/fonts/FS.h>

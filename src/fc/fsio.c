@@ -33,6 +33,8 @@
 #include	"X11/Xwindows.h"
 #endif
 
+#define FONT_t
+#define TRANS_CLIENT
 #include 	"X11/Xtrans/Xtrans.h"
 #include	"X11/Xpoll.h"
 #include	<X11/fonts/FS.h>
