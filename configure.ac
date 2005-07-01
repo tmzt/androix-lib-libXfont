@@ -79,8 +79,8 @@ AC_SUBST(FREETYPE_LIBS)
 AC_SUBST(FREETYPE_CFLAGS)
 
 AC_ARG_ENABLE(fontcache, [ --disable-fontcache ],[XFONT_FONTCACHE=$enableval],[XFONT_FONTCACHE=yes])
-AM_CONDITIONAL(XFONT_FONTCACHE, [test x$XFONT_FONTCACHE = xyes])
-if test x$XFONT_FONTCACHE = xyes; then
+AM_CONDITIONAL(XFONT_FONTCACHE, [test "x$XFONT_FONTCACHE" = xyes])
+if test "x$XFONT_FONTCACHE" = xyes; then
 	AC_DEFINE(XFONT_FONTCACHE,1,[Support the font caching extension])
 	PKG_CHECK_MODULES(FONTCACHEPROTO, fontcacheproto)
 else
@@ -88,9 +88,9 @@ else
 fi
 AC_SUBST(FONTCACHEPROTO_CFLAGS)
 
-AC_ARG_ENABLE(fc, [ --enable-fc ],[XFONT_FC=$enableval],[XFONT_FC=no])
-AM_CONDITIONAL(XFONT_FC, [test x$XFONT_FC = xyes])
-if test x$XFONT_FC = xyes; then
+AC_ARG_ENABLE(fc, [ --disable-fc ],[XFONT_FC=$enableval],[XFONT_FC=yes])
+AM_CONDITIONAL(XFONT_FC, [test "x$XFONT_FC" = xyes])
+if test "x$XFONT_FC" = xyes; then
 	AC_DEFINE(XFONT_FC,1,[Support the X Font Services Protocol])
 fi
 
@@ -126,7 +126,6 @@ fi
 AM_CONDITIONAL(XFONT_FONTFILE, [test "x$XFONT_FONTFILE" = xyes])
 if test "x$XFONT_FONTFILE" = xyes; then
 	AC_DEFINE(XFONT_FONTFILE,,[Support fonts in files])
-	
 fi
 
 AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz

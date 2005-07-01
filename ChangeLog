@@ -1,4 +1,9 @@
-Fri Jun 17 16:13:18 2005  Søren Sandmann  <sandmann@redhat.com>
+2005-07-02  Daniel Stone  <daniel@freedesktop.org>
+
+	* configure.ac:
+	Enable font services by default; minor formatting cleanup.
+
+2005-06-17  Søren Sandmann  <sandmann@redhat.com>
 
 	* configure.ac (XFONT_SPEEDO): Disable Speedo by default.
 
