@@ -25,6 +25,7 @@ SUBDIRS=src
 
 libXfontincludedir = $(includedir)/X11/fonts
 libXfontinclude_HEADERS = \
+	include/X11/fonts/bdfint.h   \
 	include/X11/fonts/bitmap.h   \
 	include/X11/fonts/bufio.h    \
 	include/X11/fonts/fntfil.h   \
@@ -36,7 +37,8 @@ libXfontinclude_HEADERS = \
 	include/X11/fonts/fontmod.h  \
 	include/X11/fonts/fontshow.h \
 	include/X11/fonts/fontutil.h \
-	include/X11/fonts/fontxlfd.h
+	include/X11/fonts/fontxlfd.h \
+	include/X11/fonts/pcf.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = xfont.pc

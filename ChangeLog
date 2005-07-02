@@ -1,3 +1,15 @@
+2005-07-02  Kevin E. Martin  <kem-at-freedesktop-dot-org>
+
+	* Makefile.am:
+	* src/bitmap/Makefile.am:
+	Make headers needed by bdftopcf public
+
+	* xfont.pc.in:
+	Set CFLAGS to make public interface actually public
+
+	* src/fontcache/Makefile.am:
+	Fix distcheck problem
+
 2005-07-02  Keith Packard  <keithp@keithp.com>
 
 	* Makefile.am:

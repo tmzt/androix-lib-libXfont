@@ -4,7 +4,6 @@ INCLUDES =			\
 noinst_LTLIBRARIES = libbitmap.la
 
 libbitmap_la_SOURCES = 		\
-	bdfint.h		\
 	bdfread.c		\
 	bdfutils.c		\
 	bitmap.c		\
@@ -12,7 +11,6 @@ libbitmap_la_SOURCES = 		\
 	bitmaputil.c		\
 	bitscale.c		\
 	fontink.c		\
-	pcf.h			\
 	pcfread.c		\
 	pcfwrite.c		\
 	snfread.c		\
