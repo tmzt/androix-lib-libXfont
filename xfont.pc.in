@@ -10,5 +10,5 @@ freetypecflags=@FREETYPE_CFLAGS@
 Name: Xfont
 Description: X font Library
 Version: @VERSION@
-Cflags: -I${includedir} -I${includedir}/X11/fonts ${freetypecflags}
+Cflags: -I${includedir} ${freetypecflags}
 Libs: -L${libdir} -lXfont ${freetypelibs} ${mathlibs} ${zlibs}

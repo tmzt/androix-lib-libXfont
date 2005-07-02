@@ -1,3 +1,8 @@
+2005-07-03  Daniel Stone  <daniel@freedesktop.org>
+
+	* xfont.pc.in:
+	Remove -I${includedir}/X11/fonts from xfont.pc.in CFLAGS.
+
 2005-07-02  Daniel Stone  <daniel@freedesktop.org>
 
 	* configure.ac:
