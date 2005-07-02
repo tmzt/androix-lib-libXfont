@@ -1,3 +1,20 @@
+2005-07-02  Keith Packard  <keithp@keithp.com>
+
+	* .cvsignore:
+	* include/X11/fonts/.cvsignore:
+	* src/.cvsignore:
+	* src/FreeType/.cvsignore:
+	* src/Speedo/.cvsignore:
+	* src/Type1/.cvsignore:
+	* src/bitmap/.cvsignore:
+	* src/builtins/.cvsignore:
+	* src/fc/.cvsignore:
+	* src/fontcache/.cvsignore:
+	* src/fontfile/.cvsignore:
+	* src/stubs/.cvsignore:
+	* src/util/.cvsignore:
+	Add suitable .cvsignore files
+
 2005-07-02  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
 	* Makefile.am:
