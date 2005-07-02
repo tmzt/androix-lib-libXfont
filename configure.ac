@@ -152,6 +152,7 @@ CFLAGS="$CFLAGS $XFONT_CFLAGS"
 LIBS="$LIBS $XFONT_LIBS"
 
 AC_OUTPUT([Makefile
+	   src/Makefile
 	   src/fontcache/Makefile
 	   src/fontfile/Makefile
 	   src/FreeType/Makefile

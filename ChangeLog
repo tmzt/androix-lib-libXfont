@@ -1,3 +1,12 @@
+2005-07-02  Keith Packard  <keithp@keithp.com>
+
+	* Makefile.am:
+	* configure.ac:
+	* src/Makefile.am:
+	Build libXfont.la in the 'src' directory as my
+	version of automake really didn't like sub-subdirs
+	in SUBDIRS.
+
 2005-07-03  Daniel Stone  <daniel@freedesktop.org>
 
 	* xfont.pc.in:
