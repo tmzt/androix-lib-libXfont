@@ -61,7 +61,7 @@ from The Open Group.
 #include <X11/fonts/fontstruct.h>
 /* use bitmap structure */
 #include <X11/fonts/bitmap.h>
-#include "bdfint.h"
+#include <X11/fonts/bdfint.h>
 
 int bdfFileLineNum;
 

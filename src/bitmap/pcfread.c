@@ -34,7 +34,7 @@ from The Open Group.
 
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/bitmap.h>
-#include "pcf.h"
+#include <X11/fonts/pcf.h>
 
 #ifndef MAX
 #define   MAX(a,b)    (((a)>(b)) ? a : b)

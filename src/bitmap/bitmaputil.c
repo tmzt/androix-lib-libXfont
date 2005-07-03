@@ -31,7 +31,7 @@ from The Open Group.
 
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/bitmap.h>
-#include "bdfint.h"
+#include <X11/fonts/bdfint.h>
 
 #ifndef MAXSHORT
 #define MAXSHORT    32767

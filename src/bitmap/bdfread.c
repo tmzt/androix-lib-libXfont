@@ -59,7 +59,7 @@ from The Open Group.
 #include <X11/fonts/fontutil.h>
 /* use bitmap structure */
 #include <X11/fonts/bitmap.h>
-#include "bdfint.h"
+#include <X11/fonts/bdfint.h>
 
 #define INDICES 256
 #define MAXENCODING 0xFFFF
