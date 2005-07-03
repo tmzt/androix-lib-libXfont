@@ -1,5 +1,12 @@
 2005-07-03  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
+	* xfont.pc.in:
+	Undo previous change to add ${includedir}/X11/fonts to CFLAGS.
+	Instead, require all apps to include font headers explicitly --
+	i.e., from <X11/fonts/*.h> instead of "*.h" or <*.h>.
+
+2005-07-03  Kevin E. Martin  <kem-at-freedesktop-dot-org>
+
 	* src/Type1/Makefile.am:
 	* src/bitmap/Makefile.am:
 	* src/builtins/Makefile.am:
