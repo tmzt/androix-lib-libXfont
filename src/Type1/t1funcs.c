@@ -130,8 +130,8 @@ from The Open Group.
 #include "xf86_ansic.h"
 #endif
 
-#include "fntfilst.h"
-#include "fontutil.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/fontutil.h>
 #include <X11/fonts/FSproto.h>
 #include <X11/fonts/fontenc.h>
 #include "t1unicode.h"

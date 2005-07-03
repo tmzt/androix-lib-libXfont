@@ -32,9 +32,9 @@ in this Software without prior written authorization from The Open Group.
  * Author:  Keith Packard, MIT X Consortium
  */
 
-#include "fntfilst.h"
-#include "bitmap.h"
-#include "fontutil.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/bitmap.h>
+#include <X11/fonts/fontutil.h>
 #include "bdfint.h"
 #include "pcf.h"
 #include "snfstr.h"

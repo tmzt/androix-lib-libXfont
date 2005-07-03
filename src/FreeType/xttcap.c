@@ -39,7 +39,7 @@ static char const * const releaseID =
     _XTT_RELEASE_NAME;
 */
 
-#include "fontmisc.h"
+#include <X11/fonts/fontmisc.h>
 #ifndef FONTMODULE
 #include <string.h>
 #include <ctype.h>

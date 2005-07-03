@@ -64,10 +64,10 @@ in this Software without prior written authorization from The Open Group.
 #include	<X11/fonts/FSproto.h>
 #include	<X11/X.h>
 #include	<X11/Xos.h>
-#include	"fontmisc.h"
+#include	<X11/fonts/fontmisc.h>
 #include	<X11/fonts/fontstruct.h>
 #include	"fservestr.h"
-#include	"fontutil.h"
+#include	<X11/fonts/fontutil.h>
 #include	<errno.h>
 
 #include	<time.h>

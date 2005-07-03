@@ -32,10 +32,10 @@
 #include	<X11/Xpoll.h>
 #include	<X11/fonts/FS.h>
 #include	<X11/fonts/FSproto.h>
-#include	"fontmisc.h"
+#include	<X11/fonts/fontmisc.h>
 #include	<X11/fonts/fontstruct.h>
 #include	"fservestr.h"
-#include	"fontutil.h"
+#include	<X11/fonts/fontutil.h>
 #include	"fslibos.h"
 
 extern char _fs_glyph_undefined;

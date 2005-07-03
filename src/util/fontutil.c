@@ -33,10 +33,10 @@ from The Open Group.
  * Author:  Keith Packard, MIT X Consortium
  */
 
-#include    "fontmisc.h"
+#include    <X11/fonts/fontmisc.h>
 #include    <X11/fonts/fontstruct.h>
 #include    <X11/fonts/FSproto.h>
-#include    "fontutil.h"
+#include    <X11/fonts/fontutil.h>
 
 /* Define global here...  doesn't hurt the servers, and avoids
    unresolved references in font clients.  */

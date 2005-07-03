@@ -51,8 +51,8 @@ from The Open Group.
 */
 /* $XFree86: xc/lib/font/Speedo/spfile.c,v 1.13 2001/08/13 21:46:47 dawes Exp $ */
 
-#include "fntfilst.h"
-#include "fontenc.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/fontenc.h>
 #ifndef FONTMODULE
 #include <stdio.h>
 #else

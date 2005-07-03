@@ -33,8 +33,8 @@ from The Open Group.
  * Author:  Keith Packard, MIT X Consortium
  */
 
-#include "fntfilst.h"
-#include "bitmap.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/bitmap.h>
 #include "bdfint.h"
 
 static unsigned char ink_mask_msb[8] = {

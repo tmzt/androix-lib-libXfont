@@ -31,7 +31,7 @@ in this Software without prior written authorization from The Open Group.
  * Author:  Keith Packard, MIT X Consortium
  */
 
-#include "fontmisc.h"
+#include <X11/fonts/fontmisc.h>
 
 /* Utility functions for reformating font bitmaps */
 

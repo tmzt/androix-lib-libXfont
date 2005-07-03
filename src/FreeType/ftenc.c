@@ -29,12 +29,12 @@ THE SOFTWARE.
 #include "xf86_ansic.h"
 #endif
 
-#include "fntfilst.h"
-#include "fontutil.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/fontutil.h>
 #include <X11/fonts/FSproto.h>
 
-#include "fontmisc.h"
-#include "fontenc.h"
+#include <X11/fonts/fontmisc.h>
+#include <X11/fonts/fontenc.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_TRUETYPE_IDS_H

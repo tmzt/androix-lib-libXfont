@@ -54,8 +54,8 @@ from The Open Group.
 #ifndef FONTMODULE
 #include <X11/Xos.h>
 #endif
-#include "fntfilst.h"
-#include "fontutil.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/fontutil.h>
 #include "spint.h"
 
 /* ARGSUSED */

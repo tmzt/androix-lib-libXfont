@@ -57,7 +57,7 @@ from The Open Group.
 
 #include	<X11/fonts/FSproto.h>
 #include	"spint.h"
-#include	"fontutil.h"
+#include	<X11/fonts/fontutil.h>
 #ifndef FONTMODULE
 #ifdef _XOPEN_SOURCE
 #include <math.h>

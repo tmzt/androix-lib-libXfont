@@ -1,4 +1,4 @@
-/* $XdotOrg: scanfont.c,v 1.3 2000/08/17 19:46:32 cpqbld Exp $ */
+/* $XdotOrg: xc/lib/font/Type1/scanfont.c,v 1.2 2004/04/23 18:44:09 eich Exp $ */
 /* $Xorg: scanfont.c,v 1.3 2000/08/17 19:46:32 cpqbld Exp $ */
 /* Copyright International Business Machines,Corp. 1991
  * All Rights Reserved

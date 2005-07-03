@@ -31,7 +31,7 @@ in this Software without prior written authorization from The Open Group.
  * Author:  Keith Packard, MIT X Consortium
  */
 
-#include "fntfilst.h"
+#include <X11/fonts/fntfilst.h>
 extern void ErrorF(const char *f, ...);
 
 static FontRenderersRec	renderers;

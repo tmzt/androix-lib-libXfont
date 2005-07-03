@@ -61,7 +61,7 @@
 #include "range.h"
 #include "Xdefs.h"
 #endif
-#include "fntfilst.h"
+#include <X11/fonts/fntfilst.h>
 #include "fontfcn.h"
 
 extern struct segment *Type1Char ( char *env, XYspace S, 

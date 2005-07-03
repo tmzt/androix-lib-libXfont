@@ -29,8 +29,8 @@ from The Open Group.
 */
 /* $XFree86: xc/lib/font/bitmap/bitmaputil.c,v 1.10 2002/09/24 20:52:48 tsi Exp $ */
 
-#include "fntfilst.h"
-#include "bitmap.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/bitmap.h>
 #include "bdfint.h"
 
 #ifndef MAXSHORT

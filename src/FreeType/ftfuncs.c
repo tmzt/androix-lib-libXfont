@@ -25,11 +25,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-/* $XdotOrg: xc/lib/font/FreeType/ftfuncs.c,v 1.8 2004/11/02 08:54:52 eich Exp $ */
+/* $XdotOrg: xc/lib/font/FreeType/ftfuncs.c,v 1.10 2005/05/27 17:44:07 josh Exp $ */
 
 /* $XFree86: xc/lib/font/FreeType/ftfuncs.c,v 1.43 2004/02/07 04:37:18 dawes Exp $ */
 
-#include "fontmisc.h"
+#include <X11/fonts/fontmisc.h>
 
 #ifndef FONTMODULE
 #include <string.h>
@@ -40,8 +40,8 @@ THE SOFTWARE.
 #include "xf86_ansic.h"
 #endif
 
-#include "fntfilst.h"
-#include "fontutil.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/fontutil.h>
 #include <X11/fonts/FSproto.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -64,7 +64,7 @@ THE SOFTWARE.
 #include FT_OUTLINE_H
 #endif
 
-#include "fontenc.h"
+#include <X11/fonts/fontenc.h>
 #include "ft.h"
 #include "ftfuncs.h"
 #include "xttcap.h"

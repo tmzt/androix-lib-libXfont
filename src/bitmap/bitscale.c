@@ -32,9 +32,9 @@ from The Open Group.
  * Author:  Keith Packard, MIT X Consortium
  */
 
-#include "fntfilst.h"
-#include "bitmap.h"
-#include "fontutil.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/bitmap.h>
+#include <X11/fonts/fontutil.h>
 #ifndef FONTMODULE
 #ifdef _XOPEN_SOURCE
 #include <math.h>

@@ -57,10 +57,10 @@ from The Open Group.
 #include <stdarg.h>
 #endif
 
-#include "fntfilst.h"
+#include <X11/fonts/fntfilst.h>
 #include <X11/fonts/fontstruct.h>
 /* use bitmap structure */
-#include "bitmap.h"
+#include <X11/fonts/bitmap.h>
 #include "bdfint.h"
 
 int bdfFileLineNum;

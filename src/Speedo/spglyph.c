@@ -53,7 +53,7 @@ from The Open Group.
 
 #include	<X11/X.h>	/* for bit order #defines */
 #include	"spint.h"
-#include	"fontutil.h"
+#include	<X11/fonts/fontutil.h>
 
 #undef	CLIP_BBOX_NOISE
 

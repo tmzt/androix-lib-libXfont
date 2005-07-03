@@ -23,7 +23,7 @@
 
 /* $XFree86: xc/lib/font/FreeType/fttools.c,v 1.6 2003/06/08 15:41:13 herrb Exp $ */
 
-#include "fontmisc.h"
+#include <X11/fonts/fontmisc.h>
 #ifndef FONTMODULE
 #include <ctype.h>
 #include <string.h>

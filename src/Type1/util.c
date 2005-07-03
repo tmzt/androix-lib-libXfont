@@ -55,7 +55,7 @@
 #include "xf86_ansic.h"
 #endif
 #include "util.h"
-#include "fontmisc.h"			/* for xalloc/xfree */
+#include <X11/fonts/fontmisc.h>			/* for xalloc/xfree */
  
 static char *vm_base = NULL;  /* Start of virtual memory area */
        char *vm_next = NULL;  /* Pointer to first free byte */

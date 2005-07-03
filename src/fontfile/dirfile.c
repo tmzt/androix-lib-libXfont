@@ -37,7 +37,7 @@ in this Software without prior written authorization from The Open Group.
  * Read fonts.dir and fonts.alias files
  */
 
-#include "fntfilst.h"
+#include <X11/fonts/fntfilst.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>

@@ -33,8 +33,8 @@ from The Open Group.
  */
 
 
-#include "fntfilst.h"
-#include "bitmap.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/bitmap.h>
 #include "pcf.h"
 
 /* Write PCF font files */

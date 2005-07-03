@@ -55,10 +55,10 @@ from The Open Group.
 #ifndef FONTMODULE
 #include <ctype.h>
 #endif
-#include "fntfilst.h"
-#include "fontutil.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/fontutil.h>
 /* use bitmap structure */
-#include "bitmap.h"
+#include <X11/fonts/bitmap.h>
 #include "bdfint.h"
 
 #define INDICES 256

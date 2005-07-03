@@ -101,8 +101,8 @@ from The Open Group.
  */
 /* $XFree86: xc/lib/font/Type1/t1info.c,v 1.18tsi Exp $ */
 
-#include "fntfilst.h"
-#include "fontutil.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/fontutil.h>
 #ifndef FONTMODULE
 #include <stdio.h> 
 #ifndef BUILDCID

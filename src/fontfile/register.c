@@ -33,12 +33,12 @@ in this Software without prior written authorization from The Open Group.
  * end up dragging in code from all the renderers, which is not small.
  */
 
-#include "fontmisc.h"
-#include "fntfilst.h"
-#include "bitmap.h"
+#include <X11/fonts/fontmisc.h>
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/bitmap.h>
 
 #ifdef LOADABLEFONTS
-#include "fontmod.h"
+#include <X11/fonts/fontmod.h>
 #endif
 
 void

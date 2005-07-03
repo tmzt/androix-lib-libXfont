@@ -31,7 +31,7 @@ from The Open Group.
 
 #include <X11/Xosdefs.h>
 #include <stdlib.h>
-#include "fontmisc.h"
+#include <X11/fonts/fontmisc.h>
 
 #define XK_LATIN1
 #include    <X11/keysymdef.h>

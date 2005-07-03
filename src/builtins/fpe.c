@@ -24,7 +24,7 @@
  */
 /* $XFree86: xc/lib/font/builtins/fpe.c,v 1.3 1999/12/30 02:29:51 robin Exp $ */
 
-#include    "fntfilst.h"
+#include    <X11/fonts/fntfilst.h>
 
 static int  font_file_type;
 

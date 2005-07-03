@@ -29,7 +29,7 @@ THE SOFTWARE.
    now have different names. */
 
 #include <X11/fonts/fontenc.h>
-#include "fontencc.h"
+#include <X11/fonts/fontencc.h>
 
 extern void ErrorF(const char *f, ...);
 

@@ -27,7 +27,7 @@
 #include "Xdefs.h"      /* For Bool */
 #include "xf86_ansic.h"
 #endif
-#include "fontmisc.h"			/* for xalloc/xfree */
+#include <X11/fonts/fontmisc.h>			/* for xalloc/xfree */
 #include "AFM.h"
 
 #define PBUF 256

@@ -35,8 +35,8 @@ from The Open Group.
 
 
 #include <X11/Xos.h>
-#include <fontmisc.h>
-#include <bufio.h>
+#include <X11/fonts/fontmisc.h>
+#include <X11/fonts/bufio.h>
 #include <errno.h>
 
 BufFilePtr

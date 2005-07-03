@@ -26,10 +26,10 @@
 
 #include <X11/Xdefs.h>
 #include <X11/fonts/font.h>
-#include "fontxlfd.h"
-#include "fntfil.h"
-#include "fntfilio.h"
-#include "fntfilst.h"
+#include <X11/fonts/fontxlfd.h>
+#include <X11/fonts/fntfil.h>
+#include <X11/fonts/fntfilio.h>
+#include <X11/fonts/fntfilst.h>
 
 typedef struct _BuiltinFile {
     const char  *name;

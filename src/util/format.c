@@ -55,7 +55,7 @@ from The Open Group.
 #include	<X11/fonts/FSproto.h>
 #include	<X11/fonts/font.h>
 #include	<X11/fonts/fontstruct.h>
-#include	"fontutil.h"
+#include	<X11/fonts/fontutil.h>
 
 int
 CheckFSFormat(fsBitmapFormat format, 

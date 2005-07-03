@@ -42,7 +42,7 @@
 #undef _XOPEN_SOURCE
 #endif
 #endif
-#include "fntfilst.h"
+#include <X11/fonts/fntfilst.h>
 #include "objects.h"
 #include "spaces.h"
 #include "range.h"

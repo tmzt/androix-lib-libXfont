@@ -33,10 +33,10 @@ from The Open Group.
  * Author:  Keith Packard, MIT X Consortium
  */
 
-#include	"fontmisc.h"
+#include	<X11/fonts/fontmisc.h>
 #include	<X11/fonts/fontstruct.h>
-#include	"fontxlfd.h"
-#include	"fontutil.h"
+#include	<X11/fonts/fontxlfd.h>
+#include	<X11/fonts/fontutil.h>
 #include	<X11/Xos.h>
 #include	<math.h>
 #include	<stdlib.h>

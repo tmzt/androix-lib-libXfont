@@ -55,8 +55,8 @@ from The Open Group.
 #include <ctype.h>
 #endif
 
-#include "fntfilst.h"
-#include "bitmap.h"
+#include <X11/fonts/fntfilst.h>
+#include <X11/fonts/bitmap.h>
 #include "snfstr.h"
 
 #include <stdarg.h>
