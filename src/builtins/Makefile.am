@@ -1,5 +1,5 @@
 INCLUDES =			\
-	-I${top_srcdir}/include/X11/fonts \
+	-I${top_srcdir}/include \
 	-I${top_srcdir}/src/bitmap
 
 noinst_LTLIBRARIES = libbuiltins.la

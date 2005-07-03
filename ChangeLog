@@ -1,3 +1,16 @@
+2005-07-03  Kevin E. Martin  <kem-at-freedesktop-dot-org>
+
+	* src/Type1/Makefile.am:
+	* src/bitmap/Makefile.am:
+	* src/builtins/Makefile.am:
+	* src/fc/Makefile.am:
+	* src/fontcache/Makefile.am:
+	* src/fontfile/Makefile.am:
+	* src/stubs/Makefile.am:
+	* src/util/Makefile.am:
+	Change include dir now that public headers are referenced
+	by <X11/fonts/*.h>
+
 2005-07-02  Keith Packard  <keithp@keithp.com>
 
 	* .cvsignore:

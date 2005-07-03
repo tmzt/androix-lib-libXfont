@@ -1,5 +1,5 @@
 INCLUDES =			\
-	-I${top_srcdir}/include/X11/fonts
+	-I${top_srcdir}/include
 
 noinst_LTLIBRARIES = libutil.la
 
