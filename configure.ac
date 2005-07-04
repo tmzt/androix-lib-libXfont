@@ -141,6 +141,9 @@ AC_SUBST(MATH_LIBS)], AC_MSG_ERROR([*** libm is required]))
 
 PKG_CHECK_MODULES(XFONT, xproto xtrans fontsproto fontenc)
 
+# Transport selection macro from xtrans.m4
+XTRANS_CONNECTION_FLAGS
+
 if test "x$GCC" = "xyes"; then
 	GCC_WARNINGS="-Wall -Wpointer-arith -Wstrict-prototypes \
 	-Wmissing-prototypes -Wmissing-declarations \

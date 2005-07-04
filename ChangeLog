@@ -1,3 +1,8 @@
+2005-07-05  Alexander Gottwald  <ago at freedesktop dot org>
+
+	* configure.ac:
+	Test for xtrans connection flags
+	
 2005-07-03  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
 	* xfont.pc.in:
