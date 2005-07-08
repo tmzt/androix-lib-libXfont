@@ -128,6 +128,7 @@ BuiltinFileOpen (name)
     return (FontFilePtr) raw;
 }
 
+int
 BuiltinFileClose (f)
     FontFilePtr	f;
 {
