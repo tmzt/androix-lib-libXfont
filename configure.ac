@@ -47,7 +47,8 @@ dnl must first be located explicitly.
 PKG_PROG_PKG_CONFIG
 
 # Look for headers
-AC_CHECK_HEADERS([endian.h])
+AC_CHECK_HEADERS([endian.h poll.h sys/poll.h])
+AC_CHECK_FUNCS([poll])
 
 #
 # select libraries to include
@@ -118,7 +119,13 @@ if test "x$XFONT_SPEEDO" = xyes; then
 	AC_DEFINE(XFONT_SPEEDO,1,[Support Type 1 font files])
 fi
 
-if test "x$XFONT_BULITINS" = xyes -o "x$XFONT_BITMAP" = xyes -o "x$XFONT_FREETYPE" = xyes; then
+AC_ARG_ENABLE(poll, [ --disable-poll ], [USE_POLL=$enableval], [USE_POLL=$ac_cv_func_poll])
+AM_CONDITIONAL(USE_POLL, [test "x$USE_POLL" = xyes ])
+if test "x$USE_POLL" = xyes; then
+        AC_DEFINE(USE_POLL, 1, [Use poll instead of select])
+fi
+
+if test "x$XFONT_BUILTINS" = xyes -o "x$XFONT_BITMAP" = xyes -o "x$XFONT_FREETYPE" = xyes; then
 	XFONT_FONTFILE=yes
 else
 	XFONT_FONTFILE=no
