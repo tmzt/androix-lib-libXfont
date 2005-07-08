@@ -28,6 +28,10 @@
  * font server i/o routines
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #ifdef WIN32
 #define _WILLWINSOCK_
 #include	"X11/Xwindows.h"
