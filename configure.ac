@@ -158,7 +158,16 @@ if test "x$GCC" = "xyes"; then
 	CFLAGS="$GCC_WARNINGS $CFLAGS"
 fi
 
-CFLAGS="$CFLAGS $XFONT_CFLAGS"
+case $host_os in
+    linux*)
+        OS_CFLAGS="-D_XOPEN_SOURCE"
+        ;;
+    *)
+        OS_CFLAGS=
+        ;;
+esac
+
+CFLAGS="$CFLAGS $XFONT_CFLAGS $OS_CFLAGS"
 LIBS="$LIBS $XFONT_LIBS"
 
 AC_OUTPUT([Makefile
