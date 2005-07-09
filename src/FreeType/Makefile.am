@@ -3,7 +3,7 @@ INCLUDES =                                \
 
 noinst_LTLIBRARIES = libft.la
 
-libft_la_CFLAGS=$(FREETYPE_CFLAGS)
+AM_CFLAGS=$(FREETYPE_CFLAGS)
 
 libft_la_SOURCES = 		\
 	ft.h			\

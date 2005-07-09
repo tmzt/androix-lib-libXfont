@@ -1,3 +1,22 @@
+2005-07-08  Keith Packard  <keithp@keithp.com>
+
+	* .cvsignore:
+	* src/.cvsignore:
+	* src/FreeType/.cvsignore:
+	* src/FreeType/Makefile.am:
+	* src/Speedo/.cvsignore:
+	* src/Type1/.cvsignore:
+	* src/bitmap/.cvsignore:
+	* src/builtins/.cvsignore:
+	* src/fc/.cvsignore:
+	* src/fontcache/.cvsignore:
+	* src/fontcache/Makefile.am:
+	* src/fontfile/.cvsignore:
+	* src/stubs/.cvsignore:
+	* src/util/.cvsignore:
+	Add .cvsignore files
+	Switch _la_CFLAGS for AM_CFLAGS to clean up directory
+
 2005-07-05  Alexander Gottwald  <ago at freedesktop dot org>
 
 	* configure.ac:
