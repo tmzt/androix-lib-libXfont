@@ -21,6 +21,9 @@ THE SOFTWARE.
 */
 /* $XFree86: xc/lib/font/FreeType/ftenc.c,v 1.24 2003/10/19 18:53:49 dawes Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #ifndef FONTMODULE
 #include <string.h>
 #else

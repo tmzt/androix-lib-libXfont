@@ -17,6 +17,9 @@
  */
 /* $XFree86: xc/lib/font/Type1/afm.c,v 1.2 1999/08/21 13:47:38 dawes Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #ifdef BUILDCID
 #ifndef FONTMODULE
 #include <stdio.h>

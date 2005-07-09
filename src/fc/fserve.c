@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/font/fc/fserve.c,v 1.4 2005/06/09 15:52:03 ago Exp $ */
+/* $XdotOrg: xc/lib/font/fc/fserve.c,v 1.7 2005/07/08 19:53:05 ajax Exp $ */
 /* $Xorg: fserve.c,v 1.4 2001/02/09 02:04:02 xorgcvs Exp $ */
 /*
 
@@ -54,7 +54,7 @@ in this Software without prior written authorization from The Open Group.
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #ifdef WIN32

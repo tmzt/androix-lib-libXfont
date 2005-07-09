@@ -28,6 +28,9 @@ THE SOFTWARE.
    *not* provide source compatibility, as many of the data structures
    now have different names. */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include <X11/fonts/fontenc.h>
 #include <X11/fonts/fontencc.h>
 

@@ -33,6 +33,9 @@ in this Software without prior written authorization from The Open Group.
  * end up dragging in code from all the renderers, which is not small.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include <X11/fonts/fontmisc.h>
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/bitmap.h>

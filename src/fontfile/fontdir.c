@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/font/fontfile/fontdir.c,v 1.3 2004/11/15 15:06:55 ago Exp $ */
+/* $XdotOrg: xc/lib/font/fontfile/fontdir.c,v 1.4 2005/07/03 07:01:00 daniels Exp $ */
 /* $Xorg: fontdir.c,v 1.4 2001/02/09 02:04:03 xorgcvs Exp $ */
 
 /*
@@ -32,6 +32,9 @@ in this Software without prior written authorization from The Open Group.
  * Author:  Keith Packard, MIT X Consortium
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include    <X11/fonts/fntfilst.h>
 #include    <X11/keysym.h>
 

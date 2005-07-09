@@ -45,6 +45,9 @@ object type.
  
 The included files are:
 */
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #define   GLOBALS  1         /* see :hdref refid=debugvar.                   */
 /*
 The following two includes are C standards; we include them because we

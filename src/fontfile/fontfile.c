@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/font/fontfile/fontfile.c,v 1.3 2004/11/15 15:06:56 ago Exp $ */
+/* $XdotOrg: xc/lib/font/fontfile/fontfile.c,v 1.4 2005/07/03 07:01:00 daniels Exp $ */
 /* $Xorg: fontfile.c,v 1.4 2001/02/09 02:04:03 xorgcvs Exp $ */
 
 /*
@@ -33,6 +33,9 @@ in this Software without prior written authorization from The Open Group.
  */
 /* $NCDXorg: @(#)fontfile.c,v 1.6 1991/07/02 17:00:46 lemke Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include    <X11/fonts/fntfilst.h>
 #ifdef WIN32
 #include <ctype.h>

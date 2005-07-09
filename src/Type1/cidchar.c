@@ -17,6 +17,9 @@
  */
 /* $XFree86: xc/lib/font/Type1/cidchar.c,v 1.9tsi Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #ifdef BUILDCID
 #ifndef FONTMODULE
 #include <stdio.h>

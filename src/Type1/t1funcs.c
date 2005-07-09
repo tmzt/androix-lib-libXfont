@@ -101,6 +101,9 @@ from The Open Group.
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #ifndef FONTMODULE
 #include <string.h>
 #ifdef BUILDCID

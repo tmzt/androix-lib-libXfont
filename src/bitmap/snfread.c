@@ -51,6 +51,10 @@ from The Open Group.
 */
 /* $XFree86: xc/lib/font/bitmap/snfread.c,v 1.12 2003/11/17 22:20:22 dawes Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #ifndef FONTMODULE
 #include <ctype.h>
 #endif

@@ -51,6 +51,10 @@ from The Open Group.
 */
 /* $XFree86: xc/lib/font/bitmap/bdfutils.c,v 1.10 2001/12/14 19:56:45 dawes Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #ifndef FONTMODULE
 #include <ctype.h>
 #include <stdio.h>

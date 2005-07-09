@@ -47,6 +47,9 @@
  */
 /* $XFree86: xc/lib/font/Type1/fontfcn.c,v 1.10 2001/04/05 17:42:27 dawes Exp $ */
  
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #ifndef FONTMODULE
 #include <stdio.h>
 #include <string.h>

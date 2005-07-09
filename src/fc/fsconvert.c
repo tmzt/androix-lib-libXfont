@@ -27,6 +27,9 @@
  * FS data conversion
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include        <X11/X.h>
 #include 	<X11/Xtrans/Xtrans.h>
 #include	<X11/Xpoll.h>

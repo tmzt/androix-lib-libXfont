@@ -101,6 +101,9 @@ from The Open Group.
  */
 /* $XFree86: xc/lib/font/Type1/t1info.c,v 1.18tsi Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/fontutil.h>
 #ifndef FONTMODULE

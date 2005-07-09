@@ -50,6 +50,9 @@
 *  I/O package for Type 1 font reading
 ********************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #ifndef STATIC
 #define STATIC static
 #endif

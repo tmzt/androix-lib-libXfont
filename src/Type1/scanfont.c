@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/font/Type1/scanfont.c,v 1.2 2004/04/23 18:44:09 eich Exp $ */
+/* $XdotOrg: xc/lib/font/Type1/scanfont.c,v 1.3 2005/07/03 07:00:59 daniels Exp $ */
 /* $Xorg: scanfont.c,v 1.3 2000/08/17 19:46:32 cpqbld Exp $ */
 /* Copyright International Business Machines,Corp. 1991
  * All Rights Reserved
@@ -48,6 +48,9 @@
  */
 /* $XFree86: xc/lib/font/Type1/scanfont.c,v 1.16 2003/05/27 22:26:46 tsi Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #ifndef FONTMODULE
 #include <string.h>
 #else

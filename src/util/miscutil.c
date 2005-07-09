@@ -29,6 +29,9 @@ from The Open Group.
 */
 /* $XFree86: xc/lib/font/util/miscutil.c,v 1.7 2001/07/25 15:04:57 dawes Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include <X11/Xosdefs.h>
 #include <stdlib.h>
 #include <X11/fonts/fontmisc.h>

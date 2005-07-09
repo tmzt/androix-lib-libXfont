@@ -55,6 +55,9 @@ from The Open Group.
  * Speedo font loading
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include	<X11/fonts/FSproto.h>
 #include	"spint.h"
 #include	<X11/fonts/fontutil.h>

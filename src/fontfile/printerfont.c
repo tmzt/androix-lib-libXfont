@@ -32,6 +32,9 @@ in this Software without prior written authorization from The Open Group.
  */
 /* $NCDXorg: @(#)fontfile.c,v 1.6 1991/07/02 17:00:46 lemke Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include    <X11/fonts/fntfilst.h>
 
 /*

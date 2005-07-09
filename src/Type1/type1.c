@@ -64,6 +64,9 @@
 /******************/
 /* Include Files: */
 /******************/
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #ifndef FONTMODULE
 #include  <stdio.h>          /* a system-dependent include, usually */
 #include  <math.h>

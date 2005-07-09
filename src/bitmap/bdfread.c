@@ -52,6 +52,10 @@ from The Open Group.
 */
 /* $XFree86: xc/lib/font/bitmap/bdfread.c,v 1.12tsi Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #ifndef FONTMODULE
 #include <ctype.h>
 #endif

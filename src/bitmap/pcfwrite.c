@@ -32,6 +32,9 @@ from The Open Group.
  * Author:  Keith Packard, MIT X Consortium
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/bitmap.h>
