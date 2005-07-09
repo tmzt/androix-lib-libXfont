@@ -1,3 +1,20 @@
+2005-07-09  Keith Packard  <keithp@keithp.com>
+
+	* configure.ac:
+	* include/X11/fonts/fontconf.h.in:
+	* src/FreeType/Makefile.am:
+	* src/Makefile.am:
+	
+	Rearrange configuration options so that individual font file formats
+	drive combined options, and so that the default matches
+	the monolithic defaults
+	
+	Extend fontconf.h to cover all formats
+
+	Typo in src/Makefile.am failed to link in Type1 library
+
+	Missing xttcap.c from FreeType shim library.
+
 2005-07-08  Keith Packard  <keithp@keithp.com>
 
 	* .cvsignore:

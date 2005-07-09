@@ -54,10 +54,18 @@ AC_CHECK_FUNCS([poll])
 # select libraries to include
 #
 
-AC_ARG_ENABLE(freetype, [ --enable-freetype ],[XFONT_FREETYPE=$enableval],[XFONT_FREETYPE=no])
+XFONT_FONTFILE=no
+
+#
+# Scalable fonts in files:
+# 	FreeType
+#	IBM Type1 rasterizer
+#	Bitstream Speedo rasterizer
+#
+AC_ARG_ENABLE(freetype, [ --disable-freetype],[XFONT_FREETYPE=$enableval],[XFONT_FREETYPE=yes])
 AM_CONDITIONAL(XFONT_FREETYPE, [test x$XFONT_FREETYPE = xyes])
 if test x$XFONT_FREETYPE = xyes; then
-	AC_DEFINE(XFONT_FREETYPE,1,[Support FreeType fonts])
+	AC_DEFINE(XFONT_FREETYPE,1,[Support FreeType rasterizer for nearly all font file formats])
 	AC_ARG_WITH(freetype-config, [  --with-freetype-config=PROG   Use FreeType configuration program PROG], freetype_config=$withval, freetype_config=yes)
 	
 	if test "$freetype_config" = "yes"; then 
@@ -71,13 +79,101 @@ if test x$XFONT_FREETYPE = xyes; then
 	
 	FREETYPE_CFLAGS="`$ft_config --cflags`"
 	FREETYPE_LIBS="`$ft_config --libs`"
-	
+	XFONT_FONTFILE=yes
 else
 	FREETYPE_CFLAGS=""
 	FREETYPE_LIBS=""
 fi
 AC_SUBST(FREETYPE_LIBS)
 AC_SUBST(FREETYPE_CFLAGS)
+
+#
+# A bit tricky here; CID font support uses the IBM Type1 rasterizer,
+# but it's generally better to use FreeType for regular Type1 files,
+# so we make CID build the IBM rasterizer, but not also make the Type1
+# rasterizer used for normal Type1 files
+#
+
+AC_ARG_ENABLE(type1, [ --enable-type1 ], [XFONT_TYPE1=$enableval], [XFONT_TYPE1=no])
+if test "x$XFONT_TYPE1" = xyes; then
+	AC_DEFINE(XFONT_TYPE1,1,[Support IBM Type 1 rasterizer for Type1 font files])
+	XFONT_FONTFILE=yes
+fi
+
+AC_ARG_ENABLE(cid, [ --disable-cid ], [XFONT_CID=$enableval], [XFONT_CID=yes])
+AM_CONDITIONAL(XFONT_CID, [test "x$XFONT_CID" = xyes ])
+if test "x$XFONT_CID" = xyes; then
+	AC_DEFINE(XFONT_CID,1,[Support Type 1 CID font files])
+	XFONT_TYPE1=yes
+	XFONT_FONTFILE=yes
+fi
+
+AM_CONDITIONAL(XFONT_TYPE1, [test "x$XFONT_TYPE1" = xyes ])
+
+AC_ARG_ENABLE(speedo, [ --disable-speedo ], [XFONT_SPEEDO=$enableval], [XFONT_SPEEDO=yes])
+AM_CONDITIONAL(XFONT_SPEEDO, [test "x$XFONT_SPEEDO" = xyes ])
+if test "x$XFONT_SPEEDO" = xyes; then
+	AC_DEFINE(XFONT_SPEEDO,1,[Support Speedo font files])
+	XFONT_FONTFILE=yes
+fi
+
+#
+# Bitmap fonts in files:
+#	Builtins (gzipped pcf format in .text segment)
+#	PCF
+#	BDF
+#	SNF
+#
+
+AC_DEFINE(X_GZIP_FONT_COMPRESSION,1,[Support gzip for bitmap fonts])
+X_GZIP_FONT_COMPRESSION=1
+AC_SUBST(X_GZIP_FONT_COMPRESSION)
+
+AC_ARG_ENABLE(builtins, [ --disable-builtins ], [XFONT_BUILTINS=$enableval], [XFONT_BUILTINS=yes])
+AM_CONDITIONAL(XFONT_BUILTINS, [test "x$XFONT_BUILTINS" = xyes ])
+if test "x$XFONT_BUILTINS" = xyes; then
+	AC_DEFINE(XFONT_BUILTINS,1,[Support built-in fonts])
+	XFONT_PCFFORMAT=yes
+fi
+
+AC_ARG_ENABLE(pcfformat, [ --disable-pcfformat ], [XFONT_PCFFORMAT=$enableval], [XFONT_PCFFORMAT=yes])
+AM_CONDITIONAL(XFONT_PCFFORMAT, [test "x$XFONT_PCFFORMAT" = xyes])
+if test "x$XFONT_BUILTINS" = xyes; then
+	AC_DEFINE(XFONT_PCFFORMAT,1,[Support pcf format bitmap font files])
+	XFONT_BITMAP=yes
+fi
+
+AC_ARG_ENABLE(bdfformat, [ --disable-bdfformat ], [XFONT_BDFFORMAT=$enableval], [XFONT_BDFFORMAT=yes])
+AM_CONDITIONAL(XFONT_BDFFORMAT, [test "x$XFONT_BDFFORMAT" = xyes])
+if test "x$XFONT_BUILTINS" = xyes; then
+	AC_DEFINE(XFONT_BDFFORMAT,1,[Support bdf format bitmap font files])
+	XFONT_BITMAP=yes
+fi
+
+AC_ARG_ENABLE(snfformat, [ --disable-snfformat ], [XFONT_SNFFORMAT=$enableval], [XFONT_SNFFORMAT=yes])
+AM_CONDITIONAL(XFONT_SNFFORMAT, [test "x$XFONT_SNFFORMAT" = xyes])
+if test "x$XFONT_BUILTINS" = xyes; then
+	AC_DEFINE(XFONT_SNFFORMAT,1,[Support snf format bitmap font files])
+	XFONT_BITMAP=yes
+fi
+
+AC_ARG_ENABLE(bdfformat, [ --disable-bdfformat ], [XFONT_BDFFORMAT=$enableval], [XFONT_BDFFORMAT=yes])
+AC_ARG_ENABLE(snfformat, [ --disable-snfformat ], [XFONT_SNFFORMAT=$enableval], [XFONT_SNFFORMAT=yes])
+
+AM_CONDITIONAL(XFONT_BITMAP, [test "x$XFONT_BITMAP" = xyes ])
+if test "x$XFONT_BITMAP" = xyes; then
+	AC_DEFINE(XFONT_BITMAP,1,[Support bitmap font files])
+	XFONT_FONTFILE=yes
+fi
+
+AM_CONDITIONAL(XFONT_FONTFILE, [test "x$XFONT_FONTFILE" = xyes])
+if test "x$XFONT_FONTFILE" = xyes; then
+	AC_DEFINE(XFONT_FONTFILE,,[Support fonts in files])
+fi
+
+#
+# Font cache extension support?
+#
 
 AC_ARG_ENABLE(fontcache, [ --disable-fontcache ],[XFONT_FONTCACHE=$enableval],[XFONT_FONTCACHE=yes])
 AM_CONDITIONAL(XFONT_FONTCACHE, [test "x$XFONT_FONTCACHE" = xyes])
@@ -89,59 +185,19 @@ else
 fi
 AC_SUBST(FONTCACHEPROTO_CFLAGS)
 
+#
+# Support connection to font servers?
+#
+
 AC_ARG_ENABLE(fc, [ --disable-fc ],[XFONT_FC=$enableval],[XFONT_FC=yes])
 AM_CONDITIONAL(XFONT_FC, [test "x$XFONT_FC" = xyes])
 if test "x$XFONT_FC" = xyes; then
 	AC_DEFINE(XFONT_FC,1,[Support the X Font Services Protocol])
 fi
 
-AC_ARG_ENABLE(builtins, [ --disable-builtins ], [XFONT_BUILTINS=$enableval], [XFONT_BUILTINS=yes])
-AM_CONDITIONAL(XFONT_BUILTINS, [test "x$XFONT_BUILTINS" = xyes ])
-if test "x$XFONT_BUILTINS" = xyes; then
-	AC_DEFINE(XFONT_BUILTINS,1,[Support built-in fonts])
-fi
-
-AC_ARG_ENABLE(bitmap, [ --disable-bitmap ], [XFONT_BITMAP=$enableval], [XFONT_BITMAP=yes])
-AM_CONDITIONAL(XFONT_BITMAP, [test "x$XFONT_BITMAP" = xyes ])
-if test "x$XFONT_BITMAP" = xyes; then
-	AC_DEFINE(XFONT_BITMAP,1,[Support bitmap font files])
-fi
-
-AC_ARG_ENABLE(type1, [ --disable-type1 ], [XFONT_TYPE1=$enableval], [XFONT_TYPE1=yes])
-AM_CONDITIONAL(XFONT_TYPE1, [test "x$XFONT_TYPE1" = xyes ])
-if test "x$XFONT_TYPE1" = xyes; then
-	AC_DEFINE(XFONT_TYPE1,1,[Support Type 1 font files])
-fi
-
-AC_ARG_ENABLE(speedo, [ --disable-speedo ], [XFONT_SPEEDO=$enableval], [XFONT_SPEEDO=no])
-AM_CONDITIONAL(XFONT_SPEEDO, [test "x$XFONT_SPEEDO" = xyes ])
-if test "x$XFONT_SPEEDO" = xyes; then
-	AC_DEFINE(XFONT_SPEEDO,1,[Support Type 1 font files])
-fi
-
-#AC_ARG_ENABLE(poll, [ --disable-poll ], [USE_POLL=$enableval], [USE_POLL=$ac_cv_func_poll])
-#AM_CONDITIONAL(USE_POLL, [test "x$USE_POLL" = xyes ])
-#if test "x$USE_POLL" = xyes; then
-#        AC_DEFINE(USE_POLL, 1, [Use poll instead of select])
-#fi
-
-if test "x$XFONT_BUILTINS" = xyes -o "x$XFONT_BITMAP" = xyes -o "x$XFONT_FREETYPE" = xyes; then
-	XFONT_FONTFILE=yes
-else
-	XFONT_FONTFILE=no
-fi
-AM_CONDITIONAL(XFONT_FONTFILE, [test "x$XFONT_FONTFILE" = xyes])
-if test "x$XFONT_FONTFILE" = xyes; then
-	AC_DEFINE(XFONT_FONTFILE,,[Support fonts in files])
-fi
-
 AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz
 AC_SUBST(Z_LIBS)], AC_MSG_ERROR([*** zlib is required]))
 
-AC_DEFINE(PCFFORMAT,,[Support PCF format fonts])
-AC_DEFINE(X_GZIP_FONT_COMPRESSION,1,[Support gzip fonts])
-X_GZIP_FONT_COMPRESSION=1
-AC_SUBST(X_GZIP_FONT_COMPRESSION)
 
 AC_CHECK_LIB(m, hypot, [MATH_LIBS=-lm
 AC_SUBST(MATH_LIBS)], AC_MSG_ERROR([*** libm is required]))

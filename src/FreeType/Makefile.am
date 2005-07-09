@@ -10,4 +10,5 @@ libft_la_SOURCES = 		\
 	ftfuncs.h		\
 	ftenc.c			\
 	ftfuncs.c		\
-	fttools.c
+	fttools.c		\
+	xttcap.c
