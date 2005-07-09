@@ -104,9 +104,13 @@ from The Open Group.
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#ifdef BUILDCID
+#define XFONT_CID 1
+#endif
+
 #ifndef FONTMODULE
 #include <string.h>
-#ifdef BUILDCID
+#if XFONT_CID
 #include <stdlib.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -139,7 +143,7 @@ from The Open Group.
 #include <X11/fonts/fontenc.h>
 #include "t1unicode.h"
  
-#ifdef BUILDCID
+#if XFONT_CID
 #include "range.h"
 #endif
 
@@ -157,7 +161,7 @@ static int Type1GetGlyphs ( FontPtr pFont, unsigned long count,
 			    unsigned char *chars, FontEncoding charEncoding, 
 			    unsigned long *glyphCount, CharInfoPtr *glyphs );
 
-#ifdef BUILDCID
+#if XFONT_CID
 #define CMapDir "/CMap/"
 #define CFMDir "/CFM/"
 #define CIDFontDir "/CIDFont/"
@@ -178,7 +182,7 @@ static void fillrun ( char *p, pel x0, pel x1, int bit );
 extern psfont *FontP;
 extern psobj *ISOLatin1EncArrayP;
 
-#ifdef BUILDCID
+#if XFONT_CID
 extern char CurCIDFontName[];
 extern char CurCMapName[];
 
@@ -192,7 +196,7 @@ extern cmapres *CMapP;
 static void fill ( char *dest, int h, int w, struct region *area, int byte, 
 		   int bit, int wordsize );
 
-#ifdef BUILDCID
+#if XFONT_CID
 int 
 CIDOpenScalable (FontPathElementPtr fpe, 
 		 FontPtr *ppFont, 
@@ -552,7 +556,7 @@ Type1OpenScalable (FontPathElementPtr fpe,
        bzero(type1, sizeof(struct type1font));
  
        /* heuristic for "maximum" size of pool we'll need: */
-#ifdef BUILDCID
+#if XFONT_CID
        size = 400000 + 600 *
 #else
        size = 200000 + 600 *
@@ -820,7 +824,7 @@ Type1OpenScalable (FontPathElementPtr fpe,
        return Successful;
 }
 
-#ifdef BUILDCID
+#if XFONT_CID
 unsigned int 
 getCID(FontPtr pFont, unsigned int charcode)
 {
@@ -1165,7 +1169,7 @@ Type1GetGlyphs(FontPtr pFont,
 #undef EXIST
 }
 
-#ifdef BUILDCID
+#if XFONT_CID
 static CharInfoRec nonExistantChar;
 
 int
@@ -1240,7 +1244,7 @@ Type1GetMetrics(FontPtr pFont,
     return ret;
 }
 
-#ifdef BUILDCID
+#if XFONT_CID
 void 
 CIDCloseFont(FontPtr pFont)
 {
@@ -1434,14 +1438,14 @@ fillrun(char *p,             /* address of this scan line                    */
  
 #define CAPABILITIES (CAP_MATRIX | CAP_CHARSUBSETTING)
 
-#ifdef BUILDCID
+#if XFONT_CID
 FontRendererRec CIDRendererInfo[] = {
   { ".cid", 4, NULL, CIDOpenScalable,
         NULL, CIDGetInfoScalable, 0, CAPABILITIES }
 };
 #endif
  
-#ifdef BUILDCID
+#if XFONT_CID
 FontRendererRec Type1RendererInfo[] = {
 #else
 static FontRendererRec renderers[] = {
@@ -1452,7 +1456,7 @@ static FontRendererRec renderers[] = {
         NULL, Type1GetInfoScalable, 0, CAPABILITIES }
 };
 
-#ifdef BUILDCID
+#if XFONT_CID
 void 
 CIDRegisterFontFileFunctions(void)
 {
@@ -1469,7 +1473,7 @@ Type1RegisterFontFileFunctions(void)
 {
     int i;
  
-#ifdef BUILDCID
+#if XFONT_CID
     Type1InitStdProps();
     for (i=0; i < sizeof(Type1RendererInfo) / sizeof(FontRendererRec); i++)
             FontFilePriorityRegisterRenderer(&Type1RendererInfo[i], -10);
@@ -1500,7 +1504,7 @@ Type1ReturnCodeToXReturnCode(int rc)
 	/* fall through */
     default:
 	/* this should not happen */
-#ifdef BUILDCID
+#if XFONT_CID
         ErrorF("Font return code cannot be converted to X return code: %d\n", rc);
 #else
 	ErrorF("Type1 return code not convertable to X return code: %d\n", rc);
@@ -1509,7 +1513,7 @@ Type1ReturnCodeToXReturnCode(int rc)
     }
 }
 
-#ifdef BUILDCID
+#if XFONT_CID
 CharInfoPtr 
 CIDRenderGlyph(FontPtr pFont, psobj *charstringP, psobj *subarrayP,
 	       struct blues_struct *bluesP, CharInfoPtr pci, int *mode)

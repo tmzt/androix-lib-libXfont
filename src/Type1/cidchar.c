@@ -21,6 +21,10 @@
 #include <config.h>
 #endif
 #ifdef BUILDCID
+#define XFONT_CID 1
+#endif
+
+#if XFONT_CID
 #ifndef FONTMODULE
 #include <stdio.h>
 #include <string.h>

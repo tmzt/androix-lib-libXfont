@@ -50,6 +50,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#ifdef BUILDCID
+#define XFONT_CID 1
+#endif
+
 #ifndef FONTMODULE
 #include <stdio.h>
 #else
@@ -71,7 +75,7 @@ static char *vm_base = NULL;  /* Start of virtual memory area */
 boolean 
 vm_init(int cnt)
 {
-#ifdef BUILDCID
+#if XFONT_CID
   if (vm_base == NULL || (vm_base != NULL && vm_size != cnt)) {
       if (vm_base != NULL) xfree(vm_base);
       vm_next = vm_base = (char *)xalloc (cnt);

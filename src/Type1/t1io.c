@@ -53,6 +53,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#ifdef BUILDCID
+#define XFONT_CID 1
+#endif
+
 #ifndef STATIC
 #define STATIC static
 #endif
@@ -88,7 +92,7 @@ STATIC unsigned char TheBuffer[F_BUFSIZ];
 static int T1Decrypt ( unsigned char *p, int len );
 static int T1Fill ( F_FILE *f );
 
-#ifdef BUILDCID
+#if XFONT_CID
 void 
 resetDecrypt(void)
 {
@@ -254,7 +258,7 @@ T1eexec(F_FILE *f)   /* Stream descriptor */
   return (T1Feof(f))?NULL:f;
 } /* end eexec */
 
-#ifdef BUILDCID
+#if XFONT_CID
 F_FILE *             /* Initialization */
 CIDeexec(F_FILE *f)  /* Stream descriptor */ 
 {

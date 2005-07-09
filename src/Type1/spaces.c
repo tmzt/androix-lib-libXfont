@@ -49,6 +49,7 @@ This module is responsible for handling the TYPE1IMAGER "XYspace" object.
 #include "xf86_ansic.h"
 #else
 #include "X11/Xos.h"
+#include <stdio.h>
 #endif
 #include "objects.h"
 #include "spaces.h"
