@@ -36,6 +36,22 @@ in this Software without prior written authorization from The Open Group.
 #include <config.h>
 #endif
 
+/*
+ * Translate monolithic #defines to modular definitions
+ */
+
+#ifdef PCFFORMAT
+#define XFONT_PCFFORMAT 1
+#endif
+
+#ifdef SNFFORMAT
+#define XFONT_SNFFORMAT 1
+#endif
+
+#ifdef BDFFORMAT
+#define XFONT_BDFFORMAT 1
+#endif
+
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/bitmap.h>
 #include <X11/fonts/fontutil.h>
@@ -58,28 +74,28 @@ typedef struct _BitmapFileFunctions {
  *
  */
 static BitmapFileFunctionsRec readers[] = {
-#ifdef PCFFORMAT
+#if XFONT_PCFFORMAT
     { pcfReadFont, pcfReadFontInfo} ,
     { pcfReadFont, pcfReadFontInfo} ,
 #ifdef X_GZIP_FONT_COMPRESSION
     { pcfReadFont, pcfReadFontInfo} ,
 #endif
 #endif
-#ifdef SNFFORMAT
+#if XFONT_SNFFORMAT
     { snfReadFont, snfReadFontInfo},
     { snfReadFont, snfReadFontInfo},
 #ifdef X_GZIP_FONT_COMPRESSION
     { snfReadFont, snfReadFontInfo} ,
 #endif
 #endif
-#ifdef BDFFORMAT
+#if XFONT_BDFFORMAT
     { bdfReadFont, bdfReadFontInfo} ,
     { bdfReadFont, bdfReadFontInfo} ,
 #ifdef X_GZIP_FONT_COMPRESSION
     { bdfReadFont, bdfReadFontInfo} ,
 #endif
 #endif
-#ifdef PCFFORMAT
+#if XFONT_PCFFORMAT
     { pmfReadFont, pcfReadFontInfo} ,
 #endif
 };
@@ -88,7 +104,7 @@ static BitmapFileFunctionsRec readers[] = {
 #define CAPABILITIES (CAP_MATRIX | CAP_CHARSUBSETTING)
 
 static FontRendererRec	renderers[] = {
-#ifdef	PCFFORMAT
+#if XFONT_PCFFORMAT
     { ".pcf", 4, BitmapOpenBitmap, BitmapOpenScalable,
 	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
 	CAPABILITIES },
@@ -102,7 +118,7 @@ static FontRendererRec	renderers[] = {
 	CAPABILITIES },
 #endif
 #endif
-#ifdef	SNFFORMAT
+#if XFONT_SNFFORMAT
     { ".snf", 4, BitmapOpenBitmap, BitmapOpenScalable,
 	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
 	CAPABILITIES },
@@ -115,7 +131,7 @@ static FontRendererRec	renderers[] = {
 	CAPABILITIES },
 #endif
 #endif
-#ifdef	BDFFORMAT
+#if XFONT_BDFFORMAT
     { ".bdf", 4, BitmapOpenBitmap, BitmapOpenScalable,
 	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
 	CAPABILITIES },
@@ -128,7 +144,7 @@ static FontRendererRec	renderers[] = {
 	CAPABILITIES },
 #endif
 #endif
-#ifdef	PCFFORMAT
+#if XFONT_PCFFORMAT
     { ".pmf", 4, BitmapOpenBitmap, BitmapOpenScalable,
 	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
 	CAPABILITIES }
