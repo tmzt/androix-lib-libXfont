@@ -80,7 +80,7 @@ libXfont_la_LIBADD = \
 	$(TYPE1_LIB) $(SPEEDO_LIB) \
 	$(FREETYPE_LIBS) $(Z_LIBS) $(MATH_LIBS) 	
 
-libXfont_la_SOURCES =
+libXfont_la_SOURCES = dummy.c
 
 #
 # Shared library version info.  This is not the same as the package version
