@@ -82,8 +82,4 @@ libXfont_la_LIBADD = \
 
 libXfont_la_SOURCES = dummy.c
 
-#
-# Shared library version info.  This is not the same as the package version
-#
 libXfont_la_LDFLAGS = -version-number 1:4:1
-
