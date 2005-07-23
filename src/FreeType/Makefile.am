@@ -8,6 +8,7 @@ AM_CFLAGS=$(FREETYPE_CFLAGS)
 libft_la_SOURCES = 		\
 	ft.h			\
 	ftfuncs.h		\
+	xttcap.h		\
 	ftenc.c			\
 	ftfuncs.c		\
 	fttools.c		\
