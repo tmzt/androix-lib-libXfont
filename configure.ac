@@ -26,8 +26,8 @@ dnl Process this file with autoconf to create configure.
 AC_PREREQ([2.57])
 
 AC_INIT([libXfont],
-	1.4.3,
-	[keithp@keithp.com],
+	0.99.0,
+	[https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
 	libXfont)
 dnl
 dnl This is the package version number, not the shared library
@@ -225,6 +225,8 @@ esac
 
 CFLAGS="$CFLAGS $XFONT_CFLAGS $OS_CFLAGS"
 LIBS="$LIBS $XFONT_LIBS"
+
+XORG_RELEASE_VERSION
 
 AC_OUTPUT([Makefile
 	   src/Makefile
