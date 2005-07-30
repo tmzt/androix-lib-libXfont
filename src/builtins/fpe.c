@@ -1,3 +1,4 @@
+/* $XdotOrg: $ */
 /*
  * Id: fpe.c,v 1.2 1999/11/02 06:16:48 keithp Exp $
  *
@@ -74,7 +75,8 @@ BuiltinFreeFPE (fpe)
     return Successful;
 }
 
-BuiltinRegisterFpeFunctions()
+void
+BuiltinRegisterFpeFunctions(void)
 {
     BuiltinRegisterFontFileFunctions ();
 

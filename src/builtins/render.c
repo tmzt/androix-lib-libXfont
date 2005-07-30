@@ -1,3 +1,4 @@
+/* $XdotOrg: $ */
 /*
  * Id: render.c,v 1.2 1999/11/02 06:16:48 keithp Exp $
  *
@@ -103,7 +104,8 @@ static FontRendererRec renderers[] = {
 
 #define numRenderers	(sizeof renderers / sizeof renderers[0])
 
-BuiltinRegisterFontFileFunctions()
+void
+BuiltinRegisterFontFileFunctions(void)
 {
     int	i;
     for (i = 0; i < numRenderers; i++)
