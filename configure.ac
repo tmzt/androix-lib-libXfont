@@ -66,8 +66,13 @@ AC_ARG_ENABLE(freetype, [ --disable-freetype],[XFONT_FREETYPE=$enableval],[XFONT
 AM_CONDITIONAL(XFONT_FREETYPE, [test x$XFONT_FREETYPE = xyes])
 if test x$XFONT_FREETYPE = xyes; then
 	AC_DEFINE(XFONT_FREETYPE,1,[Support FreeType rasterizer for nearly all font file formats])
-	AC_ARG_WITH(freetype-config, [  --with-freetype-config=PROG   Use FreeType configuration program PROG], freetype_config=$withval, freetype_config=yes)
+	AC_ARG_WITH(freetype-config, [  --with-freetype-config=PROG   Use FreeType configuration program PROG], freetype_config=$withval, freetype_config=auto)
 	
+	if test "$freetype_config" = "auto" ; then
+		PKG_CHECK_MODULES(FREETYPE, freetype2, 
+			freetype_config=no, freetype_config=yes)
+	fi
+
 	if test "$freetype_config" = "yes"; then 
 		AC_PATH_PROG(ft_config,freetype-config,no)
 		if test "$ft_config" = "no"; then
@@ -76,9 +81,11 @@ if test x$XFONT_FREETYPE = xyes; then
 	else
 		ft_config="$freetype_config"
 	fi
-	
-	FREETYPE_CFLAGS="`$ft_config --cflags`"
-	FREETYPE_LIBS="`$ft_config --libs`"
+
+	if test "$freetype_config" != "no"; then 	
+		FREETYPE_CFLAGS="`$ft_config --cflags`"
+		FREETYPE_LIBS="`$ft_config --libs`"
+	fi
 	XFONT_FONTFILE=yes
 else
 	FREETYPE_CFLAGS=""
