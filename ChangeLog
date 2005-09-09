@@ -1,3 +1,9 @@
+2005-09-09  Daniel Stone  <daniel@freedesktop.org>
+
+	* configure.ac:
+	AC_DEFINE FONTCACHE rather than XFONT_FONTCACHE, as the former is used
+	in the code, and the latter in Makefile.ams for an AM_CONDITIONAL.
+
 2005-07-10  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
 	* src/FreeType/Makefile.am:

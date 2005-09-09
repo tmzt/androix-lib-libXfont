@@ -185,7 +185,7 @@ fi
 AC_ARG_ENABLE(fontcache, [ --disable-fontcache ],[XFONT_FONTCACHE=$enableval],[XFONT_FONTCACHE=yes])
 AM_CONDITIONAL(XFONT_FONTCACHE, [test "x$XFONT_FONTCACHE" = xyes])
 if test "x$XFONT_FONTCACHE" = xyes; then
-	AC_DEFINE(XFONT_FONTCACHE,1,[Support the font caching extension])
+	AC_DEFINE(FONTCACHE,1,[Support the font caching extension])
 	PKG_CHECK_MODULES(FONTCACHEPROTO, fontcacheproto)
 else
 	FONTCACHEPROTO_CFLAGS=""
