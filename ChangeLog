@@ -1,3 +1,8 @@
+2005-10-03  Adam Jackson  <ajax@freedesktop.org>
+
+	* src/fontcache/Makefile.am:
+	Bug #4677: Don't install libfontcache.so.
+
 2005-09-09  Daniel Stone  <daniel@freedesktop.org>
 
 	* configure.ac:
