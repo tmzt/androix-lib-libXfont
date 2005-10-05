@@ -11,3 +11,5 @@ libbuiltins_la_SOURCES = 	\
 	fonts.c			\
 	fpe.c			\
 	render.c
+
+EXTRA_DIST = buildfont
