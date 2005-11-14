@@ -58,10 +58,8 @@ FontFileReadDirectory (char *directory, FontDirectoryPtr *pdir)
     char        file_name[MAXFONTFILENAMELEN];
     char        font_name[MAXFONTNAMELEN];
     char        dir_file[MAXFONTFILENAMELEN];
-#ifdef FONTDIRATTRIB
     char	dir_path[MAXFONTFILENAMELEN];
     char	*ptr;
-#endif
     FILE       *file;
     int         count,
                 i,
@@ -74,7 +72,6 @@ FontFileReadDirectory (char *directory, FontDirectoryPtr *pdir)
     if (strlen(directory) + 1 + sizeof(FontDirFile) > sizeof(dir_file))
 	return BadFontPath;
 
-#ifdef FONTDIRATTRIB
     /* Check for font directory attributes */
 #if !defined(__UNIXOS2__) && !defined(WIN32)
     if ((ptr = strchr(directory, ':'))) {
@@ -88,9 +85,6 @@ FontFileReadDirectory (char *directory, FontDirectoryPtr *pdir)
 	strcpy(dir_path, directory);
     }
     strcpy(dir_file, dir_path);
-#else
-    strcpy(dir_file, directory);
-#endif
     if (dir_file[strlen(dir_file) - 1] != '/')
 	strcat(dir_file, "/");
     strcat(dir_file, FontDirFile);
@@ -147,11 +141,7 @@ FontFileReadDirectory (char *directory, FontDirectoryPtr *pdir)
     } else if (errno != ENOENT) {
 	return BadFontPath;
     }
-#ifdef FONTDIRATTRIB
     status = ReadFontAlias(dir_path, FALSE, &dir);
-#else
-    status = ReadFontAlias(directory, FALSE, &dir);
-#endif
     if (status != Successful) {
 	if (dir)
 	    FontFileFreeDir (dir);
