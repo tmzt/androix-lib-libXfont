@@ -86,13 +86,16 @@ if test x$XFONT_FREETYPE = xyes; then
 		FREETYPE_CFLAGS="`$ft_config --cflags`"
 		FREETYPE_LIBS="`$ft_config --libs`"
 	fi
+	FREETYPE_REQUIRES="freetype2"
 	XFONT_FONTFILE=yes
 else
 	FREETYPE_CFLAGS=""
 	FREETYPE_LIBS=""
+	FREETYPE_REQUIRES=""
 fi
 AC_SUBST(FREETYPE_LIBS)
 AC_SUBST(FREETYPE_CFLAGS)
+AC_SUBST(FREETYPE_REQUIRES)
 
 #
 # A bit tricky here; CID font support uses the IBM Type1 rasterizer,
