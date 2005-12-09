@@ -1,5 +1,5 @@
-FONTDIR=${libdir}/X11/fonts
-FONTENCDEFS = -DFONT_ENCODINGS_DIRECTORY=\"$(FONTDIR)/encodings/encodings.dir\"
+FONTENCDIR=@ENCODINGSDIR@
+FONTENCDEFS = -DFONT_ENCODINGS_DIRECTORY=\"$(FONTENCDIR)/encodings.dir\"
 
 INCLUDES =			\
 	-I${top_srcdir}/include \
