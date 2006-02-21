@@ -1,3 +1,9 @@
+2006-02-21  Daniel Stone  <daniel@freedesktop.org>
+
+	* src/fc/fserve.c:
+	Don't crash when we receive an FS_Error from the font server (Guillem
+	Jover).
+
 2005-12-14  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
 	* configure.ac:
