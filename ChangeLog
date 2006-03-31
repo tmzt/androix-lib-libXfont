@@ -1,3 +1,9 @@
+2006-03-31  Daniel Stone  <daniel@freedesktop.org>
+
+	* src/fontfile/ffcheck.c:
+	Change BUILD_* to XFONT_*.  (Drew Parsons)
+	Minor cleanup: remove random #ifndef CRAY.
+
 2006-03-20  Adam Jackson  <ajax@freedesktop.org>
 
 	* src/Makefile.am:
