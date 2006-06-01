@@ -1,3 +1,31 @@
+2006-06-01  Adam Jackson  <ajax@freedesktop.org>
+
+	* include/X11/fonts/fontmisc.h:
+	* src/stubs/cauthgen.c:
+	* src/stubs/csignal.c:
+	* src/stubs/delfntcid.c:
+	* src/stubs/errorf.c:
+	* src/stubs/fatalerror.c:
+	* src/stubs/findoldfnt.c:
+	* src/stubs/getcres.c:
+	* src/stubs/getdefptsize.c:
+	* src/stubs/getnewfntcid.c:
+	* src/stubs/gettime.c:
+	* src/stubs/initfshdl.c:
+	* src/stubs/regfpefunc.c:
+	* src/stubs/rmfshdl.c:
+	* src/stubs/servclient.c:
+	* src/stubs/setfntauth.c:
+	* src/stubs/stfntcfnt.c:
+	* src/stubs/stubs.h:
+	* src/stubs/xpstubs.c:
+	* src/util/Makefile.am:
+	* src/util/atom.c:
+	* src/util/miscutil.c:
+	For the 20-odd symbols defined both in libXfont and the X server,
+	emit them as weak symbols so that the linker will prefer the
+	server's definition when present.
+
 2006-04-01  Adam Jackson  <ajax@freedesktop.org>
 
 	* Makefile.am:
