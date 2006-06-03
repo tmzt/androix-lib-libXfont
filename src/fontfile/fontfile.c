@@ -1010,7 +1010,10 @@ FontFileListOneFontWithInfo (pointer client, FontPathElementPtr fpe,
 			ret = (*scalable->renderer->GetInfoScalable)
 			    (fpe, *pFontInfo, entry, &tmpName, fileName, &vals);
 		    }
-		    if (ranges) xfree(ranges);
+		    if (ranges) {
+			xfree(ranges);
+			ranges = NULL;
+		    }
 		}
 	    }
 	    if (ret == Successful) return ret;
