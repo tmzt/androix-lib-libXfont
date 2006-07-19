@@ -353,6 +353,7 @@ FontFileOpenFont (pointer client, FontPathElementPtr fpe, Mask flags,
 	    tmpName.ndashes = entry->name.ndashes;
 	}
     }
+
     if (entry)
     {
 	noSpecificSize = FALSE;	/* TRUE breaks XLFD enhancements */
@@ -436,9 +437,16 @@ FontFileOpenFont (pointer client, FontPathElementPtr fpe, Mask flags,
 		    } else {
 			strcpy (fileName, dir->directory);
 			strcat (fileName, scalable->fileName);
-			ret = (*scalable->renderer->OpenScalable) (fpe, pFont,
-			   flags, entry, fileName, &vals, format, fmask,
-			   non_cachable_font);
+                        if (scalable->renderer->OpenScalable) {
+			    ret = (*scalable->renderer->OpenScalable) (fpe, pFont,
+			       flags, entry, fileName, &vals, format, fmask,
+			       non_cachable_font);
+                        }
+                        else if (scalable->renderer->OpenBitmap) {
+                            ret = (*scalable->renderer->OpenBitmap) (fpe, pFont,
+                               flags, entry, fileName, format, fmask,
+                               non_cachable_font);
+                        }
 		    }
 
 		    /* In case rasterizer does something bad because of
@@ -1007,8 +1015,13 @@ FontFileListOneFontWithInfo (pointer client, FontPathElementPtr fpe,
 		    } else {
 			strcpy (fileName, dir->directory);
 			strcat (fileName, scalable->fileName);
-			ret = (*scalable->renderer->GetInfoScalable)
-			    (fpe, *pFontInfo, entry, &tmpName, fileName, &vals);
+                        if (scalable->renderer->GetInfoScalable)
+			    ret = (*scalable->renderer->GetInfoScalable)
+			        (fpe, *pFontInfo, entry, &tmpName, fileName,
+                                 &vals);
+                        else if (scalable->renderer->GetInfoBitmap)
+                            ret = (*scalable->renderer->GetInfoBitmap)
+                                (fpe, *pFontInfo, entry, fileName);
 		    }
 		    if (ranges) {
 			xfree(ranges);
