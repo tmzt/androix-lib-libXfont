@@ -45,4 +45,12 @@ libXfontinclude_HEADERS = \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = xfont.pc
 
-EXTRA_DIST = xfont.pc.in autogen.sh include/X11/fonts/fontconf.h.in
+EXTRA_DIST = xfont.pc.in autogen.sh include/X11/fonts/fontconf.h.in ChangeLog
+
+.PHONY: ChangeLog
+
+ChangeLog:
+	GIT_DIR=${srcdir}/.git git-log > ChangeLog
+
+dist-hook: ChangeLog
+
