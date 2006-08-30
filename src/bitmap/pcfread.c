@@ -468,7 +468,7 @@ pcfReadFont(FontPtr pFont, FontFilePtr file,
     nbitmaps = pcfGetINT32(file, format);
     if (nbitmaps != nmetrics || IS_EOF(file))
 	goto Bail;
-    /* nmetrics is alreadt ok, so nbitmap also is */
+    /* nmetrics is already ok, so nbitmap also is */
     offsets = (CARD32 *) xalloc(nbitmaps * sizeof(CARD32));
     if (!offsets) {
       pcfError("pcfReadFont(): Couldn't allocate offsets (%d*%d)\n", nbitmaps, sizeof(CARD32));
