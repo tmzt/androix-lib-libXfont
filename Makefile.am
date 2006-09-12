@@ -49,8 +49,9 @@ EXTRA_DIST = xfont.pc.in autogen.sh include/X11/fonts/fontconf.h.in ChangeLog
 
 .PHONY: ChangeLog
 
+CLEANFILES = ChangeLog
 ChangeLog:
-	GIT_DIR=${srcdir}/.git git-log > ChangeLog
+	git-log > ChangeLog
 
 dist-hook: ChangeLog
 
