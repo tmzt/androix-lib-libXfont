@@ -152,32 +152,29 @@ AC_ARG_ENABLE(builtins, [ --disable-builtins ], [XFONT_BUILTINS=$enableval], [XF
 AM_CONDITIONAL(XFONT_BUILTINS, [test "x$XFONT_BUILTINS" = xyes ])
 if test "x$XFONT_BUILTINS" = xyes; then
 	AC_DEFINE(XFONT_BUILTINS,1,[Support built-in fonts])
-	XFONT_PCFFORMAT=yes
+	XFONT_BITMAP=yes
 fi
 
 AC_ARG_ENABLE(pcfformat, [ --disable-pcfformat ], [XFONT_PCFFORMAT=$enableval], [XFONT_PCFFORMAT=yes])
 AM_CONDITIONAL(XFONT_PCFFORMAT, [test "x$XFONT_PCFFORMAT" = xyes])
-if test "x$XFONT_BUILTINS" = xyes; then
+if test "x$XFONT_PCFFORMAT" = xyes; then
 	AC_DEFINE(XFONT_PCFFORMAT,1,[Support pcf format bitmap font files])
 	XFONT_BITMAP=yes
 fi
 
 AC_ARG_ENABLE(bdfformat, [ --disable-bdfformat ], [XFONT_BDFFORMAT=$enableval], [XFONT_BDFFORMAT=yes])
 AM_CONDITIONAL(XFONT_BDFFORMAT, [test "x$XFONT_BDFFORMAT" = xyes])
-if test "x$XFONT_BUILTINS" = xyes; then
+if test "x$XFONT_BDFFORMAT" = xyes; then
 	AC_DEFINE(XFONT_BDFFORMAT,1,[Support bdf format bitmap font files])
 	XFONT_BITMAP=yes
 fi
 
 AC_ARG_ENABLE(snfformat, [ --disable-snfformat ], [XFONT_SNFFORMAT=$enableval], [XFONT_SNFFORMAT=yes])
 AM_CONDITIONAL(XFONT_SNFFORMAT, [test "x$XFONT_SNFFORMAT" = xyes])
-if test "x$XFONT_BUILTINS" = xyes; then
+if test "x$XFONT_SNFFORMAT" = xyes; then
 	AC_DEFINE(XFONT_SNFFORMAT,1,[Support snf format bitmap font files])
 	XFONT_BITMAP=yes
 fi
-
-AC_ARG_ENABLE(bdfformat, [ --disable-bdfformat ], [XFONT_BDFFORMAT=$enableval], [XFONT_BDFFORMAT=yes])
-AC_ARG_ENABLE(snfformat, [ --disable-snfformat ], [XFONT_SNFFORMAT=$enableval], [XFONT_SNFFORMAT=yes])
 
 AM_CONDITIONAL(XFONT_BITMAP, [test "x$XFONT_BITMAP" = xyes ])
 if test "x$XFONT_BITMAP" = xyes; then
@@ -187,7 +184,7 @@ fi
 
 AM_CONDITIONAL(XFONT_FONTFILE, [test "x$XFONT_FONTFILE" = xyes])
 if test "x$XFONT_FONTFILE" = xyes; then
-	AC_DEFINE(XFONT_FONTFILE,,[Support fonts in files])
+	AC_DEFINE(XFONT_FONTFILE,1,[Support fonts in files])
 fi
 
 #
