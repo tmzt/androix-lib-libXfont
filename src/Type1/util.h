@@ -68,6 +68,8 @@ typedef int boolean;
 /*  Routines for managing virtual memory                              */
 /***================================================================***/
 
+#define VM_SIZE (50 * 1024)
+
 extern boolean  vm_init ( int cnt );
 extern long     vm_free;
 extern long     vm_size;

@@ -64,7 +64,6 @@
 #include  "paths.h"
 #include  "fonts.h"        /* understands about TEXTTYPEs */
 #include  "pictures.h"     /* understands about handles */
-#include  "range.h"
  
 typedef struct xobject xobject;
 #include  "util.h"       /* PostScript objects */

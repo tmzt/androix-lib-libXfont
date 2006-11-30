@@ -35,6 +35,8 @@
 #undef VERSION
 #endif
 
+#include "util.h"
+
 /*     Definition of a PostScript FONT             */
 typedef struct ps_font {
             char    *vm_start;
@@ -103,3 +105,12 @@ extern int scan_font ( psfont *FontP );
 #define LENIV     14
 #define RNDSTEMUP 15
 #define EXPANSIONFACTOR 16
+
+extern int SearchDictName ( psdict *dictP, psobj *keyP );
+extern boolean initFont ( int cnt );
+extern int readFont ( char *env );
+extern struct xobject *fontfcnB ( struct XYspace *S, unsigned char *code, 
+                                  int *lenP, int *mode );
+extern Bool fontfcnA ( char *env, int *mode );
+extern void QueryFontLib ( char *env, char *infoName, pointer infoValue, 
+                           int *rcodeP );
