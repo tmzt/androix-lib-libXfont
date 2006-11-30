@@ -106,27 +106,11 @@ AC_SUBST(FREETYPE_LIBS)
 AC_SUBST(FREETYPE_CFLAGS)
 AC_SUBST(FREETYPE_REQUIRES)
 
-#
-# A bit tricky here; CID font support uses the IBM Type1 rasterizer,
-# but it's generally better to use FreeType for regular Type1 files,
-# so we make CID build the IBM rasterizer, but not also make the Type1
-# rasterizer used for normal Type1 files
-#
-
 AC_ARG_ENABLE(type1, [ --enable-type1 ], [XFONT_TYPE1=$enableval], [XFONT_TYPE1=no])
 if test "x$XFONT_TYPE1" = xyes; then
 	AC_DEFINE(XFONT_TYPE1,1,[Support IBM Type 1 rasterizer for Type1 font files])
 	XFONT_FONTFILE=yes
 fi
-
-AC_ARG_ENABLE(cid, [ --disable-cid ], [XFONT_CID=$enableval], [XFONT_CID=yes])
-AM_CONDITIONAL(XFONT_CID, [test "x$XFONT_CID" = xyes ])
-if test "x$XFONT_CID" = xyes; then
-	AC_DEFINE(XFONT_CID,1,[Support Type 1 CID font files])
-	XFONT_TYPE1=yes
-	XFONT_FONTFILE=yes
-fi
-
 AM_CONDITIONAL(XFONT_TYPE1, [test "x$XFONT_TYPE1" = xyes ])
 
 AC_ARG_ENABLE(speedo, [ --disable-speedo ], [XFONT_SPEEDO=$enableval], [XFONT_SPEEDO=yes])
