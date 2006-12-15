@@ -31,7 +31,6 @@ libXfontinclude_HEADERS = \
 	include/X11/fonts/fntfil.h   \
 	include/X11/fonts/fntfilio.h \
 	include/X11/fonts/fntfilst.h \
-	include/X11/fonts/fontconf.h \
 	include/X11/fonts/fontencc.h \
 	include/X11/fonts/fontmisc.h \
 	include/X11/fonts/fontmod.h  \
@@ -41,6 +40,8 @@ libXfontinclude_HEADERS = \
 	include/X11/fonts/pcf.h      \
 	src/FreeType/ft.h	     \
 	src/FreeType/ftfuncs.h
+nodist_libXfontinclude_HEADERS = \
+	include/X11/fonts/fontconf.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = xfont.pc
