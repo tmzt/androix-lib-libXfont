@@ -218,6 +218,9 @@ case $host_os in
     linux*)
         OS_CFLAGS="-D_XOPEN_SOURCE"
         ;;
+    darwin*)
+        OS_CFLAGS="-Wl,-flat_namespace"
+	;;
     *)
         OS_CFLAGS=
         ;;
