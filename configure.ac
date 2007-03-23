@@ -171,6 +171,14 @@ if test "x$XFONT_FONTFILE" = xyes; then
 	AC_DEFINE(XFONT_FONTFILE,1,[Support fonts in files])
 fi
 
+AC_ARG_ENABLE(loadable-font-modules, 
+  AC_HELP_STRING([--disable-loadable-font-modules], 
+       	 [support dynamically loaded font modules (default is enabled)]),
+	[LOADABLE_FONTS=$enableval], [LOADABLE_FONTS=yes])
+if test "x$LOADABLE_FONTS" = xyes; then
+	AC_DEFINE(LOADABLEFONTS,1,[Support dynamically loaded font modules])
+fi
+
 #
 # Font cache extension support?
 #
