@@ -43,8 +43,8 @@ static char const * const releaseID =
 #include <config.h>
 #endif
 #include <X11/fonts/fontmisc.h>
-#ifndef FONTMODULE
 #include <string.h>
+#ifndef FONTMODULE
 #include <ctype.h>
 #include <math.h>
 #else
@@ -403,7 +403,7 @@ get_record_type_by_name(SPropertyRecord const ** const refRefRecord, /*result*/
     
     *refRefRecord = NULL;
     for (i=0; i<numOfValidRecords; i++) {
-        if (!mystrcasecmp(validRecords[i].strRecordName, strName)) {
+        if (!strcasecmp(validRecords[i].strRecordName, strName)) {
             result = True;
             *refRefRecord = &validRecords[i];
             break;
@@ -541,29 +541,29 @@ SPropRecValList_add_record(SDynPropRecValList *pThisList,
             {
                 Bool val;
                 
-                if (!mystrcasecmp(strValue, "yes"))
+                if (!strcasecmp(strValue, "yes"))
                     val = True;
-                else if (!mystrcasecmp(strValue, "y"))
+                else if (!strcasecmp(strValue, "y"))
                     val = True;
-                else if (!mystrcasecmp(strValue, "on"))
+                else if (!strcasecmp(strValue, "on"))
                     val = True;
-                else if (!mystrcasecmp(strValue, "true"))
+                else if (!strcasecmp(strValue, "true"))
                     val = True;
-                else if (!mystrcasecmp(strValue, "t"))
+                else if (!strcasecmp(strValue, "t"))
                     val = True;
-                else if (!mystrcasecmp(strValue, "ok"))
+                else if (!strcasecmp(strValue, "ok"))
                     val = True;
-                else if (!mystrcasecmp(strValue, "no"))
+                else if (!strcasecmp(strValue, "no"))
                     val = False;
-                else if (!mystrcasecmp(strValue, "n"))
+                else if (!strcasecmp(strValue, "n"))
                     val = False;
-                else if (!mystrcasecmp(strValue, "off"))
+                else if (!strcasecmp(strValue, "off"))
                     val = False;
-                else if (!mystrcasecmp(strValue, "false"))
+                else if (!strcasecmp(strValue, "false"))
                     val = False;
-                else if (!mystrcasecmp(strValue, "f"))
+                else if (!strcasecmp(strValue, "f"))
                     val = False;
-                else if (!mystrcasecmp(strValue, "bad"))
+                else if (!strcasecmp(strValue, "bad"))
                     val = False;
                 else {
                     fprintf(stderr,
@@ -642,7 +642,7 @@ SPropRecValList_search_record(SRefPropRecValList *pThisList,
     
     *refRecValue = NULL;
     for (p=pThisList->headNode; NULL!=p; p=p->nextNode) {
-        if (!mystrcasecmp(p->containerE.refRecordType->strRecordName,
+        if (!strcasecmp(p->containerE.refRecordType->strRecordName,
                           recordName)) {
             *refRecValue = &p->containerE;
             result = True;
@@ -713,7 +713,7 @@ SPropRecValList_add_by_font_cap(SDynPropRecValList *pThisList,
                     value = &duplicated[nextColon-strCapHead];
             
                 for (i=0; i<numOfCorrespondRelations; i++) {
-                    if (!mystrcasecmp(correspondRelations[i].capVariable,
+                    if (!strcasecmp(correspondRelations[i].capVariable,
                                       duplicated)) {
                         if (SPropRecValList_add_record(pThisList,
                                                         correspondRelations[i]
@@ -743,39 +743,6 @@ SPropRecValList_add_by_font_cap(SDynPropRecValList *pThisList,
 /**************************************************************************
   Functions (xttmisc)
  */
-
-/* compare strings, ignoring case */
-Bool /* False == equal, True == not equal */
-mystrcasecmp(char const *s1, char const *s2)
-{
-    Bool result = True;
-    
-#if (defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) ||\
-     defined(__bsdi__)) && !defined(FONTMODULE)
-    /* 4.4BSD has strcasecmp function. */
-    result = strcasecmp(s1, s2) != 0;
-#else
-    {
-        unsigned int len1 = strlen(s1);
-        
-        if (len1 == strlen(s2)) {
-            int i;
-            for (i=0; i<len1; i++) {
-                if (toupper(*s1++) != toupper(*s2++))
-                    goto quit;
-            }
-            result = False;
-        } else
-            /* len1 != len2 -> not equal*/
-            ;
-    }
-  quit:
-    ;
-#endif
-
-    return result;
-}
-
 
 /* strdup clone with using the allocator of X server */
 char *
