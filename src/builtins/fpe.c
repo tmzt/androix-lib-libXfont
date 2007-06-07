@@ -33,7 +33,7 @@
 
 static int  font_file_type;
 
-const char	builtin_fonts[] = "built-ins";
+static const char builtin_fonts[] = "built-ins";
 
 static int
 BuiltinNameCheck (char *name)
