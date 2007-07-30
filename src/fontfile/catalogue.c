@@ -218,6 +218,8 @@ CatalogueRescan (FontPathElementPtr fpe)
 	}
     }
 
+    closedir(dir);
+
     qsort(cat->fpeList,
 	  cat->fpeCount, sizeof cat->fpeList[0], ComparePriority);
 
