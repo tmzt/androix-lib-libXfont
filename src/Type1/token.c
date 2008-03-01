@@ -60,8 +60,8 @@ psvalue         tokenValue;    /* Token value */
  * Private variables
  * -------------------------------------------------------------------
  */
- 
-static FILE    *inputFileP;    /* Current input file */
+
+static F_FILE  *inputFileP;    /* Current input file */
  
  
 /* Token */

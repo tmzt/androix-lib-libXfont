@@ -31,6 +31,8 @@
 
 #ifndef UTIL_H
 #define UTIL_H
+
+#include "t1stdio.h"
  
 #ifndef boolean
 typedef int boolean;
@@ -109,7 +111,7 @@ typedef union ps_value {
   struct ps_obj   *arrayP;     /* when type is OBJ_ARRAY             */
   unsigned char   *stringP;    /* when type is OBJ_STRING            */
   char            *nameP;      /* when type is OBJ_NAME              */
-  FILE            *fileP;      /* when type is OBJ_FILE              */
+  F_FILE          *fileP;      /* when type is OBJ_FILE              */
 } psvalue;
  
 /***================================================================***/
@@ -184,7 +186,7 @@ extern void objFormatEncoding ( psobj *objP, int length, psobj *valueP );
 extern void objFormatArray ( psobj *objP, int length, psobj *valueP );
 extern void objFormatString ( psobj *objP, int length, char *valueP );
 extern void objFormatName ( psobj *objP, int length, char *valueP );
-extern void objFormatFile ( psobj *objP, FILE *valueP );
+extern void objFormatFile ( psobj *objP, F_FILE *valueP );
 
 extern void T1InitStdProps(void);
 #endif

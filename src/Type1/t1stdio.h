@@ -30,10 +30,11 @@
 /* $XFree86: xc/lib/font/Type1/t1stdio.h,v 1.9 2001/01/17 19:43:24 dawes Exp $ */
 /* T1IO FILE structure and related stuff */
 
-#ifdef XFree86LOADER
-#undef FILE
-#endif
-#define FILE F_FILE
+#include <stdio.h>
+
+#ifndef _T1STDIO_H_
+#define _T1STDIO_H_
+
 typedef unsigned char F_char;
  
 typedef struct F_FILE {
@@ -53,11 +54,6 @@ typedef struct F_FILE {
 #define FIOEOF    (0x80)
 #define FIOERROR  (0x40)
  
-#ifndef NULL
-#include <stddef.h>
-#endif
-
-#define EOF (-1)     /* end of file */
 #define F_BUFSIZ (512)
 
 #define _XT1getc(f) \
@@ -69,26 +65,14 @@ typedef struct F_FILE {
  
 #define  T1Feof(f)          (((f)->flags & FIOEOF) && ((f)->b_cnt==0))
 
-extern FILE *T1Open ( char *fn, char *mode );
-extern int T1Getc ( FILE *f );
-extern int T1Ungetc ( int c, FILE *f );
-extern int T1Read ( char *buffP, int size, int n, FILE *f );
-extern int T1Close ( FILE *f );
-extern FILE *T1eexec ( FILE *f );
+extern F_FILE *T1Open ( char *fn, char *mode );
+extern int T1Getc ( F_FILE *f );
+extern int T1Ungetc ( int c, F_FILE *f );
+extern int T1Read ( char *buffP, int size, int n, F_FILE *f );
+extern int T1Close ( F_FILE *f );
+extern F_FILE *T1eexec ( F_FILE *f );
 extern void resetDecrypt ( void );
 
-#undef fclose
-#undef fopen
-#undef ungetc
-#undef fgetc
-#undef fread
-#undef feof
-#undef ferror
-#define  fclose(f)          T1Close(f)
-#define  fopen(name,mode)   T1Open(name,mode)
-#define  ungetc(c,f)        T1Ungetc(c,f)
-#define  fgetc(f)           T1Getc(f)
+#define  T1Ferror(f)        (((f)->flags & FIOERROR)?(f)->error:0)
 
-#define  fread(bufP,size,n,f) T1Read(bufP,size,n,f)
-#define  feof(f)            (((f)->flags & FIOEOF) && ((f)->b_cnt==0))
-#define  ferror(f)          (((f)->flags & FIOERROR)?(f)->error:0)
+#endif /* _T1STDIO_H_ */

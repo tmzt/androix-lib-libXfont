@@ -177,7 +177,7 @@ objFormatName(psobj *objP, int length, char *valueP)
  * Format a File object
  */
 void 
-objFormatFile(psobj *objP, FILE *valueP)
+objFormatFile(psobj *objP, F_FILE *valueP)
 {
   if (objP != NULL) {
     objP->type         = OBJ_FILE;

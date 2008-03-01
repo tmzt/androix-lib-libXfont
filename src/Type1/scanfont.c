@@ -1371,7 +1371,7 @@ scan_font(psfont *FontP)
  
   char   filename[128];
   char   filetype[3];
-  FILE   *fileP;
+  F_FILE *fileP;
   char   *nameP;
   int    namelen;
   int    V;
