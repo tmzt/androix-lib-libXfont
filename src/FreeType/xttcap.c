@@ -44,21 +44,8 @@ static char const * const releaseID =
 #endif
 #include <X11/fonts/fontmisc.h>
 #include <string.h>
-#ifndef FONTMODULE
 #include <ctype.h>
 #include <math.h>
-#else
-#include "Xmd.h"
-#include "Xdefs.h"
-#include "xf86_ansic.h"
-#endif
-/*
-#include <X11/X.h>
-#include <X11/Xmd.h>
-#include <X11/Xfuncproto.h>
-#include "xf86Module.h"
-#include "xf86_ansic.h"
-*/
 
 #ifndef True
 #define True (-1)
@@ -68,17 +55,6 @@ static char const * const releaseID =
 #endif /* False */
 
 #include "xttcap.h"
-
-#if 0
-/*
-  Prototypes for obsoleted OS (e.g. SunOS4)
- */
-
-#if (defined(sun) && !(defined(SVR4) || defined(__SVR4)))
-double strtod(char *str, char **ptr);
-double strtol(char *str, char **ptr, int base);
-#endif
-#endif
 
 
 /**************************************************************************

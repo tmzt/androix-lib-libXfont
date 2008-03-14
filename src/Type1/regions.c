@@ -44,9 +44,6 @@ The included files are:
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifdef FONTMODULE
-# include  "os.h"
-#endif
 #include  "objects.h"
 #include  "spaces.h"
 #include  "paths.h"
@@ -977,9 +974,9 @@ Then, we return the caller a pointer to 'new':
  
 The two edges must be disjoint vertically.
 */
-static void vertjoin(top, bottom)
-       register struct edgelist *top;  /* uppermost region                   */
-       register struct edgelist *bottom;  /* bottommost region               */
+static void vertjoin(
+    register struct edgelist	*top,		/* uppermost region */
+    register struct edgelist	*bottom)	/* bottommost region */
 {
        if (BOTTOM(top) > TOP(bottom))
                Abort("vertjoin not disjoint");

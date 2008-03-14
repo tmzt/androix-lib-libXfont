@@ -34,14 +34,8 @@
 #include <config.h>
 #endif
 
-#ifndef FONTMODULE
 #include <stdio.h>
 #include <string.h>
-#else
-#include "Xmd.h"	/* For INT32 declaration */
-#include "Xdefs.h"	/* For Bool */
-#include "xf86_ansic.h"
-#endif
 #include "t1imager.h"
 #include "util.h"
 #include <X11/fonts/fntfilst.h>

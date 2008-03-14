@@ -34,19 +34,10 @@ in this Software without prior written authorization from The Open Group.
 #ifndef _FONTMISC_H_
 #define _FONTMISC_H_
 
-#ifndef FONTMODULE
 #include <X11/Xfuncs.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-#ifndef X_NOT_POSIX
 #include <unistd.h>
-#else
-extern int close();
-#endif
-
-#endif /* FONTMODULE */
-
 #include <X11/Xdefs.h>
 
 
@@ -89,7 +80,7 @@ extern int f_strcasecmp(const char *s1, const char *s2);
 #define assert(x)	((void)0)
 
 #ifndef strcasecmp
-#if defined(NEED_STRCASECMP) && !defined(FONTMODULE)
+#if defined(NEED_STRCASECMP)
 #define strcasecmp(s1,s2) f_strcasecmp(s1,s2)
 #endif
 #endif

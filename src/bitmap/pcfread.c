@@ -868,11 +868,8 @@ pmfReadFont(FontPtr pFont, FontFilePtr file,
 	pci++;
     }
 
-#ifdef FONTMODULE
-    sizebitmaps = 1024; /* Default - we xalloc the size anyway */
-#else
     sizebitmaps = BUFSIZ;
-#endif
+
     /* guard against completely empty font */
     bitmaps = (char *) xalloc(sizebitmaps);
     if (!bitmaps) {

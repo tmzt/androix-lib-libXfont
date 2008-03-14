@@ -59,9 +59,7 @@ from The Open Group.
 #endif
 #include	"spint.h"
 
-#ifndef FONTMODULE
 #include <stdarg.h>
-#endif
 
 extern void ErrorF(const char* f, ...);
 

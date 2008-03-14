@@ -280,8 +280,7 @@ if (how_many_y < 0)
 }
 #endif
 #if INCL_BLACK
-FUNCTION boolean end_char_black()
-GDECL
+FUNCTION boolean end_char_black(/*** GDECL ***/ void)
 /* Called when all character data has been output
  * Return TRUE if output process is complete
  * Return FALSE to repeat output of the transformed data beginning
@@ -584,8 +583,7 @@ if (++sp_globals.next_offset >= MAX_INTERCEPTS) /* Intercept buffer full? */
 #endif
 
 #if INCL_BLACK
-FUNCTION LOCAL  void sp_proc_intercepts_black()
-GDECL
+FUNCTION LOCAL  void sp_proc_intercepts_black(/** GDECL **/ void)
 
 /*  Called by sp_make_char to output accumulated intercept lists
  *  Clips output to sp_globals.xmin, sp_globals.xmax, sp_globals.ymin, sp_globals.ymax boundaries

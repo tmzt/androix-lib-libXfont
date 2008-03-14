@@ -41,14 +41,8 @@
 #define STATIC static
 #endif
  
-#ifndef FONTMODULE
 #include <fcntl.h>
 #include <unistd.h>
-#else
-#include "Xdefs.h"
-#include "Xmd.h"	/* INT32 declaration */
-#include "xf86_ansic.h"
-#endif
 #include "t1stdio.h"
 #include "t1hdigit.h"
 #ifdef WIN32

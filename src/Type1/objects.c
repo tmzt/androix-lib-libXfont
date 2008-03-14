@@ -56,18 +56,11 @@ these may be defined as macros; if these ".h" files do not exist on your
 system it is a pretty safe bet that these are external entry points and
 you do do not need to include these header files.
 */
- 
-#ifndef FONTMODULE
+
 #include  <string.h>
 #include  <ctype.h>
 #include  <stdarg.h>
 #include  <stdio.h>
-#else
-#include "Xdefs.h"	/* Bool declaration */
-#include "Xmd.h"	/* INT32 declaration */
-#include  "os.h"
-#include "xf86_ansic.h"
-#endif
  
 /*
 override incorrect system functions; for example you might define

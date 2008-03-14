@@ -55,10 +55,7 @@ from The Open Group.
 #include <config.h>
 #endif
 
-#ifndef FONTMODULE
 #include <ctype.h>
-#endif
-
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/bitmap.h>
 #include "snfstr.h"

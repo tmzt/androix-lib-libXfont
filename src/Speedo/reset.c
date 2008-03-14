@@ -59,8 +59,7 @@ WITH THE SPEEDO SOFTWARE OR THE BITSTREAM CHARTER OUTLINE FONT.
 /***** STATIC FUNCTIONS *****/
 
 
-FUNCTION void reset()
-GDECL
+FUNCTION void reset(/** GDECL **/ void)
 /*
  * Called by the host software to intialize the Speedo mechanism
  */

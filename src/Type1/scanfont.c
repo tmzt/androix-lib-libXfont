@@ -35,13 +35,7 @@
 #include <config.h>
 #endif
 
-#ifndef FONTMODULE
 #include <string.h>
-#else
-#include "Xdefs.h"	/* Bool declaration */
-#include "Xmd.h"	/* INT32 declaration */
-#include "xf86_ansic.h"
-#endif
 #include "t1stdio.h"
 #include "util.h"
 #include "token.h"

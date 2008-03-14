@@ -62,9 +62,9 @@ WITH THE SPEEDO SOFTWARE OR THE BITSTREAM CHARTER OUTLINE FONT.
 
 
 #if INCL_OUTLINE
-FUNCTION boolean init_outline(specsarg)
-GDECL
-specs_t GLOBALFAR *specsarg;
+FUNCTION boolean init_outline(
+    GDECL
+    specs_t GLOBALFAR *specsarg)
 /*
  * init_out2() is called by sp_set_specs() to initialize the output module.
  * Returns TRUE if output module can accept requested specifications.
@@ -81,11 +81,11 @@ return (TRUE);
 #endif
 
 #if INCL_OUTLINE
-FUNCTION boolean begin_char_outline(Psw, Pmin, Pmax)
-GDECL
-point_t Psw;       /* End of escapement vector (sub-pixels) */            
-point_t Pmin;      /* Bottom left corner of bounding box */             
-point_t Pmax;      /* Top right corner of bounding box */
+FUNCTION boolean begin_char_outline(
+    GDECL
+    point_t Psw,       /* End of escapement vector (sub-pixels) */
+    point_t Pmin,      /* Bottom left corner of bounding box */
+    point_t Pmax)      /* Top right corner of bounding box */
 /*
  * If two or more output modules are included in the configuration, begin_char2()
  * is called by begin_char() to signal the start of character output data.
@@ -123,11 +123,11 @@ return TRUE;
 #endif
 
 #if INCL_OUTLINE
-FUNCTION void begin_sub_char_outline(Psw, Pmin, Pmax)
-GDECL
-point_t Psw;       /* End of sub-char escapement vector */            
-point_t Pmin;      /* Bottom left corner of sub-char bounding box */             
-point_t Pmax;      /* Top right corner of sub-char bounding box */
+FUNCTION void begin_sub_char_outline(
+    GDECL
+    point_t Psw,       /* End of sub-char escapement vector */
+    point_t Pmin,      /* Bottom left corner of sub-char bounding box */
+    point_t Pmax)      /* Top right corner of sub-char bounding box */
 /*
  * If two or more output modules are included in the configuration, begin_sub_char2()
  * is called by begin_sub_char() to signal the start of sub-character output data.
@@ -147,10 +147,10 @@ start_new_char();
 
 
 #if INCL_OUTLINE
-FUNCTION void begin_contour_outline(P1, outside)
-GDECL
-point_t P1;       /* Start point of contour */            
-boolean outside;  /* TRUE if outside (counter-clockwise) contour */
+FUNCTION void begin_contour_outline(
+    GDECL
+    point_t P1,       /* Start point of contour */
+    boolean outside)  /* TRUE if outside (counter-clockwise) contour */
 /*
  * If two or more output modules are included in the configuration, begin_contour2()
  * is called by begin_contour() to define the start point of a new contour
@@ -173,12 +173,12 @@ start_contour((fix31)x << sp_globals.poshift, (fix31)y << sp_globals.poshift, ou
 #endif
 
 #if INCL_OUTLINE
-FUNCTION void curve_outline(P1, P2, P3,depth)
-GDECL
-point_t P1;      /* First control point of Bezier curve */
-point_t P2;      /* Second control point of Bezier curve */
-point_t P3;      /* End point of Bezier curve */
-fix15 depth;
+FUNCTION void curve_outline(
+    GDECL
+    point_t P1,      /* First control point of Bezier curve */
+    point_t P2,      /* Second control point of Bezier curve */
+    point_t P3,      /* End point of Bezier curve */
+    fix15 depth)
 /*
  * If two or more output modules are included in the configuration, curve2()
  * is called by curve() to output one curve segment.
@@ -210,9 +210,9 @@ curve_to((fix31)x1 << sp_globals.poshift, (fix31)y1 << sp_globals.poshift,
 #endif
 
 #if INCL_OUTLINE
-FUNCTION void line_outline(P1)
-GDECL
-point_t P1;      /* End point of vector */             
+FUNCTION void line_outline(
+    GDECL
+    point_t P1)      /* End point of vector */
 /*
  * If two or more output modules are included in the configuration, line2()
  * is called by line() to output one vector.
@@ -233,8 +233,7 @@ line_to((fix31)x1 << sp_globals.poshift, (fix31)y1 << sp_globals.poshift);
 #endif
 
 #if INCL_OUTLINE
-FUNCTION void end_contour_outline()
-GDECL
+FUNCTION void end_contour_outline(/** GDECL **/ void)
 /*
  * If two or more output modules are included in the configuration, end_contour2()
  * is called by end_contour() to signal the end of a contour.
@@ -251,8 +250,7 @@ close_contour();
 
 
 #if INCL_OUTLINE
-FUNCTION void end_sub_char_outline()
-GDECL
+FUNCTION void end_sub_char_outline(/** GDECL **/ void)
 /*
  * If two or more output modules are included in the configuration, end_sub_char2()
  * is called by end_sub_char() to signal the end of sub-character data.
@@ -268,8 +266,7 @@ printf("END_SUB_CHAR_2()\n");
 
 
 #if INCL_OUTLINE
-FUNCTION boolean end_char_outline()
-GDECL
+FUNCTION boolean end_char_outline(/** GDECL **/ void)
 /*
  * If two or more output modules are included in the configuration, end_char2()
  * is called by end_char() to signal the end of the character data.

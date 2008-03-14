@@ -88,28 +88,12 @@ from The Open Group.
 #include <config.h>
 #endif
 
-#ifndef FONTMODULE
 #include <string.h>
-#ifdef _XOPEN_SOURCE
 #include <math.h>
-#else
-#define _XOPEN_SOURCE	/* to get prototype for hypot on some systems */
-#include <math.h>
-#undef _XOPEN_SOURCE
-#endif
 #include "X11/Xfuncs.h"
 #ifdef USE_MMAP
 #include <sys/types.h>
 #include <sys/mman.h>
-#endif
-#else
-#include "Xmd.h"
-#include "Xdefs.h"
-#endif
-
-#ifdef FONTMODULE
-#include "os.h"
-#include "xf86_ansic.h"
 #endif
 
 #include <X11/fonts/fntfilst.h>

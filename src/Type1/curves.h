@@ -36,9 +36,6 @@
 #define   FlattenConic(xM,yM,xC,yC,r)        t1_StepConic(NULL,(fractpel)0,(fractpel)0,xM,yM,xC,yC,r)
 #define   FlattenBezier(xB,yB,xC,yC,xD,yD)   t1_StepBezier(NULL,(fractpel)0,(fractpel)0,xB,yB,xC,yC,xD,yD)
 
-#if 0 
-struct segment *t1_StepConic();
-#endif
 extern struct segment *t1_StepBezier ( struct region *R, fractpel xA, fractpel yA, fractpel xB, fractpel yB, fractpel xC, fractpel yC, fractpel xD, fractpel yD );
 
 /*END SHARED*/

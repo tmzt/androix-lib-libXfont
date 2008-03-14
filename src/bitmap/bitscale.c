@@ -55,15 +55,7 @@ from The Open Group.
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/bitmap.h>
 #include <X11/fonts/fontutil.h>
-#ifndef FONTMODULE
-#ifdef _XOPEN_SOURCE
 #include <math.h>
-#else
-#define _XOPEN_SOURCE	/* to get prototype for hypot on some systems */
-#include <math.h>
-#undef _XOPEN_SOURCE
-#endif
-#endif
 
 #ifndef MAX
 #define   MAX(a,b)    (((a)>(b)) ? a : b)

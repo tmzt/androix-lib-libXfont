@@ -54,9 +54,7 @@ from The Open Group.
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef FONTMODULE
 #include <X11/Xos.h>
-#endif
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/fontutil.h>
 #include "spint.h"
@@ -159,7 +157,7 @@ static FontRendererRec renderer = {
 };
     
 void
-SpeedoRegisterFontFileFunctions()
+SpeedoRegisterFontFileFunctions(void)
 {
     sp_make_standard_props();
     sp_reset();

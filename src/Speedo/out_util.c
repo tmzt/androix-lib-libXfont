@@ -41,8 +41,7 @@ WITH THE SPEEDO SOFTWARE OR THE BITSTREAM CHARTER OUTLINE FONT.
 #define   ABS(X)     ( (X < 0) ? -X : X)
 #if INCL_BLACK || INCL_2D || INCL_SCREEN
 
-static FUNCTION void restart_intercepts_out(void)
-GDECL
+static FUNCTION void restart_intercepts_out(/** GDECL **/ void)
 /*  Called by sp_make_char when a new sub character is started
  *  Freezes current sorted lists
  */
@@ -206,8 +205,7 @@ printf("CURVE_OUT(%3.1f, %3.1f, %3.1f, %3.1f, %3.1f, %3.1f)\n",
 
 
 
-FUNCTION void end_contour_out()
-GDECL
+FUNCTION void end_contour_out(/** GDECL **/ void)
 /* Called after the last vector in each contour
  */
 {
@@ -217,8 +215,7 @@ printf("END_CONTOUR_OUT()\n");
 }
 
 
-FUNCTION void end_sub_char_out()
-GDECL
+FUNCTION void end_sub_char_out(/** GDECL **/ void)
 /* Called after the last contour in each sub-character in a compound character
  */
 {
@@ -228,8 +225,7 @@ printf("END_SUB_CHAR_OUT()\n");
 }
 
 
-FUNCTION void init_intercepts_out()
-GDECL
+FUNCTION void init_intercepts_out(/** GDECL **/ void)
 /*  Called to initialize intercept storage data structure
  */
 
@@ -308,8 +304,7 @@ sp_intercepts.inttype[sp_globals.no_y_lists-1] = END_INT;
                                   
 
 
-FUNCTION void reduce_band_size_out()
-GDECL
+FUNCTION void reduce_band_size_out(/** GDECL **/ void)
 {
 sp_globals.y_band.band_min = sp_globals.y_band.band_max - ((sp_globals.y_band.band_max - sp_globals.y_band.band_min) >> 1);
 #if INCL_2D
@@ -318,8 +313,7 @@ sp_globals.y_band.band_array_offset = sp_globals.y_band.band_min;
 }
 
 
-FUNCTION boolean next_band_out()
-GDECL
+FUNCTION boolean next_band_out(/** GDECL **/ void)
 {
 fix15  tmpfix15;
 

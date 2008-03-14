@@ -51,14 +51,8 @@
 #include <config.h>
 #endif
 
-#ifndef FONTMODULE
 #include  <stdio.h>          /* a system-dependent include, usually */
 #include  <math.h>
-#else
-#include  "Xdefs.h"
-#include  "Xmd.h"
-#include  "xf86_ansic.h"
-#endif
 #include  "objects.h"
 #include  "spaces.h"
 #include  "paths.h"

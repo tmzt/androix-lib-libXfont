@@ -57,11 +57,7 @@ from The Open Group.
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/fontutil.h>
 #include "spint.h"
-#ifndef FONTMODULE
 #include <math.h>
-#else
-#include "xf86_ansic.h"
-#endif
 
 /* percentage of pointsize used to specify ascent & descent */
 #define	STRETCH_FACTOR	120
@@ -126,7 +122,7 @@ static fontProp extraProps[] = {
 #define	NPROPS	(NNAMEPROPS + NEXTRAPROPS)
 
 void
-sp_make_standard_props()
+sp_make_standard_props(void)
 {
     int         i;
     fontProp   *t;

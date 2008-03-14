@@ -119,7 +119,7 @@ WITH THE SPEEDO SOFTWARE OR THE BITSTREAM CHARTER OUTLINE FONT.
 #define get_char_bbox(char_index,bbox) sp_get_char_bbox(char_index,bbox)
 #define make_char(char_index) sp_make_char(char_index)
 #if INCL_ISW
-#define compute_isw_scale() sp_compute_isw_scale()
+#define compute_isw_scale sp_compute_isw_scale
 #define do_make_char(char_index) sp_do_make_char(char_index)
 #define make_char_isw(char_index,imported_width) sp_make_char_isw(char_index,imported_width)
 #define reset_xmax(xmax) sp_reset_xmax(xmax)
@@ -141,9 +141,9 @@ WITH THE SPEEDO SOFTWARE OR THE BITSTREAM CHARTER OUTLINE FONT.
 #define begin_char_black(Psw,Pmin,Pmax) sp_begin_char_black(Psw,Pmin,Pmax)
 #define begin_contour_black(P1,outside) sp_begin_contour_black(P1,outside)
 #define line_black(P1) sp_line_black(P1)
-#define end_char_black() sp_end_char_black()
+#define end_char_black sp_end_char_black
 #define add_intercept_black(y,x) sp_add_intercept_black(y,x)
-#define proc_intercepts_black() sp_proc_intercepts_black()
+#define proc_intercepts_black sp_proc_intercepts_black
 
 #define init_screen(specsarg) sp_init_screen(specsarg)
 #define begin_char_screen(Psw,Pmin,Pmax) sp_begin_char_screen(Psw,Pmin,Pmax)
@@ -152,8 +152,8 @@ WITH THE SPEEDO SOFTWARE OR THE BITSTREAM CHARTER OUTLINE FONT.
 #define scan_curve_screen(X0,Y0,X1,Y1,X2,Y2,X3,Y3) sp_scan_curve_screen(X0,Y0,X1,Y1,X2,Y2,X3,Y3) 
 #define vert_line_screen(x,y1,y2) sp_vert_line_screen(x,y1,y2)
 #define line_screen(P1) sp_line_screen(P1)
-#define end_contour_screen() sp_end_contour_screen()
-#define end_char_screen() sp_end_char_screen()
+#define end_contour_screen sp_end_contour_screen
+#define end_char_screen sp_end_char_screen
 #define add_intercept_screen(y,x) sp_add_intercept_screen(y,x)
 #define proc_intercepts_screen() sp_proc_intercepts_screen()
 
@@ -163,15 +163,15 @@ WITH THE SPEEDO SOFTWARE OR THE BITSTREAM CHARTER OUTLINE FONT.
 #define begin_contour_outline(P1,outside) sp_begin_contour_outline(P1,outside)
 #define curve_outline(P1,P2,P3,depth) sp_curve_outline(P1,P2,P3,depth)
 #define line_outline(P1) sp_line_outline(P1)
-#define end_contour_outline() sp_end_contour_outline()
+#define end_contour_outline sp_end_contour_outline
 #define end_sub_char_outline() sp_end_sub_char_outline()
-#define end_char_outline() sp_end_char_outline()
+#define end_char_outline sp_end_char_outline
 
 #define init_2d(specsarg) sp_init_2d(specsarg)
 #define begin_char_2d(Psw, Pmin, Pmax) sp_begin_char_2d(Psw, Pmin, Pmax)
 #define begin_contour_2d(P1, outside) sp_begin_contour_2d(P1, outside)
 #define line_2d(P1) sp_line_2d(P1)
-#define end_char_2d() sp_end_char_2d()
+#define end_char_2d sp_end_char_2d
 #define add_intercept_2d(y, x) sp_add_intercept_2d(y, x)
 #define proc_intercepts_2d() sp_proc_intercepts_2d()
 #define draw_vector_to_2d(x0, y0, x1, y1, band) sp_draw_vector_to_2d(x0, y0, x1, y1, band)
@@ -179,17 +179,17 @@ WITH THE SPEEDO SOFTWARE OR THE BITSTREAM CHARTER OUTLINE FONT.
 #define init_char_out(Psw,Pmin,Pmax) sp_init_char_out(Psw,Pmin,Pmax)
 #define begin_sub_char_out(Psw,Pmin,Pmax) sp_begin_sub_char_out(Psw,Pmin,Pmax)
 #define curve_out(P1,P2,P3,depth) sp_curve_out(P1,P2,P3,depth)
-#define end_contour_out() sp_end_contour_out()
-#define end_sub_char_out() sp_end_sub_char_out()
-#define init_intercepts_out() sp_init_intercepts_out()
+#define end_contour_out sp_end_contour_out
+#define end_sub_char_out sp_end_sub_char_out
+#define init_intercepts_out sp_init_intercepts_out
 #define restart_intercepts_out sp_restart_intercepts_out
 #define set_first_band_out(Pmin,Pmax) sp_set_first_band_out(Pmin,Pmax)
-#define reduce_band_size_out() sp_reduce_band_size_out()
-#define next_band_out() sp_next_band_out()
+#define reduce_band_size_out sp_reduce_band_size_out
+#define next_band_out sp_next_band_out
 
 #define init_userout(specsarg) sp_init_userout(specsarg)
 
-#define reset() sp_reset()
+#define reset sp_reset
 #define set_key(key) sp_set_key(key)
 #define get_cust_no(font_buff) sp_get_cust_no(font_buff)
 #define set_specs(specsarg) sp_set_specs(specsarg)
@@ -200,13 +200,13 @@ WITH THE SPEEDO SOFTWARE OR THE BITSTREAM CHARTER OUTLINE FONT.
 #define type_tcb(ptcb) sp_type_tcb(ptcb)
 #define read_long(pointer) sp_read_long(pointer)
 #define read_word_u(pointer) sp_read_word_u(pointer)
-#define init_tcb() sp_init_tcb()
+#define init_tcb sp_init_tcb
 #define scale_tcb(ptcb,x_pos,y_pos,x_scale,y_scale) sp_scale_tcb(ptcb,x_pos,y_pos,x_scale,y_scale)
 #define plaid_tcb(ppointer,format) sp_plaid_tcb(ppointer,format)
 #define skip_orus(ppointer,short_form,no_ctrl_zones) sp_skip_orus(ppointer,short_form,no_ctrl_zones)
 #define skip_interpolation_table(ppointer,format) sp_skip_interpolation_table(ppointer,format)
 #define skip_control_zone(ppointer,format) sp_skip_control_zone(ppointer,format)
-#define constr_update() sp_constr_update()
+#define constr_update sp_constr_update
 #define read_oru_table(ppointer) sp_read_oru_table(ppointer)
 #define calculate_x_pix(start_edge,end_edge,constr_nr,x_scale,x_offset,ppo,setwidth_pix) sp_calculate_x_pix(start_edge,end_edge,constr_nr,x_scale,x_offset,ppo,setwidth_pix)
 #define calculate_y_pix(start_edge,end_edge,constr_nr,top_scale,bottom_scale,ppo,emtop_pix,embot_pix) sp_calculate_y_pix(start_edge,end_edge,constr_nr,top_scale,bottom_scale,ppo,emtop_pix,embot_pix)

@@ -53,11 +53,7 @@ from The Open Group.
 #define _SPINT_H_
 
 #include <X11/fonts/fntfilst.h>
-#ifndef XFree86LOADER
 #include <stdio.h>
-#else
-#include <xf86_ansic.h>
-#endif
 #include <X11/Xfuncproto.h>
 #include "speedo.h"
 

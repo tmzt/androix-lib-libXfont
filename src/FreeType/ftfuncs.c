@@ -34,14 +34,8 @@ THE SOFTWARE.
 #endif
 #include <X11/fonts/fontmisc.h>
 
-#ifndef FONTMODULE
 #include <string.h>
 #include <math.h>
-#else
-#include "Xmd.h"
-#include "Xdefs.h"
-#include "xf86_ansic.h"
-#endif
 #include <ctype.h>
 
 #include <X11/fonts/fntfilst.h>

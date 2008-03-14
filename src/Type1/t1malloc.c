@@ -41,40 +41,8 @@ routines (malloc/free).
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef FONTMODULE
 #include <stdio.h>
-#else
-#include "Xdefs.h"	/* Bool declaration */
-#include "Xmd.h"	/* INT32 declaration */
-#include "os.h"
-#include "xf86_ansic.h"
-#endif
 #include "objects.h"	/* get #define for Abort() */
-
-
-/*
-:h3.Define NULL
- 
-In the beginning, C compilers made no assumptions about NULL.  It was
-even theoretically possible that NULL would not be 0.  ANSI has tied
-this down a bit.  The following definition seems to be the most
-popular (in terms of reducing compiler complaints), however, if your
-compiler is unhappy about it, you can redefine it on the command line:
-*/
-#ifndef   NULL
-#include <stddef.h>
-#endif
-/*
-Of course, NULL is important because xiMalloc() is defined to return
-NULL when out of memory.
- 
-:h2.Data Structures Used to Manage Free Memory
- 
-:h3.The "freeblock" Structure
- 
-The list of available memory blocks is a doubly-linked list.  Each
-block begins with the following structure:
-*/
  
 struct freeblock {
         long size;                      /* number of 'longs' in block,

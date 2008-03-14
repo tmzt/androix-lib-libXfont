@@ -61,18 +61,7 @@ from The Open Group.
 #include	<X11/fonts/FSproto.h>
 #include	"spint.h"
 #include	<X11/fonts/fontutil.h>
-#ifndef FONTMODULE
-#ifdef _XOPEN_SOURCE
 #include <math.h>
-#else
-#define _XOPEN_SOURCE	/* to get prototype for hypot on some systems */
-#include <math.h>
-#undef _XOPEN_SOURCE
-#endif
-#else
-#include "servermd.h"
-#include "xf86_ansic.h"
-#endif
 
 #ifndef M_PI
 #define M_PI 3.14159

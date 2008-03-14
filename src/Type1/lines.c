@@ -162,10 +162,12 @@ The main work is done by Bresenham(); here we just perform checks and
 get the line so that its Y direction is always increasing:
 */
  
-void StepLine(R, x1, y1, x2, y2)
-       register struct region *R;  /* region being built                     */
-       register fractpel x1,y1;  /* starting point                           */
-       register fractpel x2,y2;  /* ending point                             */
+void StepLine(
+    struct region	*R,	/* region being built */
+    fractpel		 x1,	/* starting point */
+    fractpel		 y1,
+    fractpel		 x2,	/* ending point */
+    fractpel		 y2)
 {
        register fractpel dy;
  

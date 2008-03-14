@@ -280,7 +280,7 @@ sp_open_bitmap(fix31 x_set_width, fix31 y_set_width, fix31 xorg, fix31 yorg,
 }
 
 void
-sp_close_bitmap()
+sp_close_bitmap(void)
 {
     CharInfoPtr ci = &sp_fp_cur->encoding[cfv->char_id - sp_fp_cur->master->first_char_id];
     int         bpr = cfv->bpr;

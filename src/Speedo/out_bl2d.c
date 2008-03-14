@@ -287,7 +287,7 @@ if (how_many_y < 0)
 #endif
 
 #if INCL_2D
-FUNCTION boolean end_char_2d()
+FUNCTION boolean end_char_2d(void)
 /* Called when all character data has been output
  * Return TRUE if output process is complete
  * Return FALSE to repeat output of the transformed data beginning
@@ -605,7 +605,7 @@ if (++sp_globals.next_offset >= MAX_INTERCEPTS) /* Intercept buffer full? */
 #endif
 
 #if INCL_2D
-FUNCTION static  void sp_proc_intercepts_2d()
+FUNCTION static  void sp_proc_intercepts_2d(void)
 /*  Called by sp_make_char to output accumulated intercept lists
  *  Clips output to xmin, xmax, sp_globals.ymin, ymax boundaries
  */

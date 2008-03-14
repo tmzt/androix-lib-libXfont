@@ -90,12 +90,8 @@ from The Open Group.
 
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/fontutil.h>
-#ifndef FONTMODULE
 #include <stdio.h> 
 #include <math.h>
-#else
-#include "xf86_ansic.h"
-#endif
 #include <X11/fonts/FSproto.h>
 
 #include "objects.h"

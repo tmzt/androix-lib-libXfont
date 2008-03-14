@@ -33,9 +33,7 @@
 
 #include <X11/Xdefs.h>
 #include <X11/Xfuncproto.h>
-#ifndef FONTMODULE
 #include <stdlib.h>
-#endif
 /*SHARED*/
 
 #define   Permanent(obj)    t1_Permanent(obj)

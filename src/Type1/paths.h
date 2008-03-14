@@ -63,13 +63,6 @@ extern struct segment *t1_Line ( struct segment *P );
 extern struct segment *t1_Join ( struct segment *p1, struct segment *p2 );
 /* close a path or path set                  */
 extern struct segment *t1_ClosePath ( struct segment *p0, int lastonly );
-#if 0
-struct conicsegment *t1_Conic();  /* conic curve path segment                 */
-
-struct conicsegment *t1_RoundConic();  /* ditto, specified another way        */
-struct conicsegment *t1_ArcP3(); /* circular path segment with three points   */
-struct conicsegment *t1_ArcCA(); /* ditto, with center point and angle        */
-#endif
 /* Bezier third order curve path segment  */
 extern struct beziersegment *t1_Bezier ( struct segment *B, struct segment *C, 
 					 struct segment *D );

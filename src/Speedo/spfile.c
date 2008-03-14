@@ -56,11 +56,7 @@ from The Open Group.
 #endif
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/fontenc.h>
-#ifndef FONTMODULE
 #include <stdio.h>
-#else
-#include "xf86_ansic.h"
-#endif
 
 #include "spint.h"
 #include "bics-unicode.h"

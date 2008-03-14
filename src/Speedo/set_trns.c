@@ -74,8 +74,7 @@ static ufix8 FONTFAR *sp_setup_pix_table(PROTO_DECL2 ufix8 FONTFAR *pointer,bool
 static ufix8 FONTFAR *sp_setup_int_table(PROTO_DECL2 ufix8 FONTFAR *pointer,fix15 no_X_int_zones,fix15 no_Y_int_zones);
 
 
-FUNCTION void init_tcb()
-GDECL
+FUNCTION void init_tcb(/** GDECL **/ void)
 /*
  * Called by sp_make_char() and make_comp_char() to initialize the current
  * transformation control block to the top level transformation.
@@ -246,8 +245,7 @@ end_plaid_data();
 return pointer;
 }
 
-FUNCTION static void sp_constr_update()
-GDECL
+FUNCTION static void sp_constr_update(/** GDECL **/ void)
 /*
  * Called by plaid_tcb() to update the constraint table for the current
  * transformation.
@@ -584,7 +582,7 @@ if ((sp_globals.pspecs->flags & SQUEEZE_BOTTOM) &&
     sp_plaid.pix[end_edge] = em_bot_pix;
 }
 
-FUNCTION boolean calculate_x_scale(x_factor, x_offset, no_X_ctrl_zones)
+FUNCTION boolean calculate_x_scale(
 GDECL
 fix31 *x_factor,
 fix31 *x_offset,
@@ -1199,8 +1197,7 @@ for (i = 0; i < n; i++)
 return pointer;
 }
 #if INCL_ISW
-FUNCTION fix31 compute_isw_scale()
-GDECL
+FUNCTION fix31 compute_isw_scale(/** GDECL **/ void)
 {
 fix31 isw_scale;
 	

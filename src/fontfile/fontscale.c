@@ -35,13 +35,7 @@ in this Software without prior written authorization from The Open Group.
 #include <config.h>
 #endif
 #include    <X11/fonts/fntfilst.h>
-#ifdef _XOPEN_SOURCE
 #include <math.h>
-#else
-#define _XOPEN_SOURCE	/* to get prototype for hypot on some systems */
-#include <math.h>
-#undef _XOPEN_SOURCE
-#endif
 
 Bool
 FontFileAddScaledInstance (FontEntryPtr entry, FontScalablePtr vals, 

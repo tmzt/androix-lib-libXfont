@@ -38,12 +38,6 @@
 
 /* returns the interior of a closed path        */
 extern struct region *t1_Interior ( struct segment *p, int fillrule );
-#if 0
-struct region *t1_Union();   /* set union of paths or regions                */
-struct region *t1_Intersect();  /* set intersection of regions                */
-struct region *t1_Complement();  /* complement of a region                    */
-int t1_Overlap();             /* returns a Boolean; TRUE if regions overlap   */
-#endif
 
 #define   TT_INFINITY    t1_Infinity
  
@@ -101,10 +95,8 @@ extern void t1_KillRegion ( struct region *area );
    else if (x2 > R->edgexmax) R->edgexmax = x2; \
 }
  
-#ifndef FONTMODULE
 #ifndef __sxg__
 #include <limits.h>
-#endif
 #endif
 #ifdef SHRT_MIN
 #define MINPEL SHRT_MIN
