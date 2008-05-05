@@ -66,6 +66,9 @@ FontFileReadDirectory (char *directory, FontDirectoryPtr *pdir)
                 status;
     struct stat	statb;
     static char format[24] = "";
+#if defined(__UNIXOS2__) || defined(WIN32)
+    int i;
+#endif
 
     FontDirectoryPtr	dir = NullFontDirectory;
 
