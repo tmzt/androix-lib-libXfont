@@ -176,6 +176,9 @@ FontFileDirectoryChanged(FontDirectoryPtr dir)
     }
     if (dir->dir_mtime != statb.st_mtime)
 	return TRUE;
+
+    if ((strlen(dir->directory) + sizeof(FontAliasFile)) > sizeof(dir_file))
+	return FALSE;
     strcpy (dir_file, dir->directory);
     strcat (dir_file, FontAliasFile);
     if (stat (dir_file, &statb) == -1)
