@@ -457,6 +457,8 @@ FontFileFindNameInScalableDir(FontTablePtr table, FontNamePtr pat,
                 private;
     FontNamePtr	name;
 
+    if (!table->entries)
+	return NULL;
     if ((i = SetupWildMatch(table, pat, &start, &stop, &private)) >= 0)
 	return &table->entries[i];
     for (i = start; i < stop; i++) {
