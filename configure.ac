@@ -128,6 +128,19 @@ fi
 AC_DEFINE(X_GZIP_FONT_COMPRESSION,1,[Support gzip for bitmap fonts])
 X_GZIP_FONT_COMPRESSION=1
 AC_SUBST(X_GZIP_FONT_COMPRESSION)
+AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz], AC_MSG_ERROR([*** zlib is required]))
+
+AC_ARG_WITH(bzip2, 
+	AS_HELP_STRING([--with-bzip2], 
+			[Support bzip2 compressed bitmap fonts]),
+	[], [with_bzip2=no])
+if test "x$with_bzip2" = xyes; then
+	AC_CHECK_LIB(bz2, BZ2_bzopen, [Z_LIBS="$Z_LIBS -lbz2"],
+		AC_MSG_ERROR([*** libbz2 is required for bzip2 support]))
+	AC_DEFINE(X_BZIP2_FONT_COMPRESSION,1,[Support bzip2 for bitmap fonts])
+fi
+AM_CONDITIONAL(X_BZIP2_FONT_COMPRESSION, [test "x$with_bzip2" = xyes ])
+AC_SUBST(Z_LIBS)
 
 AC_ARG_ENABLE(builtins, [ --disable-builtins ], [XFONT_BUILTINS=$enableval], [XFONT_BUILTINS=yes])
 AM_CONDITIONAL(XFONT_BUILTINS, [test "x$XFONT_BUILTINS" = xyes ])
@@ -199,9 +212,6 @@ AM_CONDITIONAL(XFONT_FC, [test "x$XFONT_FC" = xyes])
 if test "x$XFONT_FC" = xyes; then
 	AC_DEFINE(XFONT_FC,1,[Support the X Font Services Protocol])
 fi
-
-AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz
-AC_SUBST(Z_LIBS)], AC_MSG_ERROR([*** zlib is required]))
 
 
 AC_CHECK_LIB(m, hypot, [MATH_LIBS=-lm

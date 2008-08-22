@@ -28,3 +28,7 @@ libfontfile_la_SOURCES = 	\
 	register.c		\
 	renderers.c		\
 	catalogue.c
+
+if X_BZIP2_FONT_COMPRESSION
+libfontfile_la_SOURCES += bunzip2.c
+endif

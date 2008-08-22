@@ -78,6 +78,15 @@ FontFileOpen (const char *name)
 	}
 	raw = cooked;
 #endif
+#ifdef X_BZIP2_FONT_COMPRESSION
+    } else if (len > 4 && !strcmp (name + len - 4, ".bz2")) {
+	cooked = BufFilePushBZIP2 (raw);
+	if (!cooked) {
+	    BufFileClose (raw, TRUE);
+	    return 0;
+	}
+	raw = cooked;
+#endif
     }
     return (FontFilePtr) raw;
 }

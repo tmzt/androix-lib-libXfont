@@ -77,23 +77,32 @@ static BitmapFileFunctionsRec readers[] = {
 #if XFONT_PCFFORMAT
     { pcfReadFont, pcfReadFontInfo} ,
     { pcfReadFont, pcfReadFontInfo} ,
-#ifdef X_GZIP_FONT_COMPRESSION
+# ifdef X_GZIP_FONT_COMPRESSION
     { pcfReadFont, pcfReadFontInfo} ,
-#endif
+# endif
+# ifdef X_BZIP2_FONT_COMPRESSION
+    { pcfReadFont, pcfReadFontInfo} ,
+# endif
 #endif
 #if XFONT_SNFFORMAT
     { snfReadFont, snfReadFontInfo},
     { snfReadFont, snfReadFontInfo},
-#ifdef X_GZIP_FONT_COMPRESSION
+# ifdef X_GZIP_FONT_COMPRESSION
     { snfReadFont, snfReadFontInfo} ,
-#endif
+# endif
+# ifdef X_BZIP2_FONT_COMPRESSION
+    { snfReadFont, snfReadFontInfo} ,
+# endif
 #endif
 #if XFONT_BDFFORMAT
     { bdfReadFont, bdfReadFontInfo} ,
     { bdfReadFont, bdfReadFontInfo} ,
-#ifdef X_GZIP_FONT_COMPRESSION
+# ifdef X_GZIP_FONT_COMPRESSION
     { bdfReadFont, bdfReadFontInfo} ,
-#endif
+# endif
+# ifdef X_BZIP2_FONT_COMPRESSION
+    { bdfReadFont, bdfReadFontInfo} ,
+# endif
 #endif
 #if XFONT_PCFFORMAT
     { pmfReadFont, pcfReadFontInfo} ,
@@ -177,12 +186,18 @@ static FontRendererRec	renderers[] = {
     { ".pcf.Z", 6, BitmapOpenBitmap, BitmapOpenScalable,
 	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
 	CAPABILITIES },
-#ifdef X_GZIP_FONT_COMPRESSION
+# ifdef X_GZIP_FONT_COMPRESSION
     { ".pcf.gz", 7,
-    BitmapOpenBitmap, BitmapOpenScalable,
+	BitmapOpenBitmap, BitmapOpenScalable,
 	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
 	CAPABILITIES },
-#endif
+# endif
+# ifdef X_BZIP2_FONT_COMPRESSION
+    { ".pcf.bz2", 8,
+	BitmapOpenBitmap, BitmapOpenScalable,
+	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
+	CAPABILITIES },
+# endif
 #endif
 #if XFONT_SNFFORMAT
     { ".snf", 4, BitmapOpenBitmap, BitmapOpenScalable,
@@ -191,11 +206,16 @@ static FontRendererRec	renderers[] = {
     { ".snf.Z", 6, BitmapOpenBitmap, BitmapOpenScalable,
 	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
 	CAPABILITIES },
-#ifdef X_GZIP_FONT_COMPRESSION
+# ifdef X_GZIP_FONT_COMPRESSION
     { ".snf.gz", 7, BitmapOpenBitmap, BitmapOpenScalable,
 	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
 	CAPABILITIES },
-#endif
+# endif
+# ifdef X_BZIP2_FONT_COMPRESSION
+    { ".snf.bz2", 8, BitmapOpenBitmap, BitmapOpenScalable,
+	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
+	CAPABILITIES },
+# endif
 #endif
 #if XFONT_BDFFORMAT
     { ".bdf", 4, BitmapOpenBitmap, BitmapOpenScalable,
@@ -204,11 +224,16 @@ static FontRendererRec	renderers[] = {
     { ".bdf.Z", 6, BitmapOpenBitmap, BitmapOpenScalable,
 	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
 	CAPABILITIES },
-#ifdef X_GZIP_FONT_COMPRESSION
+# ifdef X_GZIP_FONT_COMPRESSION
     { ".bdf.gz", 7, BitmapOpenBitmap, BitmapOpenScalable,
 	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
 	CAPABILITIES },
-#endif
+# endif
+# ifdef X_BZIP2_FONT_COMPRESSION
+    { ".bdf.bz2", 8, BitmapOpenBitmap, BitmapOpenScalable,
+	BitmapGetInfoBitmap, BitmapGetInfoScalable, 0,
+	CAPABILITIES },
+# endif
 #endif
 #if XFONT_PCFFORMAT
     { ".pmf", 4, BitmapOpenBitmap, BitmapOpenScalable,

@@ -71,6 +71,9 @@ extern BufFilePtr BufFilePushCompressed ( BufFilePtr );
 #ifdef X_GZIP_FONT_COMPRESSION
 extern BufFilePtr BufFilePushZIP ( BufFilePtr );
 #endif
+#ifdef X_BZIP2_FONT_COMPRESSION
+extern BufFilePtr BufFilePushBZIP2 ( BufFilePtr );
+#endif
 extern int BufFileClose ( BufFilePtr, int );
 extern int BufFileRead ( BufFilePtr, char*, int );
 extern int BufFileWrite ( BufFilePtr, char*, int );

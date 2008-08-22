@@ -108,23 +108,32 @@ static const ScaleFunc scale[] =
 #if XFONT_PCFFORMAT
     BitmapScaleBitmaps,
     BitmapScaleBitmaps,
-#ifdef X_GZIP_FONT_COMPRESSION
+# ifdef X_GZIP_FONT_COMPRESSION
     BitmapScaleBitmaps,
-#endif
+# endif
+# ifdef X_BZIP2_FONT_COMPRESSION
+    BitmapScaleBitmaps,
+# endif
 #endif
 #if XFONT_SNFFORMAT
     BitmapScaleBitmaps,
     BitmapScaleBitmaps,
-#ifdef X_GZIP_FONT_COMPRESSION
+# ifdef X_GZIP_FONT_COMPRESSION
     BitmapScaleBitmaps,
-#endif
+# endif
+# ifdef X_BZIP2_FONT_COMPRESSION
+    BitmapScaleBitmaps,
+# endif
 #endif
 #if XFONT_BDFFORMAT
     BitmapScaleBitmaps,
     BitmapScaleBitmaps,
-#ifdef X_GZIP_FONT_COMPRESSION
+# ifdef X_GZIP_FONT_COMPRESSION
     BitmapScaleBitmaps,
-#endif
+# endif
+# ifdef X_BZIP2_FONT_COMPRESSION
+    BitmapScaleBitmaps,
+# endif
 #endif
 #if XFONT_PCFFORMAT
     PrinterScaleBitmaps,
