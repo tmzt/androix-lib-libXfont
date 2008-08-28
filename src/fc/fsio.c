@@ -125,8 +125,6 @@ _fs_connect(char *servername, int *err)
     _FontTransSetOption(trans_conn, TRANS_NONBLOCKING, 1);
 
     do {
-	if (i == TRANS_TRY_CONNECT_AGAIN)
-	    sleep(1);
 	i = _FontTransConnect(trans_conn,servername);
     } while ((i == TRANS_TRY_CONNECT_AGAIN) && (retries-- > 0));
 
