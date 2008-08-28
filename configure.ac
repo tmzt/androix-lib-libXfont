@@ -190,20 +190,6 @@ if test "x$LOADABLE_FONTS" = xyes; then
 fi
 
 #
-# Font cache extension support?
-#
-
-AC_ARG_ENABLE(fontcache, [ --disable-fontcache ],[XFONT_FONTCACHE=$enableval],[XFONT_FONTCACHE=yes])
-AM_CONDITIONAL(XFONT_FONTCACHE, [test "x$XFONT_FONTCACHE" = xyes])
-if test "x$XFONT_FONTCACHE" = xyes; then
-	AC_DEFINE(FONTCACHE,1,[Support the font caching extension])
-	PKG_CHECK_MODULES(FONTCACHEPROTO, fontcacheproto)
-else
-	FONTCACHEPROTO_CFLAGS=""
-fi
-AC_SUBST(FONTCACHEPROTO_CFLAGS)
-
-#
 # Support connection to font servers?
 #
 
@@ -248,7 +234,6 @@ XORG_RELEASE_VERSION
 
 AC_OUTPUT([Makefile
 	   src/Makefile
-	   src/fontcache/Makefile
 	   src/fontfile/Makefile
 	   src/FreeType/Makefile
 	   src/builtins/Makefile
