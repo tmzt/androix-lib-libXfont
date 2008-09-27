@@ -254,9 +254,6 @@ static fontProp fontPropTable[] = {
     { "_ADOBE_POSTSCRIPT_FONTNAME", 0, unscaled }
 };
 
-/* sleazy way to shut up the compiler */
-#define zerohack (enum scaleType)0	
-
 static fontProp rawFontPropTable[] = {
     { "RAW_MIN_SPACE", 0, },
     { "RAW_NORM_SPACE", 0, },
