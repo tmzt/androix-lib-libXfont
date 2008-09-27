@@ -1,4 +1,3 @@
-/* $Xorg: bitscale.c,v 1.5 2001/02/09 02:04:02 xorgcvs Exp $ */
 /*
 
 Copyright 1991, 1994, 1998  The Open Group
@@ -71,9 +70,6 @@ static void ScaleBitmap ( FontPtr pFont, CharInfoPtr opci,
 static FontPtr BitmapScaleBitmaps(FontPtr pf, FontPtr opf, 
 				  double widthMult, double heightMult,   
 				  FontScalablePtr vals);
-static FontPtr PrinterScaleBitmaps(FontPtr pf, FontPtr opf,
-				   double widthMult, double heightMult,
-				   FontScalablePtr vals);
 
 enum scaleType {
     atom, truncate_atom, pixel_size, point_size, resolution_x,
@@ -88,50 +84,6 @@ typedef struct _fontProp {
     enum scaleType type;
 } fontProp;
 
-typedef FontPtr (*ScaleFunc) ( FontPtr /* pf */,          
-			       FontPtr /* opf */,         
-			       double /* widthMult */,    
-			       double /* heightMult */,   
-			       FontScalablePtr /* vals */);
-
-/* These next two arrays must be kept in step with the renderer array */
-static const ScaleFunc scale[] =
-{
-#if XFONT_PCFFORMAT
-    BitmapScaleBitmaps,
-    BitmapScaleBitmaps,
-# ifdef X_GZIP_FONT_COMPRESSION
-    BitmapScaleBitmaps,
-# endif
-# ifdef X_BZIP2_FONT_COMPRESSION
-    BitmapScaleBitmaps,
-# endif
-#endif
-#if XFONT_SNFFORMAT
-    BitmapScaleBitmaps,
-    BitmapScaleBitmaps,
-# ifdef X_GZIP_FONT_COMPRESSION
-    BitmapScaleBitmaps,
-# endif
-# ifdef X_BZIP2_FONT_COMPRESSION
-    BitmapScaleBitmaps,
-# endif
-#endif
-#if XFONT_BDFFORMAT
-    BitmapScaleBitmaps,
-    BitmapScaleBitmaps,
-# ifdef X_GZIP_FONT_COMPRESSION
-    BitmapScaleBitmaps,
-# endif
-# ifdef X_BZIP2_FONT_COMPRESSION
-    BitmapScaleBitmaps,
-# endif
-#endif
-#if XFONT_PCFFORMAT
-    PrinterScaleBitmaps,
-#endif
-};
- 
 static FontEntryPtr FindBestToScale ( FontPathElementPtr fpe, 
 				      FontEntryPtr entry, 
 				      FontScalablePtr vals, 
@@ -139,48 +91,6 @@ static FontEntryPtr FindBestToScale ( FontPathElementPtr fpe,
 				      double *dxp, double *dyp, 
 				      double *sdxp, double *sdyp, 
 				      FontPathElementPtr *fpep );
-static FontEntryPtr FindPmfToScale ( FontPathElementPtr fpe, 
-				     FontEntryPtr entry, 
-				     FontScalablePtr vals, 
-				     FontScalablePtr best, 
-				     double *dxp, double *dyp, 
-				     double *sdxp, double *sdyp, 
-				     FontPathElementPtr *fpep );
-
-typedef FontEntryPtr (*FindToScale) (FontPathElementPtr fpe, 
-				     FontEntryPtr entry, 
-				     FontScalablePtr vals, 
-				     FontScalablePtr best, 
-				     double *dxp, double *dyp, 
-				     double *sdxp, double *sdyp, 
-				     FontPathElementPtr *fpep);
-static const FindToScale find_scale[] =
-{
-#if XFONT_PCFFORMAT
-    FindBestToScale,
-    FindBestToScale,
-#ifdef X_GZIP_FONT_COMPRESSION
-    FindBestToScale,
-#endif
-#endif
-#if XFONT_SNFFORMAT
-    FindBestToScale,
-    FindBestToScale,
-#ifdef X_GZIP_FONT_COMPRESSION
-    FindBestToScale,
-#endif
-#endif
-#if XFONT_BDFFORMAT
-    FindBestToScale,
-    FindBestToScale,
-#ifdef X_GZIP_FONT_COMPRESSION
-    FindBestToScale,
-#endif
-#endif
-#if XFONT_PCFFORMAT
-    FindPmfToScale,
-#endif
-};
 
 static unsigned long bitscaleGeneration = 0;	/* initialization flag */
 
@@ -616,58 +526,6 @@ FindBestToScale(FontPathElementPtr fpe, FontEntryPtr entry,
 	FontFileCompleteXLFD(vals, vals);
     }
 
-    return result;
-}
-
-static FontEntryPtr
-FindPmfToScale(FontPathElementPtr fpe, FontEntryPtr entry, 
-	       FontScalablePtr vals, FontScalablePtr best, 
-	       double *dxp, double *dyp, 
-	       double *sdxp, double *sdyp, 
-	       FontPathElementPtr *fpep)
-{
-    FontEntryPtr    result = NULL;
-    FontScaledPtr   scaled;
-    FontScalableExtraPtr   extra;
-    int i;
-
-    extra = entry->u.scalable.extra;
-    for (i = 0; i < extra->numScaled; i++)
-    {
-	double rescale_x;
-
-	scaled = &extra->scaled[i];
-	if (!scaled->bitmap)
-	    continue;
-	if (!ComputeScaleFactors(&scaled->vals, vals, dxp, dyp, sdxp, sdyp,
-				 &rescale_x))
-	    continue;
-	*best = scaled->vals;
-	*fpep = fpe;
-	result = scaled->bitmap;
-	if (rescale_x != 1.0)
-	{
-	    /* We have rescaled horizontally due to an XLFD width field.  Change
-	       the matrix appropriately */
-	    vals->pixel_matrix[0] *= rescale_x;
-	    vals->pixel_matrix[1] *= rescale_x;
-#ifdef NOTDEF
-	    /* This would force the pointsize and pixelsize fields in the
-	       FONT property to display as matrices to more accurately
-	       report the font being supplied.  It might also break existing
-	       applications that expect a single number in that field. */
-	    vals->values_supplied =
-		vals->values_supplied & ~(PIXELSIZE_MASK | POINTSIZE_MASK) |
-		PIXELSIZE_ARRAY;
-#else /* NOTDEF */
-	    vals->values_supplied = vals->values_supplied & ~POINTSIZE_MASK;
-#endif /* NOTDEF */
-	    /* Recompute and reround the FontScalablePtr values after
-	       rescaling for the new width. */
-	    FontFileCompleteXLFD(vals, vals);
-	}
-	break;
-    }
     return result;
 }
 
@@ -1702,124 +1560,6 @@ bail:
     return NULL;
 }
 
-static FontPtr
-PrinterScaleBitmaps(FontPtr pf,         /* scaled font */               
-		    FontPtr opf, 	/* originating font */          
-		    double widthMult, 	/* glyphs width scale factor */ 
-		    double heightMult, 	/* glyphs height scale factor */
-		    FontScalablePtr vals)
-{
-    register int i;
-    int		nchars = 0;
-    char       *glyphBytes;
-    BitmapFontPtr  bitmapFont,
-		   obitmapFont;
-    CharInfoPtr pci;
-    FontInfoPtr pfi;
-    int         glyph;
-    unsigned    bytestoalloc = 0;
-    int		firstCol, lastCol, firstRow, lastRow;
-
-    double	xform[4], inv_xform[4];
-    double	xmult, ymult;
-
-    bitmapFont = (BitmapFontPtr) pf->fontPrivate;
-    obitmapFont = (BitmapFontPtr) opf->fontPrivate;
-
-    if (!compute_xform_matrix(vals, widthMult, heightMult, xform,
-			      inv_xform, &xmult, &ymult))
-	goto bail;
-
-    pfi = &pf->info;
-    firstCol = pfi->firstCol;
-    lastCol = pfi->lastCol;
-    firstRow = pfi->firstRow;
-    lastRow = pfi->lastRow;
-
-    nchars = (lastRow - firstRow + 1) * (lastCol - firstCol + 1);
-    glyph = pf->glyph;
-    for (i = 0; i < nchars; i++)
-    {
-	if ((pci = ACCESSENCODING(bitmapFont->encoding, i)))
-	    bytestoalloc = MAX(bytestoalloc,BYTES_FOR_GLYPH(pci, glyph));
-    }
-
-    /* Do we add the font malloc stuff for VALUE ADDED ? */
-    /* Will need to remember to free in the Unload routine */
-
-
-    bitmapFont->bitmaps = (char *) xalloc(bytestoalloc);
-    if (!bitmapFont->bitmaps) {
- fprintf(stderr, "Error: Couldn't allocate bitmaps (%d)\n", bytestoalloc);
-	goto bail;
-    }
-    bzero(bitmapFont->bitmaps, bytestoalloc);
-
-    glyphBytes = bitmapFont->bitmaps;
-    for (i = 0; i < nchars; i++)
-    {
-	if ((pci = ACCESSENCODING(bitmapFont->encoding, i)) &&
-	    (ACCESSENCODING(obitmapFont->encoding, OLDINDEX(i))))
-	{
-	    pci->bits = glyphBytes;
-	}
-    }
-    return pf;
-
-bail:
-    if (pf)
-	xfree(pf);
-    if (bitmapFont) {
-	xfree(bitmapFont->metrics);
-	xfree(bitmapFont->ink_metrics);
-	xfree(bitmapFont->bitmaps);
-        if(bitmapFont->encoding)
-            for(i=0; i<NUM_SEGMENTS(nchars); i++)
-                xfree(bitmapFont->encoding[i]);
-	xfree(bitmapFont->encoding);
-    }
-    return NULL;
-}
-
-#ifdef NOTDEF
-/*
- *	exported interfaces
- */
-
-FontFileLoadName(FontFileDirPtr *dirs, int ndirs, char *name, FontPtr *pfont, 
-		 fsBitmapFormat format, fsBitmapFormatMask fmask)
-{
-    FontFileNamePtr fname;
-    char        full_name[1024];
-    int         ret = BadFontName;
-    int         i;
-
-    i = 0;
-    while (i < ndirs) {
-	if (fname = FontFileFindNameInDir(dirs[i], name)) {
-	    if (!fname->alias) {
-		if (!fname->font) {
-		    strcpy(full_name, dirs[i]->dir);
-		    strcat(full_name, fname->file);
-		    ret = FontFileLoad(pfont, full_name, format, fmask);
-		    if (ret == Successful) {
-			fname->font = *pfont;
-			(*pfont)->fpePrivate = (pointer) fname;
-		    }
-		    return ret;
-		}
-		*pfont = fname->font;
-		return Successful;
-	    }
-	    name = fname->file;
-	    i = 0;
-	} else
-	    i++;
-    }
-    return BadFontName;
-}
-#endif
-
 /* ARGSUSED */
 int
 BitmapOpenScalable (FontPathElementPtr fpe, 
@@ -1844,7 +1584,7 @@ BitmapOpenScalable (FontPathElementPtr fpe,
     long		sWidth;
 
     FontEntryPtr	scaleFrom;
-    FontPathElementPtr	scaleFPE;
+    FontPathElementPtr	scaleFPE = NULL;
     FontPtr		sourceFont;
     char		fontName[MAXFONTNAMELEN];
 
@@ -1862,8 +1602,8 @@ BitmapOpenScalable (FontPathElementPtr fpe,
 	get_matrix_horizontal_component(vals->pixel_matrix) < 1.0)
 	return BadFontName;
 
-    scaleFrom = (*find_scale[BitmapGetRenderIndex(entry->u.bitmap.renderer)]) 
-		    (fpe, entry, vals, &best, &dx, &dy, &sdx, &sdy, &scaleFPE);
+    scaleFrom = FindBestToScale(fpe, entry, vals, &best, &dx, &dy, &sdx, &sdy,
+				&scaleFPE);
 
     if (!scaleFrom)
 	return BadFontName;
@@ -1883,8 +1623,7 @@ BitmapOpenScalable (FontPathElementPtr fpe,
     savedY = dy;
     font = ScaleFont(sourceFont, dx, dy, sdx, sdy, vals, &dx, &dy, &sWidth);
     if (font)
-	font = (*scale[ BitmapGetRenderIndex(entry->u.bitmap.renderer) ]) 
-			(font, sourceFont, savedX, savedY, vals);
+	font = BitmapScaleBitmaps(font, sourceFont, savedX, savedY, vals);
 
     if (!font)
     {

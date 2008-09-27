@@ -90,7 +90,6 @@ extern Bool bitmapAddInkMetrics ( FontPtr pFont );
 extern int bitmapComputeWeight ( FontPtr pFont );
 
 extern void BitmapRegisterFontFileFunctions ( void );
-extern int BitmapGetRenderIndex ( FontRendererPtr renderer );
 
 extern int BitmapOpenScalable ( FontPathElementPtr fpe, FontPtr *pFont, 
 				int flags, FontEntryPtr entry, char *fileName,
