@@ -95,7 +95,7 @@ static const FontModule builtinFontModuleList[] = {
 void
 FontFileRegisterFpeFunctions(void)
 {
-    FontModule *fmlist = builtinFontModuleList;
+    const FontModule *fmlist = builtinFontModuleList;
 
 #ifdef XFONT_BITMAP
     /* bitmap is always builtin to libXfont now */
