@@ -209,11 +209,11 @@ PKG_CHECK_MODULES(XFONT, xproto xtrans fontsproto fontenc)
 XTRANS_CONNECTION_FLAGS
 
 if test "x$GCC" = "xyes"; then
-	GCC_WARNINGS="-Wall -Wpointer-arith -Wstrict-prototypes \
+	CWARNFLAGS="-Wall -Wpointer-arith -Wstrict-prototypes \
 	-Wmissing-prototypes -Wmissing-declarations \
 	-Wnested-externs -fno-strict-aliasing"
-	CFLAGS="$GCC_WARNINGS $CFLAGS"
 fi
+AC_SUBST([CWARNFLAGS])
 
 case $host_os in
     linux*)
@@ -226,9 +226,7 @@ case $host_os in
         OS_CFLAGS=
         ;;
 esac
-
-CFLAGS="$CFLAGS $XFONT_CFLAGS $OS_CFLAGS"
-LIBS="$LIBS $XFONT_LIBS"
+AC_SUBST([OS_CFLAGS])
 
 XORG_RELEASE_VERSION
 

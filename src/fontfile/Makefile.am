@@ -5,6 +5,8 @@ INCLUDES =			\
 	-I${top_srcdir}/include \
 	$(FONTENCDEFS)		
 
+AM_CFLAGS = $(XFONT_CFLAGS) $(OS_CFLAGS) $(CWARNFLAGS)
+
 noinst_LTLIBRARIES = libfontfile.la
 
 libfontfile_la_LIBADD = 	\
