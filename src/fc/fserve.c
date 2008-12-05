@@ -2602,6 +2602,7 @@ _fs_client_access (FSFpePtr conn, pointer client, Bool sync)
     char		    *authorizations;
     int			    authlen;
     Bool		    new_cur = FALSE;
+    char		    padding[4] = { 0, 0, 0, 0 };
 
 #ifdef DEBUG
     if (conn->blockState & (FS_RECONNECTING|FS_BROKEN_CONNECTION))
@@ -2647,7 +2648,14 @@ _fs_client_access (FSFpePtr conn, pointer client, Bool sync)
 	crac.reqType = FS_CreateAC;
 	crac.num_auths = set_font_authorizations(&authorizations, &authlen,
 						 client);
-	authlen = crac.num_auths ? (authlen + 3) & ~0x3 : 0;
+	/* Work around bug in xfs versions up through modular release 1.0.8
+	   which rejects CreateAC packets with num_auths = 0 & authlen < 4 */
+	if (crac.num_auths == 0) {
+	    authorizations = padding;
+	    authlen = 4;
+	} else {
+	    authlen = (authlen + 3) & ~0x3;
+	}
 	crac.length = (sizeof (fsCreateACReq) + authlen) >> 2;
 	crac.acid = cur->acid;
 	_fs_add_req_log(conn, FS_CreateAC);
