@@ -45,10 +45,10 @@ BuiltinDirsDup (const BuiltinDirPtr a_dirs,
 
     for (i=0; i < a_dirs_len; i++) {
         int len = strlen (a_dirs[i].file_name) ;
-        dirs[i].file_name = xcalloc (1, len) ;
+        dirs[i].file_name = xcalloc (1, len+1) ;
         memmove (dirs[i].file_name, a_dirs[i].file_name, len);
         len = strlen (a_dirs[i].font_name) ;
-        dirs[i].font_name = xcalloc (1, len) ;
+        dirs[i].font_name = xcalloc (1, len+1) ;
         memmove (dirs[i].font_name, a_dirs[i].font_name, len);
     }
     return dirs ;
@@ -110,7 +110,7 @@ BuiltinAliasesDup (const BuiltinAliasPtr a_aliases,
 
     for (i=0; i < a_aliases_len; i++) {
         int len = strlen (a_aliases[i].font_name) ;
-        aliases[i].font_name = xcalloc (1, len) ;
+        aliases[i].font_name = xcalloc (1, len+1) ;
         memmove (aliases[i].font_name, a_aliases[i].font_name, len);
     }
     return aliases ;
