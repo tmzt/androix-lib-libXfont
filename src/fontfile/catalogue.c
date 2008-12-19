@@ -123,8 +123,10 @@ CatalogueUnrefFPEs (FontPathElementPtr fpe)
     cat->fpeCount = 0;
 }
 
+/* Rescan catalogue directory if modified timestamp has changed or
+ * the forceScan argument says to do it anyway (like on first load). */
 static int
-CatalogueRescan (FontPathElementPtr fpe)
+CatalogueRescan (FontPathElementPtr fpe, Bool forceScan)
 {
     CataloguePtr	cat = fpe->private;
     char		link[MAXFONTFILENAMELEN];
@@ -142,7 +144,7 @@ CatalogueRescan (FontPathElementPtr fpe)
     if (stat(path, &statbuf) < 0 || !S_ISDIR(statbuf.st_mode))
 	return BadFontPath;
 
-    if (statbuf.st_mtime <= cat->mtime)
+    if ((forceScan == FALSE) && (statbuf.st_mtime <= cat->mtime))
 	return Successful;
 
     dir = opendir(path);
@@ -243,7 +245,7 @@ CatalogueInitFPE (FontPathElementPtr fpe)
     cat->fpeList = NULL;
     cat->mtime = 0;
 
-    return CatalogueRescan (fpe);
+    return CatalogueRescan (fpe, TRUE);
 }
 
 static int
@@ -287,7 +289,7 @@ CatalogueOpenFont (pointer client, FontPathElementPtr fpe, Mask flags,
     FontDirectoryPtr dir;
     int i, status;
 
-    CatalogueRescan (fpe);
+    CatalogueRescan (fpe, FALSE);
 
     for (i = 0; i < cat->fpeCount; i++)
     {
@@ -321,7 +323,7 @@ CatalogueListFonts (pointer client, FontPathElementPtr fpe, char *pat,
     FontDirectoryPtr dir;
     int i;
 
-    CatalogueRescan (fpe);
+    CatalogueRescan (fpe, FALSE);
 
     for (i = 0; i < cat->fpeCount; i++)
     {
@@ -352,7 +354,7 @@ CatalogueStartListFonts(pointer client, FontPathElementPtr fpe,
     LFWIDataPtr		data;
     int			ret, i, j;
 
-    CatalogueRescan (fpe);
+    CatalogueRescan (fpe, FALSE);
 
     data = (LFWIDataPtr) xalloc (sizeof *data +
 				 sizeof data->privates[0] * cat->fpeCount);
