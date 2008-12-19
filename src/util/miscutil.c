@@ -104,6 +104,6 @@ CopyISOLatin1Lowered (char *dst, char *src, int len)
 }
 
 weak void
-register_fpe_functions ()
+register_fpe_functions (void)
 {
 }
