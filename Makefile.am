@@ -44,13 +44,12 @@ nodist_libXfontinclude_HEADERS = \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = xfont.pc
 
-EXTRA_DIST = xfont.pc.in autogen.sh include/X11/fonts/fontconf.h.in ChangeLog
+EXTRA_DIST = xfont.pc.in autogen.sh include/X11/fonts/fontconf.h.in
 
 .PHONY: ChangeLog
 
-CLEANFILES = ChangeLog
 ChangeLog:
-	(GIT_DIR=$(top_srcdir)/.git git-log > .changelog.tmp && mv .changelog.tmp ChangeLog; rm -f .changelog.tmp) || (touch ChangeLog; echo 'git directory not found: installing possibly empty changelog.' >&2)
+	$(CHANGELOG_CMD)
 
 dist-hook: ChangeLog
 

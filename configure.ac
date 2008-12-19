@@ -36,6 +36,10 @@ AM_INIT_AUTOMAKE([foreign dist-bzip2])
 AM_CONFIG_HEADER(config.h)
 AC_CONFIG_HEADERS([include/X11/fonts/fontconf.h])
 
+# Require xorg-macros version >= 1.2.0 for XORG_CWARNFLAGS & XORG_CHANGELOG
+m4_ifndef([XORG_MACROS_VERSION], [AC_FATAL([must install xorg-macros 1.2 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.2)
+
 # Check for progs
 AC_PROG_CC
 AC_PROG_LIBTOOL
@@ -208,12 +212,7 @@ PKG_CHECK_MODULES(XFONT, xproto xtrans fontsproto fontenc)
 # Transport selection macro from xtrans.m4
 XTRANS_CONNECTION_FLAGS
 
-if test "x$GCC" = "xyes"; then
-	CWARNFLAGS="-Wall -Wpointer-arith -Wstrict-prototypes \
-	-Wmissing-prototypes -Wmissing-declarations \
-	-Wnested-externs -fno-strict-aliasing"
-fi
-AC_SUBST([CWARNFLAGS])
+XORG_CWARNFLAGS
 
 case $host_os in
     linux*)
@@ -229,6 +228,7 @@ esac
 AC_SUBST([OS_CFLAGS])
 
 XORG_RELEASE_VERSION
+XORG_CHANGELOG
 
 AC_OUTPUT([Makefile
 	   src/Makefile
