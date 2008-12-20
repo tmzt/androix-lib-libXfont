@@ -43,7 +43,16 @@ routines (malloc/free).
 #endif
 #include <stdio.h>
 #include "objects.h"	/* get #define for Abort() */
- 
+
+/*
+:h2.Data Structures Used to Manage Free Memory
+
+:h3.The "freeblock" Structure
+
+The list of available memory blocks is a doubly-linked list.  Each
+block begins with the following structure:
+*/
+
 struct freeblock {
         long size;                      /* number of 'longs' in block,
                                            including this header */
