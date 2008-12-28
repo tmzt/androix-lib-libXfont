@@ -21,6 +21,8 @@
 
 lib_LTLIBRARIES = libXfont.la
 
+AM_CFLAGS = $(OS_CFLAGS)
+
 if XFONT_FONTFILE
 FONTFILE_DIR = fontfile
 FONTFILE_LIB = fontfile/libfontfile.la
