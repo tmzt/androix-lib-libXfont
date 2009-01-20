@@ -1,5 +1,3 @@
-/* $Xorg: ffcheck.c,v 1.4 2001/02/09 02:04:03 xorgcvs Exp $ */
-
 /*
 
 Copyright 1991, 1998  The Open Group
@@ -119,13 +117,6 @@ FontFileCheckListNextFontOrAlias(pointer client, FontPathElementPtr fpe,
 /* Font renderers to initialize when not linked into something like
    Xorg that provides its own module configuration options */
 static const FontModule builtinFontModuleList[] = {
-#ifdef XFONT_SPEEDO
-    {
-	SpeedoRegisterFontFileFunctions,
-	"speedo",
-	NULL
-    },
-#endif
 #ifdef XFONT_TYPE1
     {
 	Type1RegisterFontFileFunctions,

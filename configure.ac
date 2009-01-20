@@ -114,13 +114,6 @@ if test "x$XFONT_TYPE1" = xyes; then
 fi
 AM_CONDITIONAL(XFONT_TYPE1, [test "x$XFONT_TYPE1" = xyes ])
 
-AC_ARG_ENABLE(speedo, [ --disable-speedo ], [XFONT_SPEEDO=$enableval], [XFONT_SPEEDO=yes])
-AM_CONDITIONAL(XFONT_SPEEDO, [test "x$XFONT_SPEEDO" = xyes ])
-if test "x$XFONT_SPEEDO" = xyes; then
-	AC_DEFINE(XFONT_SPEEDO,1,[Support Speedo font files])
-	XFONT_FONTFILE=yes
-fi
-
 #
 # Bitmap fonts in files:
 #	Builtins (gzipped pcf format in .text segment)
@@ -237,7 +230,6 @@ AC_OUTPUT([Makefile
 	   src/builtins/Makefile
 	   src/bitmap/Makefile
 	   src/Type1/Makefile
-	   src/Speedo/Makefile
 	   src/fc/Makefile
 	   src/util/Makefile
 	   src/stubs/Makefile

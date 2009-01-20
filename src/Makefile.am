@@ -53,11 +53,6 @@ TYPE1_DIR = Type1
 TYPE1_LIB = Type1/libtype1.la
 endif
 
-if XFONT_SPEEDO
-SPEEDO_DIR = Speedo
-SPEEDO_LIB = Speedo/libspeedo.la
-endif
-
 UTIL_DIR = util
 UTIL_LIB = util/libutil.la
 
@@ -67,12 +62,12 @@ STUBS_DIR = stubs
 SUBDIRS=\
 	$(FONTFILE_DIR) $(FREETYPE_DIR) $(BITMAP_DIR) \
 	$(BUILTINS_DIR) $(FC_DIR) $(UTIL_DIR) $(STUBS_DIR) \
-	$(TYPE1_DIR) $(SPEEDO_DIR)
+	$(TYPE1_DIR)
 
 libXfont_la_LIBADD = \
 	$(FONTFILE_LIB) $(FREETYPE_LIB) $(BITMAP_LIB) \
 	$(BUILTINS_LIB) $(FC_LIB) $(UTIL_LIB) $(STUBS_LIB) \
-	$(TYPE1_LIB) $(SPEEDO_LIB) \
+	$(TYPE1_LIB) \
 	$(FREETYPE_LIBS) $(Z_LIBS) $(MATH_LIBS) $(XFONT_LIBS)
 
 libXfont_la_SOURCES = dummy.c
