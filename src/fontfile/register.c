@@ -49,12 +49,6 @@ in this Software without prior written authorization from The Open Group.
  * with other packages.
  */
 
-#ifndef CRAY
-# ifdef BUILD_TYPE1
-#  define XFONT_TYPE1 1
-# endif
-#endif
-
 #ifdef BUILD_FREETYPE
 # define XFONT_FREETYPE 1
 #endif
@@ -62,13 +56,6 @@ in this Software without prior written authorization from The Open Group.
 /* Font renderers to initialize when not linked into something like
    Xorg that provides its own module configuration options */
 static const FontModule builtinFontModuleList[] = {
-#ifdef XFONT_TYPE1
-    {
-	Type1RegisterFontFileFunctions,
-	"type1",
-	NULL
-    },
-#endif
 #ifdef XFONT_FREETYPE    
     {
 	FreeTypeRegisterFontFileFunctions,

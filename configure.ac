@@ -69,7 +69,6 @@ XFONT_FONTFILE=no
 #
 # Scalable fonts in files:
 # 	FreeType
-#	IBM Type1 rasterizer
 #	Bitstream Speedo rasterizer
 #
 AC_ARG_ENABLE(freetype, [ --disable-freetype],[XFONT_FREETYPE=$enableval],[XFONT_FREETYPE=yes])
@@ -106,13 +105,6 @@ fi
 AC_SUBST(FREETYPE_LIBS)
 AC_SUBST(FREETYPE_CFLAGS)
 AC_SUBST(FREETYPE_REQUIRES)
-
-AC_ARG_ENABLE(type1, [ --enable-type1 ], [XFONT_TYPE1=$enableval], [XFONT_TYPE1=yes])
-if test "x$XFONT_TYPE1" = xyes; then
-	AC_DEFINE(XFONT_TYPE1,1,[Support IBM Type 1 rasterizer for Type1 font files])
-	XFONT_FONTFILE=yes
-fi
-AM_CONDITIONAL(XFONT_TYPE1, [test "x$XFONT_TYPE1" = xyes ])
 
 #
 # Bitmap fonts in files:
@@ -229,7 +221,6 @@ AC_OUTPUT([Makefile
 	   src/FreeType/Makefile
 	   src/builtins/Makefile
 	   src/bitmap/Makefile
-	   src/Type1/Makefile
 	   src/fc/Makefile
 	   src/util/Makefile
 	   src/stubs/Makefile

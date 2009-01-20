@@ -117,13 +117,6 @@ FontFileCheckListNextFontOrAlias(pointer client, FontPathElementPtr fpe,
 /* Font renderers to initialize when not linked into something like
    Xorg that provides its own module configuration options */
 static const FontModule builtinFontModuleList[] = {
-#ifdef XFONT_TYPE1
-    {
-	Type1RegisterFontFileFunctions,
-	"type1",
-	NULL
-    },
-#endif
 #ifdef XFONT_FREETYPE    
     {
 	FreeTypeRegisterFontFileFunctions,
