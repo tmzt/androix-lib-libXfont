@@ -55,7 +55,7 @@ int
 FontFileNameCheck (char *name)
 {
 #ifndef NCD
-#if defined(__UNIXOS2__) || defined(WIN32)
+#if defined(WIN32)
     /* OS/2 uses D:/... as a path name for fonts, so accept this as a valid
      * path if it starts with a letter and a colon. Same applies for WIN32
      */

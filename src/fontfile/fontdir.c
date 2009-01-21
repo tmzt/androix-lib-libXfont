@@ -118,7 +118,7 @@ FontFileMakeDir(char *dirName, int size)
     char		*attrib;
     int			attriblen;
 
-#if !defined(__UNIXOS2__) && !defined(WIN32)
+#if !defined(WIN32)
     attrib = strchr(dirName, ':');
 #else
     /* OS/2 uses the colon in the drive letter descriptor, skip this */
