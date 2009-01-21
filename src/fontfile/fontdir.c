@@ -92,10 +92,6 @@ FontFileFreeEntry (FontEntryPtr entry)
 	free (entry->u.alias.resolved);
 	entry->u.alias.resolved = NULL;
 	break;
-#ifdef NOTYET
-    case FONT_ENTRY_BC:
-	break;
-#endif
     }
 }
 

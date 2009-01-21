@@ -325,17 +325,6 @@ FontFileOpenFont (pointer client, FontPathElementPtr fpe, Mask flags,
 				     entry->u.alias.resolved, aliasName, &vals);
 	    ret = FontNameAlias;
 	    break;
-#ifdef NOTYET
-	case FONT_ENTRY_BC:
-	    bc = &entry->u.bc;
-	    entry = bc->entry;
-	    ret = (*scalable->renderer->OpenScalable)
-		    (fpe, pFont, flags, entry, &bc->vals, format, fmask,
-		     non_cachable_font);
-	    if (ret == Successful && *pFont)
-		(*pFont)->fpe = fpe;
-	    break;
-#endif
 	default:
 	    ret = BadFontName;
 	}
@@ -922,23 +911,6 @@ FontFileListOneFontWithInfo (pointer client, FontPathElementPtr fpe,
 	    *namelenp = strlen (*namep);
 	    ret = FontNameAlias;
 	    break;
-#ifdef NOTYET
-	case FONT_ENTRY_BC:
-	    /* no LFWI for this yet */
-	    bc = &entry->u.bc;
-	    entry = bc->entry;
-	    /* Make a new scaled instance */
-	    if (strlen(dir->directory) + strlen(scalable->fileName) >=
-		sizeof(fileName)) {
-		ret = BadFontName;
-	    } else {
-		strcpy (fileName, dir->directory);
-		strcat (fileName, scalable->fileName);
-		ret = (*scalable->renderer->GetInfoScalable)
-		    (fpe, *pFontInfo, entry, tmpName, fileName, &bc->vals);
-	    }
-	    break;
-#endif
 	default:
 	    ret = BadFontName;
 	}
@@ -1026,11 +998,6 @@ FontFileListOneFontWithInfo (pointer client, FontPathElementPtr fpe,
 	    }
 	    else
 	    {
-#ifdef NOTDEF
-		/* no special case yet */
-		ret = FontFileMatchBitmapSource (fpe, pFont, flags, entry, &vals, format, fmask, noSpecificSize);
-		if (ret != Successful)
-#endif
 		{
 		    char origName[MAXFONTNAMELEN];
 

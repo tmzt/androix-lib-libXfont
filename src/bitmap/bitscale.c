@@ -510,17 +510,7 @@ FindBestToScale(FontPathElementPtr fpe, FontEntryPtr entry,
 	   the matrix appropriately */
 	vals->pixel_matrix[0] *= rescale_x;
 	vals->pixel_matrix[1] *= rescale_x;
-#ifdef NOTDEF
-	/* This would force the pointsize and pixelsize fields in the
-	   FONT property to display as matrices to more accurately
-	   report the font being supplied.  It might also break existing
-	   applications that expect a single number in that field. */
-	vals->values_supplied =
-	    vals->values_supplied & ~(PIXELSIZE_MASK | POINTSIZE_MASK) |
-	    PIXELSIZE_ARRAY;
-#else /* NOTDEF */
 	vals->values_supplied = vals->values_supplied & ~POINTSIZE_MASK;
-#endif /* NOTDEF */
 	/* Recompute and reround the FontScalablePtr values after
 	   rescaling for the new width. */
 	FontFileCompleteXLFD(vals, vals);
@@ -1582,11 +1572,6 @@ BitmapOpenScalable (FontPathElementPtr fpe,
 
     /* Can't deal with mix-endian fonts yet */
 
-#ifdef NOTDEF /* XXX need better test */
-    if ((format & BitmapFormatByteOrderMask) !=
-	    (format & BitmapFormatBitOrderMask))
-	return NullFontFileName;
-#endif
 
     /* Reject outrageously small font sizes to keep the math from
        blowing up. */
