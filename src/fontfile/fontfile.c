@@ -36,10 +36,32 @@ in this Software without prior written authorization from The Open Group.
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include    <X11/fonts/fntfilst.h>
+#include <X11/fonts/fntfilst.h>
+#include <X11/keysym.h>
 #ifdef WIN32
 #include <ctype.h>
 #endif
+
+static unsigned char
+ISOLatin1ToLower(unsigned char source)
+{
+    if (source >= XK_A && source <= XK_Z)
+	return source + (XK_a - XK_A);
+    if (source >= XK_Agrave && source <= XK_Odiaeresis)
+	return source + (XK_agrave - XK_Agrave);
+    if (source >= XK_Ooblique && source <= XK_Thorn)
+	return source + (XK_oslash - XK_Ooblique);
+    return source;
+}
+
+_X_HIDDEN void
+CopyISOLatin1Lowered(char *dest, char *source, int length)
+{
+    int i;
+    for (i = 0; i < length; i++, source++, dest++)
+	*dest = ISOLatin1ToLower(*source);
+    *dest = '\0';
+}
 
 /*
  * Map FPE functions to renderer functions
