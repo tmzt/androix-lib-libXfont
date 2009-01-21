@@ -23,13 +23,6 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
-/* $XFree86: xc/lib/font/fontfile/register.c,v 1.14 2001/01/17 19:43:30 dawes Exp $ */
-
-/*
- * This is in a separate source file so that small programs
- * such as mkfontdir that want to use the fontfile utilities don't
- * end up dragging in code from all the renderers, which is not small.
- */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -53,45 +46,16 @@ in this Software without prior written authorization from The Open Group.
 # define XFONT_FREETYPE 1
 #endif
 
-/* Font renderers to initialize when not linked into something like
-   Xorg that provides its own module configuration options */
-static const FontModule builtinFontModuleList[] = {
-#ifdef XFONT_FREETYPE    
-    {
-	FreeTypeRegisterFontFileFunctions,
-	"freetype",
-	NULL
-    },
-#endif
-    /* List terminator - must be last entry */
-    {	NULL, NULL, NULL }
-};
-
 void
 FontFileRegisterFpeFunctions(void)
 {
-    const FontModule *fmlist = builtinFontModuleList;
-
 #ifdef XFONT_BITMAP
     /* bitmap is always builtin to libXfont now */
     BitmapRegisterFontFileFunctions ();
 #endif
-
-#ifdef LOADABLEFONTS
-    if (FontModuleList) {
-	fmlist = FontModuleList;
-    }
-#endif    
-
-    if (fmlist) {
-	int i;
-
-	for (i = 0; fmlist[i].name; i++) {
-	    if (fmlist[i].initFunc) {
-		fmlist[i].initFunc();
-	    }
-	}
-    }
+#ifdef XFONT_FREETYPE
+    FreeTypeRegisterFontFileFunctions();
+#endif
     
     FontFileRegisterLocalFpeFunctions ();
     CatalogueRegisterLocalFpeFunctions ();
