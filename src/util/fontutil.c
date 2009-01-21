@@ -149,7 +149,7 @@ QueryTextExtents(FontPtr pFont,
     unsigned char   defc[2];
     int             firstReal;
 
-    charinfo = (xCharInfo **) xalloc(count * sizeof(xCharInfo *));
+    charinfo = malloc(count * sizeof(xCharInfo *));
     if (!charinfo)
 	return FALSE;
     encoding = TwoD16Bit;
@@ -188,7 +188,7 @@ QueryTextExtents(FontPtr pFont,
     QueryGlyphExtents(pFont, (CharInfoPtr*) charinfo + firstReal, 
 		      n - firstReal, info);
     pFont->info.constantMetrics = cm;
-    xfree(charinfo);
+    free(charinfo);
     return TRUE;
 }
 
@@ -315,15 +315,13 @@ add_range(fsRange *newrange,
 	/* Grow the list if necessary */
 	if (*nranges == 0 || *range == (fsRange *)0)
 	{
-	    *range = (fsRange *)xalloc(range_alloc_granularity *
-				       SIZEOF(fsRange));
+	    *range = malloc(range_alloc_granularity * SIZEOF(fsRange));
 	    *nranges = 0;
 	}
 	else if (!(*nranges % range_alloc_granularity))
 	{
-	    *range = (fsRange *)xrealloc((char *)*range,
-					  (*nranges + range_alloc_granularity) *
-					  SIZEOF(fsRange));
+	    *range = realloc(*range, (*nranges + range_alloc_granularity) *
+				      SIZEOF(fsRange));
 	}
 
 	/* If alloc failed, just return a null list */

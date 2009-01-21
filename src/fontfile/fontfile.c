@@ -325,7 +325,7 @@ FontFileOpenFont (pointer client, FontPathElementPtr fpe, Mask flags,
 
     if (ret != BadFontName)
     {
-	if (ranges) xfree(ranges);
+	if (ranges) free(ranges);
 	return ret;
     }
 
@@ -476,7 +476,7 @@ FontFileOpenFont (pointer client, FontPathElementPtr fpe, Mask flags,
 	ret = BadFontName;
 
     if (ranges)
-	xfree(ranges);
+	free(ranges);
     return ret;
 }
 
@@ -730,7 +730,7 @@ _FontFileListFonts (pointer client, FontPathElementPtr fpe,
 	scaleNames = MakeFontNamesRecord (0);
 	if (!scaleNames)
 	{
-	    if (ranges) xfree(ranges);
+	    if (ranges) free(ranges);
 	    return AllocError;
 	}
 	FontFileFindNamesInScalableDir (&dir->scalable, &zeroName, max,
@@ -747,7 +747,7 @@ _FontFileListFonts (pointer client, FontPathElementPtr fpe,
 	scaleNames = MakeFontNamesRecord (0);
 	if (!scaleNames)
 	{
-	    if (ranges) xfree(ranges);
+	    if (ranges) free(ranges);
 	    return AllocError;
 	}
 	FontFileFindNamesInScalableDir (&dir->nonScalable, &zeroName,
@@ -760,7 +760,7 @@ _FontFileListFonts (pointer client, FontPathElementPtr fpe,
 				  &max);
 	FreeFontNames (scaleNames);
 
-	if (ranges) xfree(ranges);
+	if (ranges) free(ranges);
     }
     else
     {
@@ -802,13 +802,13 @@ FontFileStartListFonts(pointer client, FontPathElementPtr fpe,
     LFWIDataPtr	data;
     int		ret;
 
-    data = (LFWIDataPtr) xalloc (sizeof *data);
+    data = malloc (sizeof *data);
     if (!data)
 	return AllocError;
     data->names = MakeFontNamesRecord (0);
     if (!data->names)
     {
-	xfree (data);
+	free (data);
 	return AllocError;
     }
     ret = _FontFileListFonts (client, fpe, pat, len,
@@ -816,7 +816,7 @@ FontFileStartListFonts(pointer client, FontPathElementPtr fpe,
     if (ret != Successful)
     {
 	FreeFontNames (data->names);
-	xfree (data);
+	free (data);
 	return ret;
     }
     data->current = 0;
@@ -928,7 +928,7 @@ FontFileListOneFontWithInfo (pointer client, FontPathElementPtr fpe,
     
     if (ret != BadFontName)
     {
-	if (ranges) xfree(ranges);
+	if (ranges) free(ranges);
 	return ret;
     }
 
@@ -1034,7 +1034,7 @@ FontFileListOneFontWithInfo (pointer client, FontPathElementPtr fpe,
                                 (fpe, *pFontInfo, entry, fileName);
 		    }
 		    if (ranges) {
-			xfree(ranges);
+			free(ranges);
 			ranges = NULL;
 		    }
 		}
@@ -1048,7 +1048,7 @@ FontFileListOneFontWithInfo (pointer client, FontPathElementPtr fpe,
 	ret = BadFontName;
 
     if (ranges)
-	xfree(ranges);
+	free(ranges);
     return ret;
 }
 
@@ -1066,7 +1066,7 @@ FontFileListNextFontWithInfo(pointer client, FontPathElementPtr fpe,
     if (data->current == data->names->nnames)
     {
 	FreeFontNames (data->names);
-	xfree (data);
+	free (data);
 	return BadFontName;
     }
     name = data->names->names[data->current];
@@ -1102,7 +1102,7 @@ FontFileListNextFontOrAlias(pointer client, FontPathElementPtr fpe,
     if (data->current == data->names->nnames)
     {
 	FreeFontNames (data->names);
-	xfree (data);
+	free (data);
 	return BadFontName;
     }
     name = data->names->names[data->current];

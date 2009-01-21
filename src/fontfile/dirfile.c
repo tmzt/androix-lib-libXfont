@@ -378,7 +378,7 @@ lexAlias(FILE *file, char **lexToken)
 	    char       *nbuf;
 
 	    nsize = tokenSize ? (tokenSize << 1) : 64;
-	    nbuf = (char *) xrealloc(tokenBuf, nsize);
+	    nbuf = realloc(tokenBuf, nsize);
 	    if (!nbuf)
 		return EALLOC;
 	    tokenBuf = nbuf;

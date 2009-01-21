@@ -266,7 +266,7 @@ fs_close_conn(FSFpePtr conn)
     for (client = conn->clients; client; client = nclient) 
     {
 	nclient = client->next;
-	xfree (client);
+	free (client);
     }
     conn->clients = NULL;
 }
@@ -411,7 +411,7 @@ fs_new_block_rec(FontPathElementPtr fpe, pointer client, int type)
 	size = 0;
 	break;
     }
-    blockrec = (FSBlockDataPtr) xalloc(sizeof(FSBlockDataRec) + size);
+    blockrec = malloc(sizeof(FSBlockDataRec) + size);
     if (!blockrec)
 	return (FSBlockDataPtr) 0;
     blockrec->data = (pointer) (blockrec + 1);
@@ -462,9 +462,9 @@ _fs_remove_block_rec(FSFpePtr conn, FSBlockDataPtr blockrec)
     {
 	FSBlockedGlyphPtr bglyph = (FSBlockedGlyphPtr)blockrec->data;
 	if (bglyph->num_expected_ranges)
-	    xfree(bglyph->expected_ranges);
+	    free(bglyph->expected_ranges);
     }
-    xfree(blockrec);
+    free(blockrec);
     _fs_set_pending_reply (conn);
 }
 
@@ -477,7 +477,7 @@ _fs_signal_clients_depending(FSClientsDependingPtr *clients_depending)
     {
 	*clients_depending = p->next;
 	ClientSignal(p->client);
-	xfree(p);
+	free(p);
     }
 }
 
@@ -493,7 +493,7 @@ _fs_add_clients_depending(FSClientsDependingPtr *clients_depending, pointer clie
 	    return Suspended;
     }
     
-    new = (FSClientsDependingPtr)xalloc (sizeof (FSClientsDependingRec));
+    new = malloc (sizeof (FSClientsDependingRec));
     if (!new)
 	return BadAlloc;
 
@@ -981,7 +981,7 @@ fs_read_extent_info(FontPathElementPtr fpe, FSBlockDataPtr blockrec)
 	numInfos *= 2;
 	haveInk = TRUE;
     }
-    ci = pCI = (CharInfoPtr) xalloc(sizeof(CharInfoRec) * numInfos);
+    ci = pCI = malloc(sizeof(CharInfoRec) * numInfos);
 
     if (!pCI) 
     {
@@ -2156,7 +2156,7 @@ _fs_load_glyphs(pointer client, FontPtr pfont, Bool range_flag,
 	if (nranges)
 	{
 	    _fs_clean_aborted_loadglyphs(pfont, nranges, ranges);
-	    xfree(ranges);
+	    free(ranges);
 	}
 	return _fs_add_clients_depending(clients_depending, client);
     }
@@ -2184,7 +2184,7 @@ _fs_load_glyphs(pointer client, FontPtr pfont, Bool range_flag,
 	/* Since we're not ready to send the load_glyphs request yet,
 	   clean up the damage caused by the fs_build_range() call. */
 	_fs_clean_aborted_loadglyphs(pfont, nranges, ranges);
-	xfree(ranges);
+	free(ranges);
 
 	/* Now try to reopen the font. */
 	return fs_send_open_font(client, pfont->fpe,
@@ -2571,7 +2571,7 @@ fs_client_died(pointer client, FontPathElementPtr fpe)
 	    _fs_add_req_log(conn, FS_FreeAC);
 	    _fs_write (conn, (char *) &freeac, sizeof (fsFreeACReq));
 	    *prev = cur->next;
-	    xfree (cur);
+	    free (cur);
 	    break;
 	}
     }
@@ -2625,7 +2625,7 @@ _fs_client_access (FSFpePtr conn, pointer client, Bool sync)
     }
     if (!cur)
     {
-	cur = (FSClientPtr) xalloc (sizeof (FSClientRec));
+	cur = malloc (sizeof (FSClientRec));
 	if (!cur)
 	    return;
 	cur->client = client;
@@ -2810,15 +2810,14 @@ _fs_recv_conn_setup (FSFpePtr conn)
 	 */
 	if (conn->alts)
 	{
-	    xfree (conn->alts);
+	    free (conn->alts);
 	    conn->alts = 0;
 	    conn->numAlts = 0;
 	}
 	if (setup->num_alternates)
 	{
-	    alts = (FSFpeAltPtr) xalloc (setup->num_alternates * 
-					 sizeof (FSFpeAltRec) +
-					 (setup->alternate_len << 2));
+	    alts = malloc (setup->num_alternates * sizeof (FSFpeAltRec) +
+			   (setup->alternate_len << 2));
 	    if (alts)
 	    {
 		alt_names = (char *) (setup + 1);
@@ -3151,13 +3150,12 @@ _fs_init_conn (char *servername)
 {
     FSFpePtr	conn;
 
-    conn = xalloc (sizeof (FSFpeRec) + strlen (servername) + 1);
+    conn = calloc (1, sizeof (FSFpeRec) + strlen (servername) + 1);
     if (!conn)
 	return 0;
-    memset (conn, '\0', sizeof (FSFpeRec));
     if (!_fs_io_init (conn))
     {
-	xfree (conn);
+	free (conn);
 	return 0;
     }
     conn->servername = (char *) (conn + 1);
@@ -3173,8 +3171,8 @@ _fs_free_conn (FSFpePtr conn)
     _fs_close_server (conn);
     _fs_io_fini (conn);
     if (conn->alts)
-	xfree (conn->alts);
-    xfree (conn);
+	free (conn->alts);
+    free (conn);
 }
 
 /*

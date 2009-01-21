@@ -614,19 +614,19 @@ ComputeScaledProperties(FontInfoPtr sourceFontInfo, /* the font to be scaled */
     }
     nProps = NPROPS + 1 + sizeof(fontPropTable) / sizeof(fontProp) +
 			  sizeof(rawFontPropTable) / sizeof(fontProp);
-    fp = (FontPropPtr) xalloc(sizeof(FontPropRec) * nProps);
+    fp = malloc(sizeof(FontPropRec) * nProps);
     *pProps = fp;
     if (!fp) {
 	fprintf(stderr, "Error: Couldn't allocate font properties (%ld*%d)\n",
 		(unsigned long)sizeof(FontPropRec), nProps);
 	return 1;
     }
-    isStringProp = (char *) xalloc (nProps);
+    isStringProp = malloc (nProps);
     *pIsStringProp = isStringProp;
     if (!isStringProp)
     {
  fprintf(stderr, "Error: Couldn't allocate isStringProp (%d)\n", nProps);
-	xfree (fp);
+	free (fp);
 	return 1;
     }
     ptr2 = name;
@@ -867,7 +867,7 @@ ScaleFont(FontPtr opf,            /* originating font */
 	lastRow = opfi->lastRow;
     }
 
-    bitmapFont = (BitmapFontPtr) xalloc(sizeof(BitmapFontRec));
+    bitmapFont = malloc(sizeof(BitmapFontRec));
     if (!bitmapFont) {
 	fprintf(stderr, "Error: Couldn't allocate bitmapFont (%ld)\n",
 		(unsigned long)sizeof(BitmapFontRec));
@@ -888,15 +888,13 @@ ScaleFont(FontPtr opf,            /* originating font */
     bitmapFont->encoding = 0;
     bitmapFont->bitmapExtra = 0;
     bitmapFont->pDefault = 0;
-    bitmapFont->metrics = (CharInfoPtr) xalloc(nchars * sizeof(CharInfoRec));
+    bitmapFont->metrics = malloc(nchars * sizeof(CharInfoRec));
     if (!bitmapFont->metrics) {
 	fprintf(stderr, "Error: Couldn't allocate metrics (%d*%ld)\n",
 		nchars, (unsigned long)sizeof(CharInfoRec));
 	goto bail;
     }
-    bitmapFont->encoding = 
-        (CharInfoPtr **) xcalloc(NUM_SEGMENTS(nchars),
-                                 sizeof(CharInfoPtr*));
+    bitmapFont->encoding = calloc(NUM_SEGMENTS(nchars), sizeof(CharInfoPtr*));
     if (!bitmapFont->encoding) {
 	fprintf(stderr, "Error: Couldn't allocate encoding (%d*%ld)\n",
 		nchars, (unsigned long)sizeof(CharInfoPtr));
@@ -974,8 +972,7 @@ ScaleFont(FontPtr opf,            /* originating font */
 
             if(!bitmapFont->encoding[SEGMENT_MAJOR(i)]) {
                 bitmapFont->encoding[SEGMENT_MAJOR(i)]=
-                  (CharInfoPtr*)xcalloc(BITMAP_FONT_SEGMENT_SIZE,
-                                        sizeof(CharInfoPtr));
+                  calloc(BITMAP_FONT_SEGMENT_SIZE, sizeof(CharInfoPtr));
                 if(!bitmapFont->encoding[SEGMENT_MAJOR(i)])
                     goto bail;
             }
@@ -1117,15 +1114,15 @@ ScaleFont(FontPtr opf,            /* originating font */
     return pf;
 bail:
     if (pf)
-	xfree(pf);
+	free(pf);
     if (bitmapFont) {
-	xfree(bitmapFont->metrics);
-	xfree(bitmapFont->ink_metrics);
-	xfree(bitmapFont->bitmaps);
+	free(bitmapFont->metrics);
+	free(bitmapFont->ink_metrics);
+	free(bitmapFont->bitmaps);
         if(bitmapFont->encoding)
             for(i=0; i<NUM_SEGMENTS(nchars); i++)
-                xfree(bitmapFont->encoding[i]);
-	xfree(bitmapFont->encoding);
+                free(bitmapFont->encoding[i]);
+	free(bitmapFont->encoding);
     }
     return NULL;
 }
@@ -1206,23 +1203,19 @@ ScaleBitmap(FontPtr pFont, CharInfoPtr opci, CharInfoPtr pci,
 	    /* Looks like we need to anti-alias.  Create a workspace to
 	       contain the grayscale character plus an additional row and
 	       column for scratch */
-	    char_grayscale =
-		(unsigned char *)xalloc((width + 1) * (height + 1));
+	    char_grayscale = malloc((width + 1) * (height + 1));
 	    if (char_grayscale)
 	    {
-		diffusion_workspace =
-		    (INT32 *)xalloc((newWidth + 2) * 2 * sizeof(int));
+		diffusion_workspace = calloc((newWidth + 2) * 2, sizeof(int));
 		if (!diffusion_workspace)
 		{
 		    fprintf(stderr, "Warning: Couldn't allocate diffusion"
 			    " workspace (%ld)\n",
 			    (newWidth + 2) * 2 * (unsigned long)sizeof(int));
-		    xfree(char_grayscale);
+		    free(char_grayscale);
 		    char_grayscale = (unsigned char *)0;
 		}
 		/* Initialize our error diffusion workspace for later use */
-		bzero((char *)diffusion_workspace + sizeof(INT32),
-		      (newWidth + 3) * sizeof(int));
 		thisrow = diffusion_workspace + 1;
 		nextrow = diffusion_workspace + newWidth + 3;
      } else {
@@ -1472,8 +1465,8 @@ ScaleBitmap(FontPtr pFont, CharInfoPtr opci, CharInfoPtr pci,
 
     if (char_grayscale)
     {
-	xfree(char_grayscale);
-	xfree(diffusion_workspace);
+	free(char_grayscale);
+	free(diffusion_workspace);
     }
 }
 
@@ -1524,12 +1517,11 @@ BitmapScaleBitmaps(FontPtr pf,          /* scaled font */
     /* Will need to remember to free in the Unload routine */
 
 
-    bitmapFont->bitmaps = (char *) xalloc(bytestoalloc);
+    bitmapFont->bitmaps = calloc(1, bytestoalloc);
     if (!bitmapFont->bitmaps) {
  fprintf(stderr, "Error: Couldn't allocate bitmaps (%d)\n", bytestoalloc);
 	goto bail;
     }
-    bzero(bitmapFont->bitmaps, bytestoalloc);
 
     glyphBytes = bitmapFont->bitmaps;
     for (i = 0; i < nchars; i++)
@@ -1547,15 +1539,15 @@ BitmapScaleBitmaps(FontPtr pf,          /* scaled font */
 
 bail:
     if (pf)
-	xfree(pf);
+	free(pf);
     if (bitmapFont) {
-	xfree(bitmapFont->metrics);
-	xfree(bitmapFont->ink_metrics);
-	xfree(bitmapFont->bitmaps);
+	free(bitmapFont->metrics);
+	free(bitmapFont->ink_metrics);
+	free(bitmapFont->bitmaps);
         if(bitmapFont->encoding)
             for(i=0; i<NUM_SEGMENTS(nchars); i++)
-                xfree(bitmapFont->encoding[i]);
-	xfree(bitmapFont->encoding);
+                free(bitmapFont->encoding[i]);
+	free(bitmapFont->encoding);
     }
     return NULL;
 }
@@ -1698,18 +1690,18 @@ bitmapUnloadScalable (FontPtr pFont)
 
     bitmapFont = (BitmapFontPtr) pFont->fontPrivate;
     pfi = &pFont->info;
-    xfree (pfi->props);
-    xfree (pfi->isStringProp);
+    free (pfi->props);
+    free (pfi->isStringProp);
     if(bitmapFont->encoding) {
         nencoding = (pFont->info.lastCol - pFont->info.firstCol + 1) *
 	    (pFont->info.lastRow - pFont->info.firstRow + 1);
         for(i=0; i<NUM_SEGMENTS(nencoding); i++)
-            xfree(bitmapFont->encoding[i]);
+            free(bitmapFont->encoding[i]);
     }
-    xfree (bitmapFont->encoding);
-    xfree (bitmapFont->bitmaps);
-    xfree (bitmapFont->ink_metrics);
-    xfree (bitmapFont->metrics);
-    xfree (pFont->fontPrivate);
+    free (bitmapFont->encoding);
+    free (bitmapFont->bitmaps);
+    free (bitmapFont->ink_metrics);
+    free (bitmapFont->metrics);
+    free (pFont->fontPrivate);
     DestroyFontRec (pFont);
 }

@@ -51,7 +51,7 @@ BufFileCreate (char *private,
 {
     BufFilePtr	f;
 
-    f = (BufFilePtr) xalloc (sizeof *f);
+    f = malloc (sizeof *f);
     if (!f)
 	return 0;
     f->private = private;
@@ -201,6 +201,6 @@ BufFileClose (BufFilePtr f, int doClose)
 {
     int ret;
     ret = (*f->close) (f, doClose);
-    xfree (f);
+    free (f);
     return ret;
 }

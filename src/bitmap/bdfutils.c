@@ -174,7 +174,7 @@ bdfGetPropertyValue(char *s)
     }
     /* quoted string: strip outer quotes and undouble inner quotes */
     s++;
-    pp = p = (char *) xalloc((unsigned) strlen(s) + 1);
+    pp = p = malloc((unsigned) strlen(s) + 1);
     if (pp == NULL) {
   bdfError("Couldn't allocate property value string (%d)\n", strlen(s) + 1);
   return None;
@@ -184,7 +184,7 @@ bdfGetPropertyValue(char *s)
 	    if (*(s + 1) != '"') {
 		*p++ = 0;
 		atom = bdfForceMakeAtom(pp, NULL);
-		xfree(pp);
+		free(pp);
 		return atom;
 	    } else {
 		s++;
@@ -192,7 +192,7 @@ bdfGetPropertyValue(char *s)
 	}
 	*p++ = *s++;
     }
-    xfree (pp);
+    free (pp);
     bdfError("unterminated quoted string property: %s\n", (pointer) orig_s);
     return None;
 }

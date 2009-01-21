@@ -62,7 +62,7 @@ FontFilePriorityRegisterRenderer (FontRendererPtr renderer, int priority)
 	rendererGeneration = serverGeneration;
 	renderers.number = 0;
 	if (renderers.renderers)
-	   xfree(renderers.renderers);
+	   free(renderers.renderers);
 	renderers.renderers = NULL;
     }
 
@@ -84,7 +84,7 @@ FontFilePriorityRegisterRenderer (FontRendererPtr renderer, int priority)
     }
 
     if(i >= renderers.number) {
-        new = xrealloc (renderers.renderers, sizeof(*new) * (i + 1));
+        new = realloc (renderers.renderers, sizeof(*new) * (i + 1));
         if (!new)
             return FALSE;
         renderers.renderers = new;

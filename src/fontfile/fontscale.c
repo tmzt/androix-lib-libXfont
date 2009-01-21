@@ -51,8 +51,7 @@ FontFileAddScaledInstance (FontEntryPtr entry, FontScalablePtr vals,
     if (extra->numScaled == extra->sizeScaled)
     {
 	newsize = extra->sizeScaled + 4;
-	new = (FontScaledPtr) xrealloc (extra->scaled,
-			    newsize * sizeof (FontScaledRec));
+	new = realloc (extra->scaled, newsize * sizeof (FontScaledRec));
 	if (!new)
 	    return FALSE;
 	extra->sizeScaled = newsize;
@@ -107,7 +106,7 @@ FontFileRemoveScaledInstance (FontEntryPtr entry, FontPtr pFont)
 	if (extra->scaled[i].pFont == pFont)
 	{
 	    if (extra->scaled[i].vals.ranges)
-		xfree (extra->scaled[i].vals.ranges);
+		free (extra->scaled[i].vals.ranges);
 	    extra->numScaled--;
 	    for (; i < extra->numScaled; i++)
 		extra->scaled[i] = extra->scaled[i+1];

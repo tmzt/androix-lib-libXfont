@@ -43,44 +43,12 @@ from The Open Group.
 
 #ifdef __SUNPRO_C
 #pragma weak serverGeneration
-#pragma weak Xalloc
-#pragma weak Xrealloc
-#pragma weak Xfree
-#pragma weak Xcalloc
 #pragma weak CopyISOLatin1Lowered
 #pragma weak register_fpe_functions
 #endif
 
 /* make sure everything initializes themselves at least once */
 weak long serverGeneration = 1;
-
-weak void *
-Xalloc (unsigned long m)
-{
-    return malloc (m);
-}
-
-weak void *
-Xrealloc (void *n, unsigned long m)
-{
-    if (!n)
-	return malloc (m);
-    else
-	return realloc (n, m);
-}
-
-weak void
-Xfree (void *n)
-{
-    if (n)
-	free (n);
-}
-
-weak void *
-Xcalloc (unsigned long n)
-{
-    return calloc (n, 1);
-}
 
 weak void
 CopyISOLatin1Lowered (char *dst, char *src, int len)

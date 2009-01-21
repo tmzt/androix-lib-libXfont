@@ -148,7 +148,7 @@ BitmapOpenBitmap (FontPathElementPtr fpe, FontPtr *ppFont, int flags,
 
     FontFileClose (file);
     if (ret != Successful) {
-	xfree(pFont);
+	free(pFont);
     } else {
 	*ppFont = pFont;
     }
