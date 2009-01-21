@@ -33,7 +33,6 @@ in this Software without prior written authorization from The Open Group.
 #include <X11/fonts/fontmisc.h>
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/bitmap.h>
-#include <X11/fonts/fontmod.h>
 
 /*
  * Translate monolithic build symbols to modular build symbols.

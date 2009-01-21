@@ -35,7 +35,6 @@ in this Software without prior written authorization from The Open Group.
 #endif
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/bitmap.h>
-#include <X11/fonts/fontmod.h>
 
 /*
  * Map FPE functions to renderer functions
@@ -114,45 +113,17 @@ FontFileCheckListNextFontOrAlias(pointer client, FontPathElementPtr fpe,
     return BadFontName;
 }
 
-/* Font renderers to initialize when not linked into something like
-   Xorg that provides its own module configuration options */
-static const FontModule builtinFontModuleList[] = {
-#ifdef XFONT_FREETYPE    
-    {
-	FreeTypeRegisterFontFileFunctions,
-	"freetype",
-	NULL
-    },
-#endif
-    /* List terminator - must be last entry */
-    {	NULL, NULL, NULL }
-};
-
 void
 FontFileCheckRegisterFpeFunctions (void)
 {
-    const FontModule *fmlist = builtinFontModuleList;
-    
 #ifdef XFONT_BITMAP
     /* bitmap is always builtin to libXfont now */
     BitmapRegisterFontFileFunctions ();
 #endif
 
-#ifdef LOADABLEFONTS
-    if (FontModuleList) {
-	fmlist = FontModuleList;
-    }
+#ifdef XFONT_FREETYPE
+    FreeTypeRegisterFontFileFunctions();
 #endif
-
-    if (fmlist) {
-	int i;
-
-	for (i = 0; fmlist[i].name; i++) {
-	    if (fmlist[i].initFunc) {
-		fmlist[i].initFunc();
-	    }
-	}
-    }
 
     RegisterFPEFunctions(FontFileNameCheck,
 			 FontFileInitFPE,

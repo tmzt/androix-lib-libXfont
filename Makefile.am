@@ -31,7 +31,6 @@ libXfontinclude_HEADERS = \
 	include/X11/fonts/fntfilst.h \
 	include/X11/fonts/fontencc.h \
 	include/X11/fonts/fontmisc.h \
-	include/X11/fonts/fontmod.h  \
 	include/X11/fonts/fontshow.h \
 	include/X11/fonts/fontutil.h \
 	include/X11/fonts/fontxlfd.h \
