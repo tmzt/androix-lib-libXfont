@@ -1,3 +1,5 @@
+.deps
+.libs
 aclocal.m4
 autom4te.cache
 compile
@@ -9,6 +11,7 @@ config.status
 config.sub
 configure
 depcomp
+fontconf.h
 install-sh
 libtool
 ltmain.sh
@@ -16,6 +19,12 @@ Makefile
 Makefile.in
 missing
 mkinstalldirs
-stamp-h1
+stamp-h?
 xfont.pc
 *~
+*.la
+*.lo
+*.o
+libXfont-*.tar.*
+ChangeLog
+tags
