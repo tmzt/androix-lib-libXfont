@@ -394,6 +394,8 @@ _fs_do_write(FSFpePtr conn, char *data, long len, long size)
 	}
     }
     memcpy (conn->outBuf.buf + conn->outBuf.insert, data, len);
+    /* Clear pad data */
+    memset (conn->outBuf.buf + conn->outBuf.insert + len, 0, size - len);
     conn->outBuf.insert += size;
     _fs_mark_block (conn, FS_PENDING_WRITE);
     return FSIO_READY;

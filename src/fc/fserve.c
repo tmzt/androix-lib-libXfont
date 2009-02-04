@@ -1618,6 +1618,7 @@ fs_send_open_font(pointer client, FontPathElementPtr fpe, Mask flags,
     buf[0] = (unsigned char) namelen;
     memcpy(&buf[1], name, namelen);
     openreq.reqType = FS_OpenBitmapFont;
+    openreq.pad = 0;
     openreq.fid = fsd->fontid;
     openreq.format_hint = fsd->format;
     openreq.format_mask = fsd->fmask;
@@ -1630,6 +1631,7 @@ fs_send_open_font(pointer client, FontPathElementPtr fpe, Mask flags,
     blockrec->sequenceNumber = conn->current_seq;
     
     inforeq.reqType = FS_QueryXInfo;
+    inforeq.pad = 0;
     inforeq.id = fsd->fontid;
     inforeq.length = SIZEOF(fsQueryXInfoReq) >> 2;
 
@@ -1756,6 +1758,7 @@ fs_send_close_font(FontPathElementPtr fpe, Font id)
 	return Successful;
     /* tell the font server to close the font */
     req.reqType = FS_CloseFont;
+    req.pad = 0;
     req.length = SIZEOF(fsCloseReq) >> 2;
     req.id = id;
     _fs_add_req_log(conn, FS_CloseFont);
@@ -2288,6 +2291,7 @@ fs_send_list_fonts(pointer client, FontPathElementPtr fpe, char *pattern,
 
     /* send the request */
     req.reqType = FS_ListFonts;
+    req.pad = 0;
     req.maxNames = maxnames;
     req.nbytes = patlen;
     req.length = (SIZEOF(fsListFontsReq) + patlen + 3) >> 2;
@@ -2458,6 +2462,7 @@ fs_start_list_with_info(pointer client, FontPathElementPtr fpe,
 
     /* send the request */
     req.reqType = FS_ListFontsWithXInfo;
+    req.pad = 0;
     req.maxNames = maxnames;
     req.nbytes = len;
     req.length = (SIZEOF(fsListFontsWithXInfoReq) + len + 3) >> 2;
@@ -2558,6 +2563,7 @@ fs_client_died(pointer client, FontPathElementPtr fpe)
     {
 	if (cur->client == client) {
 	    freeac.reqType = FS_FreeAC;
+	    freeac.pad = 0;
 	    freeac.id = cur->acid;
 	    freeac.length = sizeof (fsFreeACReq) >> 2;
 	    _fs_add_req_log(conn, FS_FreeAC);
@@ -2632,6 +2638,7 @@ _fs_client_access (FSFpePtr conn, pointer client, Bool sync)
 	{
 	    fsFreeACReq	freeac;
 	    freeac.reqType = FS_FreeAC;
+	    freeac.pad = 0;
 	    freeac.id = cur->acid;
 	    freeac.length = sizeof (fsFreeACReq) >> 2;
 	    _fs_add_req_log(conn, FS_FreeAC);
@@ -2660,6 +2667,7 @@ _fs_client_access (FSFpePtr conn, pointer client, Bool sync)
     if (conn->curacid != cur->acid)
     {
     	setac.reqType = FS_SetAuthorization;
+	setac.pad = 0;
     	setac.length = sizeof (fsSetAuthorizationReq) >> 2;
     	setac.id = cur->acid;
     	_fs_add_req_log(conn, FS_SetAuthorization);
@@ -2962,6 +2970,7 @@ _fs_send_cat_sync (FSFpePtr conn)
     lcreq.length = (SIZEOF(fsListCataloguesReq)) >> 2;
     lcreq.maxNames = 0;
     lcreq.nbytes = 0;
+    lcreq.pad2 = 0;
     _fs_add_req_log(conn, FS_SetCatalogues);
     if (_fs_write(conn, (char *) &lcreq, SIZEOF(fsListCataloguesReq)) != FSIO_READY)
 	return FSIO_ERROR;
