@@ -36,9 +36,9 @@ AM_INIT_AUTOMAKE([foreign dist-bzip2])
 AM_CONFIG_HEADER(config.h)
 AC_CONFIG_HEADERS([include/X11/fonts/fontconf.h])
 
-# Require xorg-macros version >= 1.2.0 for XORG_CWARNFLAGS & XORG_CHANGELOG
+# Require xorg-macros version >= 1.3.0 for XORG_DEFAULT_OPTIONS
 m4_ifndef([XORG_MACROS_VERSION], [AC_FATAL([must install xorg-macros 1.2 or later before running autoconf/autogen])])
-XORG_MACROS_VERSION(1.2)
+XORG_MACROS_VERSION(1.3)
 
 # Check for progs
 AC_PROG_CC
@@ -46,6 +46,8 @@ AC_PROG_LIBTOOL
 dnl If the first PKG_CHECK_MODULES appears inside a conditional, pkg-config
 dnl must first be located explicitly.
 PKG_PROG_PKG_CONFIG
+
+XORG_DEFAULT_OPTIONS
 
 # Look for headers
 AC_CHECK_HEADERS([endian.h poll.h sys/poll.h])
@@ -189,8 +191,6 @@ PKG_CHECK_MODULES(XFONT, xproto xtrans fontsproto fontenc)
 # Transport selection macro from xtrans.m4
 XTRANS_CONNECTION_FLAGS
 
-XORG_CWARNFLAGS
-
 case $host_os in
     linux*)
         OS_CFLAGS="-D_XOPEN_SOURCE"
@@ -203,9 +203,6 @@ case $host_os in
         ;;
 esac
 AC_SUBST([OS_CFLAGS])
-
-XORG_RELEASE_VERSION
-XORG_CHANGELOG
 
 AC_OUTPUT([Makefile
 	   src/Makefile
