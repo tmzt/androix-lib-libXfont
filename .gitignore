@@ -28,3 +28,7 @@ xfont.pc
 libXfont-*.tar.*
 ChangeLog
 tags
+doc/fontlib.txt
+doc/fontlib.html
+doc/fontlib.ps
+doc/fontlib.pdf
