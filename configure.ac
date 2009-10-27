@@ -36,9 +36,11 @@ AM_INIT_AUTOMAKE([foreign dist-bzip2])
 AM_CONFIG_HEADER(config.h)
 AC_CONFIG_HEADERS([include/X11/fonts/fontconf.h])
 
-# Require xorg-macros version >= 1.3.0 for XORG_DEFAULT_OPTIONS
-m4_ifndef([XORG_MACROS_VERSION], [AC_FATAL([must install xorg-macros 1.2 or later before running autoconf/autogen])])
+# Require xorg-macros: XORG_DEFAULT_OPTIONS
+m4_ifndef([XORG_MACROS_VERSION],
+          [m4_fatal([must install xorg-macros 1.3 or later before running autoconf/autogen])])
 XORG_MACROS_VERSION(1.3)
+XORG_DEFAULT_OPTIONS
 
 # Check for progs
 AC_PROG_CC
@@ -47,7 +49,6 @@ dnl If the first PKG_CHECK_MODULES appears inside a conditional, pkg-config
 dnl must first be located explicitly.
 PKG_PROG_PKG_CONFIG
 
-XORG_DEFAULT_OPTIONS
 
 # xmlto is used to convert doc/fontlib.xml from DocBook to PDF/HTML
 AC_ARG_VAR([XMLTO], [Path to xmlto command])
