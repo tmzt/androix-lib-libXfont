@@ -43,7 +43,7 @@ nodist_libXfontinclude_HEADERS = \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = xfont.pc
 
-EXTRA_DIST = xfont.pc.in ChangeLog include/X11/fonts/fontconf.h.in
+EXTRA_DIST = xfont.pc.in  include/X11/fonts/fontconf.h.in
 
 .PHONY: ChangeLog
 
