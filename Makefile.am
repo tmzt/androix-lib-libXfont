@@ -45,12 +45,15 @@ pkgconfig_DATA = xfont.pc
 
 EXTRA_DIST = xfont.pc.in  include/X11/fonts/fontconf.h.in
 
-.PHONY: ChangeLog
+.PHONY: ChangeLog INSTALL
+
+INSTALL:
+	$(INSTALL_CMD)
 
 ChangeLog:
 	$(CHANGELOG_CMD)
 
-dist-hook: ChangeLog
+dist-hook: ChangeLog INSTALL
 
 # Developer documentation - not installed on system
 EXTRA_DIST += doc/fontlib.xml doc/fontlib.xsl doc/fontlib.css
