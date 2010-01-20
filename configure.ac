@@ -39,9 +39,10 @@ AM_MAINTAINER_MODE
 
 # Require xorg-macros: XORG_DEFAULT_OPTIONS
 m4_ifndef([XORG_MACROS_VERSION],
-          [m4_fatal([must install xorg-macros 1.3 or later before running autoconf/autogen])])
-XORG_MACROS_VERSION(1.3)
+          [m4_fatal([must install xorg-macros 1.5 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.5)
 XORG_DEFAULT_OPTIONS
+XORG_WITH_XMLTO
 
 # Check for progs
 AC_PROG_CC
@@ -49,12 +50,6 @@ AC_PROG_LIBTOOL
 dnl If the first PKG_CHECK_MODULES appears inside a conditional, pkg-config
 dnl must first be located explicitly.
 PKG_PROG_PKG_CONFIG
-
-
-# xmlto is used to convert doc/fontlib.xml from DocBook to PDF/HTML
-AC_ARG_VAR([XMLTO], [Path to xmlto command])
-AC_PATH_PROG([XMLTO], [xmlto])
-AM_CONDITIONAL([HAVE_XMLTO], [test "x$XMLTO" != "x"])
 
 # Option to enable support for building developer internals docs
 AC_ARG_ENABLE(devel-docs,
