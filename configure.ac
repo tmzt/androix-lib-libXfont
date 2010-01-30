@@ -39,10 +39,12 @@ AM_MAINTAINER_MODE
 
 # Require xorg-macros: XORG_DEFAULT_OPTIONS
 m4_ifndef([XORG_MACROS_VERSION],
-          [m4_fatal([must install xorg-macros 1.5 or later before running autoconf/autogen])])
-XORG_MACROS_VERSION(1.5)
+          [m4_fatal([must install xorg-macros 1.6 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.6)
 XORG_DEFAULT_OPTIONS
+XORG_ENABLE_DEVEL_DOCS
 XORG_WITH_XMLTO
+XORG_WITH_FOP
 
 # Check for progs
 AC_PROG_CC
@@ -50,13 +52,6 @@ AC_PROG_LIBTOOL
 dnl If the first PKG_CHECK_MODULES appears inside a conditional, pkg-config
 dnl must first be located explicitly.
 PKG_PROG_PKG_CONFIG
-
-# Option to enable support for building developer internals docs
-AC_ARG_ENABLE(devel-docs,
-	AS_HELP_STRING([--enable-devel-docs],
-	    [Build internals documentation for developers (default: enabled)]),
-	    [DEVEL_DOCS=$enableval], [DEVEL_DOCS=yes])
-AM_CONDITIONAL([MAKE_DEVEL_DOCS], [test "x$DEVEL_DOCS" = "xyes"])
 
 # Look for headers
 AC_CHECK_HEADERS([endian.h poll.h sys/poll.h])
