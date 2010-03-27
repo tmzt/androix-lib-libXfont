@@ -20,7 +20,7 @@ dnl  PERFORMANCE OF THIS SOFTWARE.
 dnl
 dnl Process this file with autoconf to create configure.
 
-AC_PREREQ([2.57])
+AC_PREREQ([2.60])
 
 AC_INIT([libXfont],
 	1.4.1,
@@ -56,8 +56,6 @@ PKG_PROG_PKG_CONFIG
 # Look for headers
 AC_CHECK_HEADERS([endian.h poll.h sys/poll.h])
 AC_CHECK_FUNCS([poll])
-
-m4_ifdef([AS_HELP_STRING], , [m4_define([AS_HELP_STRING], m4_defn([AC_HELP_STRING]))])
 
 #
 # select libraries to include
