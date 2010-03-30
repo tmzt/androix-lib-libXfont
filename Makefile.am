@@ -44,7 +44,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = xfont.pc
 
 MAINTAINERCLEANFILES = ChangeLog INSTALL
-EXTRA_DIST = include/X11/fonts/fontconf.h.in
 
 .PHONY: ChangeLog INSTALL
 
@@ -57,7 +56,7 @@ ChangeLog:
 dist-hook: ChangeLog INSTALL
 
 # Developer documentation - not installed on system
-EXTRA_DIST += doc/fontlib.xml doc/fontlib.xsl doc/fontlib.css
+EXTRA_DIST = doc/fontlib.xml doc/fontlib.xsl doc/fontlib.css
 
 if ENABLE_DEVEL_DOCS
 if HAVE_XMLTO
