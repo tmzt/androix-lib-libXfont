@@ -26,6 +26,8 @@ AC_INIT([libXfont],
 	1.4.1,
 	[https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
 	libXfont)
+# Autoheader generates config.h.in. No new lines allowed in the list.
+AC_CONFIG_HEADERS([config.h include/X11/fonts/fontconf.h])
 dnl
 dnl This is the package version number, not the shared library
 dnl version.  This same version number must appear in Xfont.h
@@ -33,8 +35,6 @@ dnl Yes, it is a pain to synchronize version numbers.  Unfortunately, it's
 dnl not possible to extract the version number here from Xfont.h
 dnl
 AM_INIT_AUTOMAKE([foreign dist-bzip2])
-AM_CONFIG_HEADER(config.h)
-AC_CONFIG_HEADERS([include/X11/fonts/fontconf.h])
 AM_MAINTAINER_MODE
 
 # Require xorg-macros: XORG_DEFAULT_OPTIONS
