@@ -16,6 +16,7 @@
 #define weak __attribute__((weak))
 #else
 #define weak
+#define NO_WEAK_SYMBOLS
 #endif
 
 extern FontPtr find_old_font ( FSID id );

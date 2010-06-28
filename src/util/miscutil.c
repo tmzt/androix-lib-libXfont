@@ -48,8 +48,10 @@ from The Open Group.
 
 extern void BuiltinRegisterFpeFunctions(void);
 
+#ifndef NO_WEAK_SYMBOLS
 /* make sure everything initializes themselves at least once */
 weak long serverGeneration = 1;
+#endif
 
 weak void
 register_fpe_functions (void)
