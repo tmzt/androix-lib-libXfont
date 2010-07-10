@@ -12,11 +12,20 @@
 #endif
 
 /* this probably works for Mach-O too, but probably not for PE */
-#if defined(__ELF__) && defined(__GNUC__) && (__GNUC__ >= 3)
+#if (defined(__APPLE__) || defined(__ELF__)) && defined(__GNUC__) && (__GNUC__ >= 3)
 #define weak __attribute__((weak))
 #else
 #define weak
 #define NO_WEAK_SYMBOLS
+#endif
+
+/* This is really just a hack for now... __APPLE__ really should be using
+ * the weak symbols route above, but it's causing an as-yet unresolved issue,
+ * so we're instead building with flat_namespace.
+ */
+#ifdef __APPLE__
+#undef weak
+#define weak
 #endif
 
 extern FontPtr find_old_font ( FSID id );
