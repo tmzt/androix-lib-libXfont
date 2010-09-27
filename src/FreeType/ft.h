@@ -33,11 +33,9 @@ THE SOFTWARE.
 #undef DEBUG_TRUETYPE
 
 #ifdef DEBUG_TRUETYPE
-#define MUMBLE(s) (ErrorF((s)))
-#define MUMBLE1(s,x) (ErrorF((s),(x)))
+#define MUMBLE ErrorF
 #else
-#define MUMBLE(s)
-#define MUMBLE1(s,x)
+#define MUMBLE(...)
 #endif
 
 #undef MAX

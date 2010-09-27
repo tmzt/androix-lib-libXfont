@@ -188,7 +188,7 @@ FreeTypeOpenFace(FTFacePtr *facep, char *FTFileName, char *realFileName, int fac
         otherFace = otherFace->next;
     }
     if(otherFace) {
-        MUMBLE1("Returning cached face: %s\n", otherFace->filename);
+        MUMBLE("Returning cached face: %s\n", otherFace->filename);
         *facep = otherFace;
         return Successful;
     }
@@ -253,7 +253,7 @@ FreeTypeFreeFace(FTFacePtr face)
             else
                 ErrorF("FreeType: freeing unknown face\n");
         }
-        MUMBLE1("Closing face: %s\n", face->filename);
+        MUMBLE("Closing face: %s\n", face->filename);
         FT_Done_Face(face->face);
         free(face->filename);
         free(face);
@@ -3645,7 +3645,7 @@ FreeTypeGetMetrics(FontPtr pFont, unsigned long count, unsigned char *chars,
     struct TTCapInfo *ttcap;
     xCharInfo **mp, *m;
 
-    /*  MUMBLE1("Get metrics for %ld characters\n", count);*/
+    /*  MUMBLE("Get metrics for %ld characters\n", count);*/
 
     tf = (FTFontPtr)pFont->fontPrivate;
     ttcap = &tf->instance->ttcap;
@@ -3780,7 +3780,7 @@ FreeTypeSetUpFont(FontPathElementPtr fpe, FontPtr xf, FontInfoPtr info,
     if ((xrc = CheckFSFormat(format, fmask, &bmfmt->bit, &bmfmt->byte,
                              &bmfmt->scan, &bmfmt->glyph,
                              &image)) != Successful) {
-        MUMBLE1("Aborting after checking FS format: %d\n", xrc);
+        MUMBLE("Aborting after checking FS format: %d\n", xrc);
         return xrc;
     }
 
@@ -3829,11 +3829,7 @@ FreeTypeOpenScalable(FontPathElementPtr fpe, FontPtr *ppFont, int flags,
     FontPtr xf;
     FontBitmapFormatRec bmfmt;
 
-    MUMBLE1("Open Scalable %s, XLFD=",fileName);
-#ifdef DEBUG_TRUETYPE
-    fwrite(entry->name.name, entry->name.length, 1, stdout);
-#endif
-    MUMBLE("\n");
+    MUMBLE("Open Scalable %s, XLFD=%s\n",fileName, entry->name.length ? entry->name.name : "");
 
     xf = CreateFontRec();
     if (xf == NULL)
@@ -3846,7 +3842,7 @@ FreeTypeOpenScalable(FontPathElementPtr fpe, FontPtr *ppFont, int flags,
     }
     xrc = FreeTypeLoadXFont(fileName, vals, xf, &xf->info, &bmfmt, entry);
     if(xrc != Successful) {
-        MUMBLE1("Error during load: %d\n",xrc);
+        MUMBLE("Error during load: %d\n",xrc);
         DestroyFontRec(xf);
         return xrc;
     }
@@ -3866,11 +3862,7 @@ FreeTypeGetInfoScalable(FontPathElementPtr fpe, FontInfoPtr info,
     int xrc;
     FontBitmapFormatRec bmfmt;
 
-    MUMBLE("Get info, XLFD= ");
-#ifdef DEBUG_TRUETYPE
-    fwrite(entry->name.name, entry->name.length, 1, stdout);
-#endif
-    MUMBLE("\n");
+    MUMBLE("Get info, XLFD=%s\n", entry->name.length ? entry->name.name : "");
 
     xrc = FreeTypeSetUpFont(fpe, 0, info, 0, 0, &bmfmt);
     if(xrc != Successful) {
@@ -3881,7 +3873,7 @@ FreeTypeGetInfoScalable(FontPathElementPtr fpe, FontInfoPtr info,
 
     xrc = FreeTypeLoadXFont(fileName, vals, 0, info, &bmfmt, entry);
     if(xrc != Successful) {
-        MUMBLE1("Error during load: %d\n", xrc);
+        MUMBLE("Error during load: %d\n", xrc);
         return xrc;
     }
 
