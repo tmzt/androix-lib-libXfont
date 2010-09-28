@@ -21,8 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/* $XFree86: xc/lib/font/FreeType/ft.h,v 1.22 2003/06/08 15:41:13 herrb Exp $ */
-
 #ifndef _FT_H_
 #define _FT_H_
 

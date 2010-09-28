@@ -1,5 +1,3 @@
-/* $XFree86: xc/lib/font/stubs/stubs.h,v 1.3 1999/12/15 01:14:36 robin Exp $ */
-
 #include <stdio.h>
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/font.h>
