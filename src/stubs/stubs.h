@@ -1,5 +1,3 @@
-/* $XFree86: xc/lib/font/stubs/stubs.h,v 1.3 1999/12/15 01:14:36 robin Exp $ */
-
 #include <stdio.h>
 #include <X11/fonts/fntfilst.h>
 #include <X11/fonts/font.h>
@@ -16,7 +14,9 @@
 #define weak __attribute__((weak))
 #else
 #define weak
+#ifndef __SUNPRO_C /* Sun compilers use #pragma weak in .c files instead */
 #define NO_WEAK_SYMBOLS
+#endif
 #endif
 
 /* This is really just a hack for now... __APPLE__ really should be using
