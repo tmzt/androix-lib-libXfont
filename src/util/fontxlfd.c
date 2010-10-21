@@ -43,7 +43,7 @@ from The Open Group.
 #include	<X11/Xos.h>
 #include	<math.h>
 #include	<stdlib.h>
-#if defined(sony) && !defined(SYSTYPE_SYSV) && !defined(_SYSTYPE_SYSV)
+#if (defined(bionic) || defined(sony)) && !defined(SYSTYPE_SYSV) && !defined(_SYSTYPE_SYSV)
 #define NO_LOCALE
 #endif
 #ifndef NO_LOCALE
